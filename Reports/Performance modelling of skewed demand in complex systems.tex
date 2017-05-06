@@ -1,0 +1,89 @@
+\documentclass{llncs}
+\usepackage{graphicx,amssymb,pepa}
+
+\begin{document}
+\title{Performance modelling of skewed demand in complex systems}
+
+\author{Stephen Shephard}
+
+\institute{School of Computing Science, Newcastle University, Newcastle upon Tyne, NE1 7RU\\
+	\email{s.shephard2@newcastle.ac.uk}}
+
+\maketitle
+
+%
+% ---- Abstract and keywords
+%
+
+\begin{abstract}
+On-line Transaction Processing (OLTP) applications must frequently deal with the issue of skewed demand for some resources.  This demand may overwhelm the whole system, affecting the owner's reputation and revenue.  In this article we present a ticketing use case and argue that at each layer of the architecture, the distributed computing technologies of the Cloud may maintain throughput to the lower demand resources, maximising the available functionality of the system.  
+	\keywords{Cloud, middleware, microservices, distributed databases, load-balancing, performance}
+\end{abstract}
+
+%
+% ---- Introduction
+%
+
+\section{Introduction}
+
+There are many high-profile examples of whole IT systems brought down by customer demand for part of their services.  Customers were prevented from using any part of the London 2012 Olympic ticketing website on launch day to avoid demand overloading the system \cite{telegraph2011olympics}.  HBO Go was brought down by demand for the finale of ``True Detective'' \cite{hbo2014}.  Apple's iTunes Store suffered outage on the launch day of the iPhone 7 (new iPhone registration is carried out via an iTunes function) \cite{itunes2016}.
+
+I propose that it is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others. The London 2012 Olympics have now passed into history, but such a ticketing system would have many applications today, and may be generalised to a system for allocating and releasing other resources with variable demand.
+
+%
+% ---- Background
+%
+
+\section{Background}
+
+I will consider an example system based on the Olympic ticketing use case above.  Tickets will be for a multi-sport event, and each will consist of a ticket type (the sport), date, row, and seat number.  The system will support three operations:
+\begin{enumerate}
+\item Search (for available tickets)
+\item Book (allocate a ticket to a customer)
+\item Return (customer releases a ticket allocation)
+\end{enumerate}
+
+If it is not possible to search for or book tickets of one type because some component is overloaded due to demand, then the system should allow booking of other ticket types.  It must also always be possible to return tickets of any type.
+
+In this article, I am considering the problem of high demand for types of ticket.  This is not about the number of tickets available and I will not consider issues of fair allocation of scarce resources.  The demand may be:
+\begin{enumerate}
+\item predictable - we know which functions or ticket types are going to have the highest demand; or
+\item unknown - we discover the areas of highest demand once the application goes online.
+\end{enumerate}
+
+\paragraph{System Architecture.}
+
+The proposed system will use a distributed architecture.  Users will access it from a web-based front end.  Tickets will be stored in a database partitioned across several data nodes.  In between the web servers and database will be a number of worker applications to service user requests, connected to the web servers by some middleware.
+
+\begin{figure}
+\caption{Ticketing application distributed architecture}
+\centering
+\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/application}
+\end{figure}
+
+%
+% ---- Technology Review sub-document
+%
+
+\include{techreview}
+
+%
+% ---- Modelling sub-document
+%
+
+\include{modelling}
+
+%
+% ---- Conclusion sub-document
+%
+
+\include{conclusion}
+
+%
+% ---- Bibliography ----
+%
+
+\bibliographystyle{splncs03}
+\bibliography{project}
+
+\end{document}
