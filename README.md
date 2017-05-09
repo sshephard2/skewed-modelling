@@ -1,4 +1,4 @@
-# Performance modelling of skewed demand in complex systems
+# Performance modelling and simulation of skewed demand in complex systems
 
 Platform decisions:
 
