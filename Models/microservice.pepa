@@ -1,8 +1,0 @@
-s = 1.0; /* Search rate */
-b = 1.0; /* Book rate */
-r = 1.0; /* Return rate */
-Website = (search, s).Website + (book, b).Website + (return, r).Website; /* Web front-end process */
-Search_Worker = (search, T).Search_Worker; /* Search worker application process */
-Book_Worker = (book, T).Book_Worker; /* Booking worker application process */
-Return_Worker = (return, T).Return_Worker; /* Return worker application process */
-Book_Worker <book> Website <search> Search_Worker

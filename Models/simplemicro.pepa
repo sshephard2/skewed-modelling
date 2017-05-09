@@ -1,0 +1,16 @@
+a = 5.0; /* Rate of booking Athletics tickets */
+c = 1.0; /* Rate of booking Cycling tickets */
+
+db_a = 2.0; /* Maximum throughput of Athletics DB */
+db_c = 2.0; /* Maximum throughput of Cycling DB */
+
+Website = (book_athletics, a).Website + (book_cycling, c).Website; /* Web front-end process */
+
+Athletics_Worker = (book_athletics, T).Athletics_Worker; /* Athletics ticket booking worker process */
+Athletics_DB = (book_athletics, db_a).Athletics_DB; /* Athletics ticket booking DB */
+
+Cycling_Worker = (book_cycling, T).Cycling_Worker; /* Cycling ticket booking worker process */
+Cycling_DB = (book_cycling, db_c).Cycling_DB; /* Cycling ticket booking DB */
+
+/* System Equation */
+Athletics_DB <book_athletics> Athletics_Worker <book_athletics> Website <book_cycling> Cycling_Worker <book_cycling> Cycling_DB
