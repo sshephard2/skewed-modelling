@@ -21,27 +21,37 @@ Test the models against the real applications under different scenarios of skewe
 
 ### Model 1 - separate DBs for sport types "simple Microservices"
 
-There are two DBs, one for Archery tickets, one for Athletics.  Athletics will have skewed demand.
+There are two DBs, one for Cycling tickets, one for Cycling.  Athletics will have skewed demand.
 
 It's expected that this architecture will lead to isolation of the skewed demand and that the results of testing the model will not be surprising, but that this will provide a useful control for other architectures.
 
 ### Model 2 - shared queue middleware
 
-Requests via a shared queue to worker applications going to a distributed DB with two nodes, Athletics and Archery.
+Requests via a shared queue to worker applications going to a distributed DB with two nodes, Athletics and Cycling.
 
-### Model 3 - realistic Microservices
+### Model 3 - operational microservices
 
-DBs by operation (Search, Book, Return) with a backplane process for eventual consistency
+DBs by operation (Book, Search, Return).
 
-### Model 4 - distributed DB with replication
+### Model 4 - microservices with event sourcing
 
-### Model 5 - priority queues?
+As above plus DB eventual consistency via event streaming e.g. using Kafka.
 
-### Model 6 - smaller Microservices?
+`Book` is an event producer and consumer (produces when a ticket is booked, consumes returned tickets).
 
-Question: do this as a separate model or use this instead of model 3
+`Search` is an event consumer (consumes the state of tickets that are booked and returned).
 
-* Book Archery
+`Return` is an event producer (produces returned tickets).
+
+### Model 5 - distributed DB with replication
+
+### Model 6 - priority queues?
+
+### Model 7 - smaller Microservices?
+
+Question: do this as a separate model or use this instead of model 3/4?
+
 * Book Athletics
+* Book Cycling
 * Search
 * Return
