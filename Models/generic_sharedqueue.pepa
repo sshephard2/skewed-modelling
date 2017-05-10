@@ -1,0 +1,23 @@
+/*
+ * Generic shared queue model
+ *
+ * A queue shared between two processes
+ *
+ */
+
+a1 = 10.0; /* Arrival rate 1 */
+s1 = 5.0; /* Service rate 1 */
+a2 = 1.0; /* Arrival rate 2 */
+s2 = 5.0; /* Service rate 2 */
+
+Arrival1 = (arrive1, a1).Arrival1; /* Arrival process 1 */
+Service1 = (serve1, s1).Service1; /* Service process 1 */
+
+Arrival2 = (arrive2, a2).Arrival2; /* Arrival process 2 */
+Service2 = (serve2, s2).Service2; /* Service process 2 */
+
+Qempty = (arrive1, T).Q1 + (arrive2, T).Q2;
+Q1 = (serve1, T).Qempty;
+Q2 = (serve2, T).Qempty;
+
+((Arrival1 <arrive1> Qempty[10] <serve1> Service1) <arrive2> Arrival2) <serve2> Service2
