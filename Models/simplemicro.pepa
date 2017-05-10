@@ -1,4 +1,11 @@
-a = 5.0; /* Rate of booking Athletics tickets */
+/*
+ * Simple Microservices model
+ *
+ * one DB for Athletics tickets, one separate DB for Cycling
+ *
+ */
+
+a = 10.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 
 db_a = 2.0; /* Maximum throughput of Athletics DB */
@@ -13,4 +20,4 @@ Cycling_Worker = (book_cycling, T).Cycling_Worker; /* Cycling ticket booking wor
 Cycling_DB = (book_cycling, db_c).Cycling_DB; /* Cycling ticket booking DB */
 
 /* System Equation */
-Athletics_DB <book_athletics> Athletics_Worker <book_athletics> Website <book_cycling> Cycling_Worker <book_cycling> Cycling_DB
+((Athletics_Worker <book_athletics> Website <book_cycling> Cycling_Worker) <book_athletics> Athletics_DB) <book_cycling> Cycling_DB

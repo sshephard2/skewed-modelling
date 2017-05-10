@@ -1,0 +1,22 @@
+/*
+ * Simple Microservices model - without worker applications
+ *
+ * one DB for Athletics tickets, one separate DB for Cycling
+ * no separate modelling of worker applications
+ *
+ */
+
+a = 10.0; /* Rate of booking Athletics tickets */
+c = 1.0; /* Rate of booking Cycling tickets */
+
+db_a = 2.0; /* Maximum throughput of Athletics DB */
+db_c = 2.0; /* Maximum throughput of Cycling DB */
+
+Website = (book_athletics, a).Website + (book_cycling, c).Website; /* Web front-end process */
+
+Athletics = (book_athletics, db_a).Athletics; /* Athletics ticket booking process */
+
+Cycling = (book_cycling, db_c).Cycling; /* Cycling ticket booking process */
+
+/* System Equation */
+Athletics <book_athletics> Website <book_cycling> Cycling
