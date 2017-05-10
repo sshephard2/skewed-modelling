@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2017.2.27)  9 MAY 2017 09:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2017.2.27)  10 MAY 2017 13:10
 entering extended mode
 **"./Performance modelling of skewed demand in complex systems.tex"
 ("Performance modelling of skewed demand in complex systems.tex"
@@ -257,47 +257,70 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-<img/application.pdf, id=10, 662.475pt x 274.02374pt>
-File: img/application.pdf Graphic file (type pdf)
+<img/simplemicro.pdf, id=10, 662.475pt x 274.40518pt>
+File: img/simplemicro.pdf Graphic file (type pdf)
 
-<use img/application.pdf>
-Package pdftex.def Info: img/application.pdf used on input line 61.
-(pdftex.def)             Requested size: 347.12354pt x 140.45583pt.
- [2 <./img/application.pdf>]
+<use img/simplemicro.pdf>
+Package pdftex.def Info: img/simplemicro.pdf used on input line 61.
+(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
+
+<img/sharedqueue.pdf, id=12, 662.475pt x 274.40518pt>
+File: img/sharedqueue.pdf Graphic file (type pdf)
+
+<use img/sharedqueue.pdf>
+Package pdftex.def Info: img/sharedqueue.pdf used on input line 67.
+(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
+
+<img/operationmicro.pdf, id=14, 642.14906pt x 274.40518pt>
+File: img/operationmicro.pdf Graphic file (type pdf)
+
+<use img/operationmicro.pdf>
+Package pdftex.def Info: img/operationmicro.pdf used on input line 73.
+(pdftex.def)             Requested size: 347.12354pt x 145.18079pt.
+
+<img/sharedqueue_withrep.pdf, id=16, 662.475pt x 274.40518pt>
+File: img/sharedqueue_withrep.pdf Graphic file (type pdf)
+
+<use img/sharedqueue_withrep.pdf>
+Package pdftex.def Info: img/sharedqueue_withrep.pdf used on input line 79.
+(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
+ [2 <./img/simplemicro.pdf>] [3 <./img/sharedqueue.pdf> <./img/operationmicro.p
+df> <./img/sharedqueue_withrep.pdf>]
 \openout2 = `techreview.aux'.
 
- (techreview.tex
+
+(techreview.tex
 Overfull \hbox (3.79375pt too wide) in paragraph at lines 3--4
 \OT1/cmr/m/n/10 We con-sider cur-rent cloud tech-nolo-gies that may be use-ful 
 in dis-tribut-ing through-
  []
 
-[3
+[4
 
-] [4] [5] <img/dbdist.pdf, id=41, 773.89125pt x 439.6425pt>
+] [5] [6] <img/dbdist.pdf, id=79, 773.89125pt x 439.6425pt>
 File: img/dbdist.pdf Graphic file (type pdf)
 
 <use img/dbdist.pdf>
 Package pdftex.def Info: img/dbdist.pdf used on input line 64.
 (pdftex.def)             Requested size: 347.12354pt x 195.22803pt.
- [6 <./img/dbdist.pdf>] [7]
-<img/microservices.pdf, id=61, 642.14906pt x 274.02374pt>
+ [7 <./img/dbdist.pdf>] [8]
+<img/microservices.pdf, id=99, 642.14906pt x 274.02374pt>
 File: img/microservices.pdf Graphic file (type pdf)
 
 <use img/microservices.pdf>
 Package pdftex.def Info: img/microservices.pdf used on input line 100.
 (pdftex.def)             Requested size: 347.12354pt x 144.97133pt.
-) [8 <./img/microservices.pdf>]
+) [9 <./img/microservices.pdf>]
 \openout2 = `modelling.aux'.
 
  (modelling.tex)
-[9
+[10
 
 
 ]
 \openout2 = `conclusion.aux'.
 
- (conclusion.tex) [10
+ (conclusion.tex) [11
 
 
 ]
@@ -348,7 +371,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 92--96
 h-second-round-
  []
 
-[11
+[12
 
 ]
 Underfull \hbox (badness 1661) in paragraph at lines 98--102
@@ -373,13 +396,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 109--112
 -some-users,
  []
 
-) [12] ("Performance modelling of skewed demand in complex systems.aux"
+) [13] ("Performance modelling of skewed demand in complex systems.aux"
 (techreview.aux) (modelling.aux) (conclusion.aux)) ) 
 Here is how much of TeX's memory you used:
- 2346 strings out of 493334
- 31680 string characters out of 3136663
- 98669 words of memory out of 3000000
- 5812 multiletter control sequences out of 15000+200000
+ 2361 strings out of 493334
+ 32065 string characters out of 3136663
+ 98670 words of memory out of 3000000
+ 5824 multiletter control sequences out of 15000+200000
  15661 words of font info for 59 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  40i,12n,26p,1000b,346s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -397,9 +420,9 @@ c/amsfonts/cm/cmti9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/a
 msfonts/cm/cmtt9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsf
 onts/symbols/msam10.pfb>
 Output written on "Performance modelling of skewed demand in complex systems.pd
-f" (12 pages, 880676 bytes).
+f" (13 pages, 1280257 bytes).
 PDF statistics:
- 136 PDF objects out of 1000 (max. 8388607)
+ 175 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 34 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 67 words of extra memory for PDF output out of 10000 (max. 10000000)
 
