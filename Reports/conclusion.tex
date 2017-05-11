@@ -1,11 +1,9 @@
+%
+% ---- Technologies
+%
+
 \section{Conclusion and Future Work}
-In this article we showed that cloud technologies could manipulate the throughput at each of the layers of our ticketing system architecture.
-\paragraph{Front-end.}  We can balance demand at the web front-end using content-blind HTTP load balancing, and isolate skewed demand using content-aware algorithms.  Elastic scaling of web servers enables the front-end to respond to as much demand as the system owner is willing to pay for.
-\paragraph{Application.} We can decouple worker applications from the front-end using asynchronous middleware.  Shared middleware balances the load, microservice architecture isolates it.  The system can adapt to current demand by using elastic scaling to create or destroy worker applications, and by using scaling groups we can ensure that the number of each application type is appropriate to the demand.
-\paragraph{Database.} With care, we can use horizontal database partitioning to ensure that functions and/or data types are not shared between data nodes, isolating their demand from each other.
 
-At the component level we can see whether an approach will balance or isolate load, or adapt to it, but at the system level we will need modelling techniques to predict the end to end throughput.  We looked at two approaches, process algebra and programmatic, that could be used to build complex models from smaller components.
+...
 
-An interesting area of future work would be to create a test system based on Red Hat's Ticket Monster application \cite{redhatticketmonster} and build it both as a model in PEPA, and an instrumented system running alongside it on real infrastructure. The model's predictions could then be tested against measurements of the real system.  Both model and real system could be deployed in different configurations of interest - balancing demand via shared middleware or isolating it via the microservices approach - to see how each copes with different demand scenarios.  For example, with rising skewed demand for one ticket type, at what point does the balanced demand approach begin to affect the entire system?  Do either of the shared middleware and microservices approaches have clear efficiency advantages under certain conditions?
-
-A further area might be in using the modelling techniques as adaptive algorithms.  A CloudSim simulation might be used as a policy for elastic scaling, and compared with the performance of other right-sizing strategies; control theory, machine learning and other model based techniques including statistical.
+An interesting area of future work might be in using the modelling techniques in adaptive algorithms.  A model might be used as a policy for elastic scaling, and compared with the performance of other right-sizing strategies; control theory, machine learning and other model based techniques including statistical.
