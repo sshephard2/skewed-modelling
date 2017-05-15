@@ -28,7 +28,9 @@ On-line Transaction Processing (OLTP) applications must frequently deal with the
 
 There are many high-profile examples of whole IT systems brought down by customer demand for part of their services.  Customers were prevented from using any part of the London 2012 Olympic ticketing website on launch day to avoid demand overloading the system \cite{telegraph2011olympics}.  HBO Go was brought down by demand for the finale of ``True Detective'' \cite{hbo2014}.  Apple's iTunes Store suffered outage on the launch day of the iPhone 7 (new iPhone registration is carried out via an iTunes function) \cite{itunes2016}.
 
-I propose that it is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others. The London 2012 Olympics have now passed into history, but such a ticketing system would have many applications today, and may be generalised to a system for allocating and releasing other resources with variable demand.
+It is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others.  Skewed demand may be isolated so that it only affects parts of a system, or shared equally between different components. (The system may also adapt to demand by elastic scaling of resources, but this will not be considered as part of this paper).
+
+We will briefly discuss Middleware, Microservices and Distributed Databases and show how they provide strategies for managing demand.  In a complex system we need to examine the end to end impacts.  Does removing a bottleneck at the Web or Worker Application layer shift the stress to the middleware, or the database?  If we accept that some levels of demand cannot be met on a limited budget, and that some components will no longer meet the required throughput, how do we determine the impact on the remainder of the system?  To examine these questions we will build models of a example system using different architectures; to test the models we will build out these systems and measure how demand impacts the throughput.
 
 %
 % ---- Background
@@ -36,7 +38,9 @@ I propose that it is possible to design and build more resilient systems through
 
 \section{Background}
 
-I will consider an example system based on the Olympic ticketing use case above.  Tickets will be for a multi-sport event, and each will consist of a ticket type (the sport), date, row, and seat number.  The system will support three operations:
+We will consider an example system based on the Olympic ticketing use case above.  Such a ticketing application may be generalised to any system for allocating and releasing other resources with variable demand.
+
+Tickets will be for a multi-sport event, and each will consist of a ticket type (the sport), date, row, and seat number.  The system will support three operations:
 \begin{enumerate}
 \item Search (for available tickets)
 \item Book (allocate a ticket to a customer)
@@ -45,45 +49,23 @@ I will consider an example system based on the Olympic ticketing use case above.
 
 If it is not possible to search for or book tickets of one type because some component is overloaded due to demand, then the system should allow booking of other ticket types.  It must also always be possible to return tickets of any type.
 
-In this article, I am considering the problem of high demand for types of ticket.  This is not about the number of tickets available and I will not consider issues of fair allocation of scarce resources.  The demand may be:
+In this paper, we are considering the problem of high demand for types of ticket.  This is not about the number of tickets available and we will not consider issues of fair allocation of scarce resources.  The demand may be:
 \begin{enumerate}
 \item predictable - we know which functions or ticket types are going to have the highest demand; or
 \item unknown - we discover the areas of highest demand once the application goes online.
 \end{enumerate}
 
-\paragraph{System Architecture.}
-
-The proposed system will use a distributed architecture.  Users will access it from a web-based front end.  Tickets will be stored in a database partitioned across several data nodes.  In between the web servers and database will be a number of worker applications to service user requests, connected to the web servers by some middleware.
-
-\begin{figure}
-	\caption{Ticketing application distributed architecture 1}
-	\centering
-	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/simplemicro}
-\end{figure}
-
-\begin{figure}
-	\caption{Ticketing application distributed architecture 2}
-	\centering
-	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/sharedqueue}
-\end{figure}
-
-\begin{figure}
-	\caption{Ticketing application distributed architecture 3}
-	\centering
-	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/operationmicro}
-\end{figure}
-
-\begin{figure}
-	\caption{Ticketing application distributed architecture 4}
-	\centering
-	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/sharedqueue_withrep}
-\end{figure}
-
 %
-% ---- Technology Review sub-document
+% ---- Technologies sub-document
 %
 
-\include{techreview}
+\include{technologies}
+
+%
+% ---- System Architectures sub-document
+%
+
+\include{architectures}
 
 %
 % ---- Modelling sub-document
