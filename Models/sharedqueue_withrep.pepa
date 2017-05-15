@@ -1,0 +1,33 @@
+/*
+ * Replicated distributed DB model
+ *
+ * middleware architecture with distributed database with replication
+ * DB node 1 for Athletics and Cycling tickets
+ * DB node 2 for Cycling and Diving tickets
+ * DB node 3 for Diving and Athletics tickets
+ *
+ */
+
+a = 10.0; /* Rate of booking Athletics tickets */
+c = 1.0; /* Rate of booking Cycling tickets */
+d = 1.0; /* Rate of booking Diving tickets */
+
+db_1 = 2.0; /* Maximum throughput of DB node 1 */
+db_2 = 2.0; /* Maximum throughput of DB node 2 */
+db_3 = 2.0; /* Maximum throughput of DB node 3 */
+
+Website = (book_athletics, a).Website + (book_cycling, c).Website  + (book_diving, d).Website; /* Web front-end process */
+
+DBnode_1 = (book_athletics_db, db_1).DBnode_1 + (book_cycling_db, db_1).DBnode_1; /* DB node 1 service process */
+DBnode_2 = (book_cycling_db, db_2).DBnode_2 + (book_diving_db, db_2).DBnode_2; /* DB node 2 service process */
+DBnode_3 = (book_diving_db, db_3).DBnode_3 + (book_athletics_db, db_3).DBnode_3; /* DB node 2 service process */
+
+Q_empty = (book_athletics, T).Q_athletics + (book_cycling, T).Q_cycling + (book_diving, T).Q_diving;
+Q_athletics = (book_athletics_db, T).Q_empty;
+Q_cycling = (book_cycling_db, T).Q_empty;
+Q_diving = (book_diving_db, T).Q_empty;
+
+Website <book_athletics, book_cycling, book_diving> Q_empty[10]
+  <book_athletics_db, book_cycling_db> DBnode_1
+  <book_cycling_db, book_diving_db> DBnode_2
+  <book_diving_db, book_athletics_db> DBnode_3
