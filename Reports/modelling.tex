@@ -20,12 +20,130 @@ CloudSim simulations require Java development for creation and modification, whi
 \begin{displaymath}
 	\begin{array}{rcl}
 %[0.0ex]		
-\mathit{Web} & \rmdef & (\mathit{request},\mathit{r}).\mathit{Web}\\
+\mathit{Website} & \rmdef & (\mathit{request},\mathit{r}).\mathit{Website}\\
 		\mathit{Worker} & \rmdef & (\mathit{service},\mathit{s}).\mathit{Worker}\\
 		\mathit{Queue_{0}} & \rmdef & (\mathit{request},\mathit{r}).\mathit{Queue_{1}}\\
 		\mathit{Queue_{1}} & \rmdef & (\mathit{service},\mathit{s}).\mathit{Queue_{0}}\\
-[0.0ex]		\multicolumn{3}{l}{\mathit{Web}\sync{request}\mathit{Queue_{0}}[N]\sync{service}\mathit{Worker}}\\
+[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{request}\mathit{Queue_{0}}[N]\sync{service}\mathit{Worker}}\\
 [0.0ex]	\end{array}
 \end{displaymath}
 % --end
 \end{figure}
+
+%
+% ---- PEPA Models
+%
+
+\section{PEPA Models}
+
+%
+% ---- Simple microservices
+%
+\subsection{Simple microservices}
+
+\begin{figure}
+	\caption{Simple microservices PEPA model}
+	\centering
+% --begin
+\begin{displaymath}
+	\begin{array}{rcl}
+		\mathit{Website} & \rmdef & (\mathit{book\_athletics},\mathit{a}).\mathit{Website}+(\mathit{book\_cycling},\mathit{c}).\mathit{Website}\\
+		\mathit{Athletics_{Worker}} & \rmdef & (\mathit{book\_athletics},\top).\mathit{Athletics_{Worker}}\\
+		\mathit{Athletics_{DB}} & \rmdef & (\mathit{book\_athletics},\mathit{db\_a}).\mathit{Athletics_{DB}}\\
+		\mathit{Cycling_{Worker}} & \rmdef & (\mathit{book\_cycling},\top).\mathit{Cycling_{Worker}}\\
+		\mathit{Cycling_{DB}} & \rmdef & (\mathit{book\_cycling},\mathit{db\_c}).\mathit{Cycling_{DB}}\\
+		[0.0ex]		\multicolumn{3}{l}{\mathit{Athletics_{Worker}}\sync{book\_athletics}\mathit{Website}\sync{book\_cycling}\mathit{Cycling_{Worker}}\sync{book\_athletics}\mathit{Athletics_{DB}}\sync{book\_cycling}\mathit{Cycling_{DB}}}\\
+		[0.0ex]	\end{array}
+\end{displaymath}
+% --end
+\end{figure}
+
+\begin{figure}
+	\caption{Simple microservices PEPA model - without worker processes}
+	\centering
+% --begin
+\begin{displaymath}
+\begin{array}{rcl}
+		\mathit{Website} & \rmdef & (\mathit{book\_athletics},\mathit{a}).\mathit{Website}+(\mathit{book\_cycling},\mathit{c}).\mathit{Website}\\
+\mathit{Athletics} & \rmdef & (\mathit{book\_athletics},\mathit{db\_a}).\mathit{Athletics}\\
+\mathit{Cycling} & \rmdef & (\mathit{book\_cycling},\mathit{db\_c}).\mathit{Cycling}\\
+[0.0ex]		\multicolumn{3}{l}{\mathit{Athletics}\sync{book\_athletics}\mathit{Website}\sync{book\_cycling}\mathit{Cycling}}\\
+[0.0ex]	\end{array}
+\end{displaymath}
+% --end
+\end{figure}
+
+%
+% ---- Operational microservices
+%
+\subsection{Operational microservices}
+
+
+
+%
+% ---- Shared queue middleware
+%
+\subsection{Shared queue middleware}
+
+\begin{figure}
+	\caption{Generic shared queue PEPA model}
+	\centering
+	% --begin
+	\begin{displaymath}
+	\begin{array}{rcl}
+	\mathit{Arrival1} & \rmdef & (\mathit{arrive1},\mathit{a1}).\mathit{Arrival1}\\
+	\mathit{Service1} & \rmdef & (\mathit{serve1},\mathit{s1}).\mathit{Service1}\\
+	\mathit{Arrival2} & \rmdef & (\mathit{arrive2},\mathit{a2}).\mathit{Arrival2}\\
+	\mathit{Service2} & \rmdef & (\mathit{serve2},\mathit{s2}).\mathit{Service2}\\
+	\mathit{Qempty} & \rmdef & (\mathit{arrive1},\top).\mathit{Q1}+(\mathit{arrive2},\top).\mathit{Q2}\\
+	\mathit{Q1} & \rmdef & (\mathit{serve1},\top).\mathit{Qempty}\\
+	\mathit{Q2} & \rmdef & (\mathit{serve2},\top).\mathit{Qempty}\\
+	[0.0ex]		\multicolumn{3}{l}{\mathit{Arrival1}\sync{arrive1}\mathit{Qempty}[N]\sync{serve1}\mathit{Service1}\sync{arrive2}\mathit{Arrival2}\sync{serve2}\mathit{Service2}}\\
+	[0.0ex]	\end{array}
+	\end{displaymath}
+	% --end
+\end{figure}
+
+\begin{figure}
+	\caption{Application specific shared queue PEPA model}
+	\centering
+	% --begin
+	\begin{displaymath}
+	\begin{array}{rcl}
+	\mathit{Website} & \rmdef & (\mathit{book\_athletics},\mathit{a}).\mathit{Website}+(\mathit{book\_cycling},\mathit{c}).\mathit{Website}\\
+	\mathit{Athletics_{arrival}} & \rmdef & (\mathit{book\_athletics},\top).\mathit{Athletics_{arrival}}\\
+	\mathit{Cycling_{arrival}} & \rmdef & (\mathit{book\_cycling},\top).\mathit{Cycling_{arrival}}\\
+	\mathit{DBnode_1} & \rmdef & (\mathit{book\_athletics\_db},\mathit{db\_1}).\mathit{DBnode_1}\\
+	\mathit{DBnode_2} & \rmdef & (\mathit{book\_cycling\_db},\mathit{db\_2}).\mathit{DBnode_2}\\
+	\mathit{Q_{empty}} & \rmdef & (\mathit{book\_athletics},\top).\mathit{Q_{athletics}}+(\mathit{book\_cycling},\top).\mathit{Q_{cycling}}\\
+	\mathit{Q_{athletics}} & \rmdef & (\mathit{book\_athletics\_db},\top).\mathit{Q_{empty}}\\
+	\mathit{Q_{cycling}} & \rmdef & (\mathit{book\_cycling\_db},\top).\mathit{Q_{empty}}\\
+	[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{book\_athletics,book\_cycling}\mathit{Athletics_{arrival}}\sync{book\_athletics}\mathit{Q_{empty}}[N]\sync{book\_athletics\_db}\mathit{DBnode_1}\sync{book\_cycling}\mathit{Cycling_{arrival}}\sync{book\_cycling\_db}\mathit{DBnode_2}}\\
+	[0.0ex]	\end{array}
+	\end{displaymath}
+	% --end
+\end{figure}
+
+\begin{figure}
+	\caption{Shared queue PEPA model without queue arrival processes}
+	\centering
+	% --begin
+	\begin{displaymath}
+	\begin{array}{rcl}
+	\mathit{Website} & \rmdef & (\mathit{book\_athletics},\mathit{a}).\mathit{Website}+(\mathit{book\_cycling},\mathit{c}).\mathit{Website}\\
+	\mathit{DBnode_1} & \rmdef & (\mathit{book\_athletics\_db},\mathit{db\_1}).\mathit{DBnode_1}\\
+	\mathit{DBnode_2} & \rmdef & (\mathit{book\_cycling\_db},\mathit{db\_2}).\mathit{DBnode_2}\\
+	\mathit{Q_{empty}} & \rmdef & (\mathit{book\_athletics},\top).\mathit{Q_{athletics}}+(\mathit{book\_cycling},\top).\mathit{Q_{cycling}}\\
+	\mathit{Q_{athletics}} & \rmdef & (\mathit{book\_athletics\_db},\top).\mathit{Q_{empty}}\\
+	\mathit{Q_{cycling}} & \rmdef & (\mathit{book\_cycling\_db},\top).\mathit{Q_{empty}}\\
+	[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{book\_athletics,book\_cycling}\mathit{Q_{empty}}[N]\sync{book\_athletics\_db}\mathit{DBnode_1}\sync{book\_cycling\_db}\mathit{DBnode_2}}\\
+	[0.0ex]	\end{array}
+	\end{displaymath}
+	% --end
+\end{figure}
+
+%
+% ---- Distributed database with replication
+%
+\subsection{Distributed database with replication}
+

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2017.2.27)  10 MAY 2017 13:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2017.2.27)  15 MAY 2017 10:41
 entering extended mode
 **"./Performance modelling of skewed demand in complex systems.tex"
 ("Performance modelling of skewed demand in complex systems.tex"
@@ -171,7 +171,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
 (pepa.sty) ("Performance modelling of skewed demand in complex systems.aux"
-(techreview.aux) (modelling.aux) (conclusion.aux))
+(technologies.aux) (architectures.aux) (modelling.aux) (conclusion.aux))
 \openout1 = `"Performance modelling of skewed demand in complex systems.aux"'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
@@ -256,71 +256,100 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 12.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-<img/simplemicro.pdf, id=10, 662.475pt x 274.40518pt>
-File: img/simplemicro.pdf Graphic file (type pdf)
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] [2]
+\openout2 = `technologies.aux'.
 
-<use img/simplemicro.pdf>
-Package pdftex.def Info: img/simplemicro.pdf used on input line 61.
-(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
-
-<img/sharedqueue.pdf, id=12, 662.475pt x 274.40518pt>
-File: img/sharedqueue.pdf Graphic file (type pdf)
-
-<use img/sharedqueue.pdf>
-Package pdftex.def Info: img/sharedqueue.pdf used on input line 67.
-(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
-
-<img/operationmicro.pdf, id=14, 642.14906pt x 274.40518pt>
-File: img/operationmicro.pdf Graphic file (type pdf)
-
-<use img/operationmicro.pdf>
-Package pdftex.def Info: img/operationmicro.pdf used on input line 73.
-(pdftex.def)             Requested size: 347.12354pt x 145.18079pt.
-
-<img/sharedqueue_withrep.pdf, id=16, 662.475pt x 274.40518pt>
-File: img/sharedqueue_withrep.pdf Graphic file (type pdf)
-
-<use img/sharedqueue_withrep.pdf>
-Package pdftex.def Info: img/sharedqueue_withrep.pdf used on input line 79.
-(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
- [2 <./img/simplemicro.pdf>] [3 <./img/sharedqueue.pdf> <./img/operationmicro.p
-df> <./img/sharedqueue_withrep.pdf>]
-\openout2 = `techreview.aux'.
-
-
-(techreview.tex
-Overfull \hbox (3.79375pt too wide) in paragraph at lines 3--4
+ (technologies.tex
+Overfull \hbox (3.79375pt too wide) in paragraph at lines 7--8
 \OT1/cmr/m/n/10 We con-sider cur-rent cloud tech-nolo-gies that may be use-ful 
 in dis-tribut-ing through-
  []
 
-[4
+[3
 
-] [5] [6] <img/dbdist.pdf, id=79, 773.89125pt x 439.6425pt>
-File: img/dbdist.pdf Graphic file (type pdf)
-
-<use img/dbdist.pdf>
-Package pdftex.def Info: img/dbdist.pdf used on input line 64.
-(pdftex.def)             Requested size: 347.12354pt x 195.22803pt.
- [7 <./img/dbdist.pdf>] [8]
-<img/microservices.pdf, id=99, 642.14906pt x 274.02374pt>
+] <img/microservices.pdf, id=18, 642.14906pt x 274.02374pt>
 File: img/microservices.pdf Graphic file (type pdf)
 
 <use img/microservices.pdf>
-Package pdftex.def Info: img/microservices.pdf used on input line 100.
+Package pdftex.def Info: img/microservices.pdf used on input line 46.
 (pdftex.def)             Requested size: 347.12354pt x 144.97133pt.
-) [9 <./img/microservices.pdf>]
+ [4 <./img/microservices.pdf>]
+<img/dbdist.pdf, id=38, 773.89125pt x 439.6425pt>
+File: img/dbdist.pdf Graphic file (type pdf)
+ <use img/dbdist.pdf>
+Package pdftex.def Info: img/dbdist.pdf used on input line 70.
+(pdftex.def)             Requested size: 347.12354pt x 195.22803pt.
+)
+[5] [6 <./img/dbdist.pdf>]
+\openout2 = `architectures.aux'.
+
+ (architectures.tex
+<img/simplemicro.pdf, id=57, 662.475pt x 274.40518pt>
+File: img/simplemicro.pdf Graphic file (type pdf)
+
+<use img/simplemicro.pdf>
+Package pdftex.def Info: img/simplemicro.pdf used on input line 23.
+(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
+ [7
+
+
+ <./img/simplemicro.pdf>]
+<img/operationmicro.pdf, id=74, 642.14906pt x 274.40518pt>
+File: img/operationmicro.pdf Graphic file (type pdf)
+
+<use img/operationmicro.pdf>
+Package pdftex.def Info: img/operationmicro.pdf used on input line 41.
+(pdftex.def)             Requested size: 347.12354pt x 145.18079pt.
+
+Overfull \hbox (4.01595pt too wide) in paragraph at lines 49--50
+\OT1/cmr/m/n/10 Requests via a shared queue to worker ap-pli-ca-tions go-ing to
+ a dis-tributed database
+ []
+
+<img/sharedqueue.pdf, id=76, 662.475pt x 274.40518pt>
+File: img/sharedqueue.pdf Graphic file (type pdf)
+
+<use img/sharedqueue.pdf>
+Package pdftex.def Info: img/sharedqueue.pdf used on input line 54.
+(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
+
+Overfull \hbox (4.01595pt too wide) in paragraph at lines 62--63
+\OT1/cmr/m/n/10 Requests via a shared queue to worker ap-pli-ca-tions go-ing to
+ a dis-tributed database
+ []
+
+<img/sharedqueue_withrep.pdf, id=78, 662.475pt x 274.40518pt>
+File: img/sharedqueue_withrep.pdf Graphic file (type pdf)
+
+<use img/sharedqueue_withrep.pdf>
+Package pdftex.def Info: img/sharedqueue_withrep.pdf used on input line 67.
+(pdftex.def)             Requested size: 347.12354pt x 140.65877pt.
+ [8 <./img/operationmicro.pdf> <./img/sharedqueue.pdf>]) [9 <./img/sharedqueue_
+withrep.pdf>]
 \openout2 = `modelling.aux'.
 
- (modelling.tex)
+ (modelling.tex
+Overfull \hbox (79.46141pt too wide) detected at line 57
+[]
+ []
+
 [10
 
 
 ]
+Overfull \hbox (214.04945pt too wide) detected at line 123
+[]
+ []
+
+
+Overfull \hbox (10.63618pt too wide) detected at line 141
+[]
+ []
+
+) [11] [12]
 \openout2 = `conclusion.aux'.
 
- (conclusion.tex) [11
+ (conclusion.tex) [13
 
 
 ]
@@ -371,7 +400,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 92--96
 h-second-round-
  []
 
-[12
+[14
 
 ]
 Underfull \hbox (badness 1661) in paragraph at lines 98--102
@@ -396,33 +425,35 @@ Underfull \hbox (badness 10000) in paragraph at lines 109--112
 -some-users,
  []
 
-) [13] ("Performance modelling of skewed demand in complex systems.aux"
-(techreview.aux) (modelling.aux) (conclusion.aux)) ) 
+) [15] ("Performance modelling of skewed demand in complex systems.aux"
+(technologies.aux) (architectures.aux) (modelling.aux) (conclusion.aux)) ) 
 Here is how much of TeX's memory you used:
- 2361 strings out of 493334
- 32065 string characters out of 3136663
- 98670 words of memory out of 3000000
- 5824 multiletter control sequences out of 15000+200000
+ 2370 strings out of 493334
+ 32230 string characters out of 3136663
+ 110173 words of memory out of 3000000
+ 5826 multiletter control sequences out of 15000+200000
  15661 words of font info for 59 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 40i,12n,26p,1000b,346s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (x86)/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files (x86)/MiKTe
-X 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmbx9.pfb><C:/Program Files (x86)/MiKTeX 2.9
-/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
-nts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/cm/cmr9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/
-public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pu
-blic/amsfonts/cm/cmti7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publi
-c/amsfonts/cm/cmti9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmtt9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsf
-onts/symbols/msam10.pfb>
+ 40i,13n,26p,1002b,346s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/P
+rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Progr
+am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx9.pfb><C:/Program 
+Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Fil
+es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Program Files 
+(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x8
+6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files (x86)/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files (x86)/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Program Files (x86)/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmti7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmti9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmtt9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
+pe1/public/amsfonts/symbols/msam10.pfb>
 Output written on "Performance modelling of skewed demand in complex systems.pd
-f" (13 pages, 1280257 bytes).
+f" (15 pages, 1303434 bytes).
 PDF statistics:
- 175 PDF objects out of 1000 (max. 8388607)
+ 189 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  67 words of extra memory for PDF output out of 10000 (max. 10000000)
 
