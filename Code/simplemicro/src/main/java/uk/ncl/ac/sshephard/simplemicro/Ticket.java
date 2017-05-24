@@ -1,8 +1,15 @@
 package uk.ncl.ac.sshephard.simplemicro;
 
+import org.springframework.cassandra.core.PrimaryKeyType;
+import org.springframework.data.cassandra.mapping.PrimaryKeyColumn;
+import org.springframework.data.cassandra.mapping.Table;
+
+@Table
 public class Ticket {
 	
+	@PrimaryKeyColumn(name = "id", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
 	private final int id; // unique ticket id
+	@PrimaryKeyColumn(name = "sport", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private final String sport; // type of sport
 	private final int day; // day of event
 	private final String owner; // name of ticket owner (for booked ticket)
