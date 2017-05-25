@@ -4,8 +4,8 @@ Platform decisions:
 
 * Build the applications on Microsoft Azure
 * Use an Azure Storage Queue for the shared queue
-* Use MongoDB for the distributed database
-* Develop in Java
+* Use Cassandra for the distributed database
+* Develop in AngularJS and Java Spring
 
 ## Plan outline
 
@@ -19,23 +19,17 @@ Test the models against the real applications under different scenarios of skewe
 * Instrument application
 * Measure and test model
 
-### Model 1 - separate DBs for sport types "simple Microservices"
+### Model 1 - simple microservices
 
-There are two DBs, one for Cycling tickets, one for Cycling.  Athletics will have skewed demand.
+There are two separate DBs, one for Cycling tickets, one for Cycling.  Athletics will have skewed demand.
 
 It's expected that this architecture will lead to isolation of the skewed demand and that the results of testing the model will not be surprising, but that this will provide a useful control for other architectures.
 
-### Model 2 - shared queue middleware
+![simple microservices](simplemicro.png "simple microservices")
 
-Requests via a shared queue to worker applications going to a distributed DB with two nodes, Athletics and Cycling.
+### Model 2 - operational microservices
 
-### Model 3 - operational microservices
-
-DBs by operation (Book, Search, Return).
-
-### Model 4 - microservices with event sourcing
-
-As above plus DB eventual consistency via event streaming e.g. using Kafka.
+A more 'natural' microservices architecture.  Seperate DBs by operation (Book, Search, Return) plus DB eventual consistency via event streaming e.g. using Kafka.
 
 `Book` is an event producer and consumer (produces when a ticket is booked, consumes returned tickets).
 
@@ -43,13 +37,33 @@ As above plus DB eventual consistency via event streaming e.g. using Kafka.
 
 `Return` is an event producer (produces returned tickets).
 
-### Model 5 - distributed DB with replication
+![operational microservices](operationmicro.png "operational microservices")
 
-### Model 6 - priority queues?
+### Model 3 - shared queue middleware
 
-### Model 7 - smaller Microservices?
+Requests via a shared queue to worker applications going to a distributed DB with two nodes, Athletics and Cycling.
 
-Question: do this as a separate model or use this instead of model 3/4?
+![shared queue middleware](sharedqueue.png "shared queue middleware")
+
+### Model 4 - distributed DB with replication
+
+Requests via a shared queue to worker applications going to a distributed database with three nodes, Athletics, Cycling and Diving, where each partition is replicated on another node.
+
+![distributed DB with replication](sharedqueue_withrep.png "distributed DB with replication")
+
+## Suggestions for future work using the models:
+
+### Priority queues
+
+As 'shared queue middleware' but more than queue, e.g. by priority.
+
+### Database distributions
+
+Modelling different database distribution and replication strategies.
+
+### Smaller microservices
+
+For example, breaking down the `Book` operation further by sport.
 
 * Book Athletics
 * Book Cycling
