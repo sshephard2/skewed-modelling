@@ -7,6 +7,7 @@ import org.springframework.data.cassandra.core.CassandraOperations;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 public class TicketController {
@@ -16,6 +17,7 @@ public class TicketController {
 
     private final AtomicInteger counter = new AtomicInteger();
 
+    @CrossOrigin(origins = "http://localhost:9000")
     @RequestMapping("/book")
     public Ticket book(@RequestParam(value="name", defaultValue="") String owner) {
     	int id = counter.incrementAndGet();

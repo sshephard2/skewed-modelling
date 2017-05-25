@@ -1,0 +1,16 @@
+<!doctype html>
+<html ng-app="demo">
+	<head>
+		<title>Ticket Booking</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    	<script src="ticket.js"></script>
+	</head>
+
+	<body>
+		<div ng-controller="Ticket">
+			<p>The ID is {{booking.id}}</p>
+			<p>The owner is {{booking.owner}}</p>
+			<p>The seat is {{booking.seat}}</p>
+		</div>
+	</body>
+</html>
