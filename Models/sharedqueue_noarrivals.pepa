@@ -10,13 +10,12 @@
 a = 10.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 
-db_1 = 2.0; /* Maximum throughput of DB node 1 */
-db_2 = 2.0; /* Maximum throughput of DB node 2 */
+db = 100.0; /* Maximum throughput of DB nodes */
 
 Website = (book_athletics, a).Website + (book_cycling, c).Website; /* Web front-end process */
 
-DBnode_1 = (book_athletics_db, db_1).DBnode_1; /* DB node 1 service process */
-DBnode_2 = (book_cycling_db, db_2).DBnode_2; /* DB node 2 service process */
+DBnode_1 = (book_athletics_db, db).DBnode_1; /* DB node 1 service process */
+DBnode_2 = (book_cycling_db, db).DBnode_2; /* DB node 2 service process */
 
 Q_empty = (book_athletics, T).Q_athletics + (book_cycling, T).Q_cycling;
 Q_athletics = (book_athletics_db, T).Q_empty;
