@@ -7,15 +7,20 @@
  *
  */
 
-a = 10.0; /* Rate of booking Athletics tickets */
+a = 20.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 
-db = 100.0; /* Maximum throughput of DB nodes */
+q = 100.0; /* Maximum queue service throughput */
+db = 10.0; /* Maximum throughput of DB nodes */
 
 Website = (book_athletics, a).Website + (book_cycling, c).Website; /* Web front-end process */
+Service = (srv_db_1, T).Service + (srv_db_2, T).Service;
 
-DBnode_1 = (book_athletics_db, db).DBnode_1; /* DB node 1 service process */
-DBnode_2 = (book_cycling_db, db).DBnode_2; /* DB node 2 service process */
+DBnode_1 = (book_athletics_db, q).DBnode_1_srv; /* DB node 1 arrival process */
+DBnode_2 = (book_cycling_db, q).DBnode_2_srv; /* DB node 2 arrival process */
+
+DBnode_1_srv = (srv_db_1, db).DBnode_1; /* DB node 1 service process */
+DBnode_2_srv = (srv_db_2, db).DBnode_2; /* DB node 2 service process */
 
 Q_empty = (book_athletics, T).Q_athletics + (book_cycling, T).Q_cycling;
 Q_athletics = (book_athletics_db, T).Q_empty;
@@ -24,3 +29,4 @@ Q_cycling = (book_cycling_db, T).Q_empty;
 Website <book_athletics, book_cycling> Q_empty[10]
   <book_athletics_db> DBnode_1
   <book_cycling_db> DBnode_2
+  <srv_db_1, srv_db_2> Service
