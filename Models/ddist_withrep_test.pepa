@@ -9,26 +9,24 @@
  *
  */
 
-a = 10.0; /* Rate of booking Athletics tickets */
+a = 2.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 d = 1.0; /* Rate of booking Diving tickets */
 
-db_1 = 5.0; /* Maximum throughput of DB node 1 */
-db_2 = 5.0; /* Maximum throughput of DB node 2 */
-db_3 = 5.0; /* Maximum throughput of DB node 3 */
+db = 100.0; /* Maximum throughput of DB node */
 
 Website = (book_athletics, a).Website + (book_cycling, c).Website  + (book_diving, d).Website; /* Web front-end process */
-Service = (book_athletics_db, T).Service + (book_cycling_db, T).Service + (book_diving_db, T).Service;
+Service = (srv_db_1, T).Service + (srv_db_2, T).Service + (srv_db_3, T).Service;
 
 DBnode_1 = (book_athletics, a).DBnode_1_srv + (book_cycling, c).DBnode_1_srv; /* DB node 1 arrival process */
 DBnode_2 = (book_cycling, c).DBnode_2_srv + (book_diving, d).DBnode_2_srv; /* DB node 2 arrival process */
-DBnode_3 = (book_diving, d).DBnode_3_srv + (book_athletics, a).DBnode_3_srv; /* DB node 2 arrival process */
+DBnode_3 = (book_diving, d).DBnode_3_srv + (book_athletics, a).DBnode_3_srv; /* DB node 3 arrival process */
 
-DBnode_1_srv = (book_athletics_db, db_1).DBnode_1 + (book_cycling_db, db_1).DBnode_1; /* DB node 1 service process */
-DBnode_2_srv = (book_cycling_db, db_2).DBnode_2 + (book_diving_db, db_2).DBnode_2; /* DB node 2 service process */
-DBnode_3_srv = (book_diving_db, db_3).DBnode_3 + (book_athletics_db, db_3).DBnode_3; /* DB node 2 service process */
+DBnode_1_srv = (srv_db_1, db).DBnode_1; /* DB node 1 service process */
+DBnode_2_srv = (srv_db_2, db).DBnode_2; /* DB node 2 service process */
+DBnode_3_srv = (srv_db_3, db).DBnode_3; /* DB node 3 service process */
 
 Website <book_athletics, book_cycling> DBnode_1
   <book_cycling, book_diving> DBnode_2
   <book_diving, book_athletics> DBnode_3
-  <book_athletics_db, book_cycling_db, book_diving_db> Service
+  <srv_db_1, srv_db_2, srv_db_3> Service
