@@ -9,7 +9,15 @@ Platform decisions:
 
 ## Plan outline
 
-Build PEPA models for microservices and shared queue architectures for a multi-tier OLTP application, using the example of Olympic ticketing.
+Build PEPA models for components of the architectures.
+
+* Separate DBs behind the same Website
+* Distributed DB
+* Distributed DB with replication
+* Shared middleware queue
+* Event stream
+
+Compose the PEPA component models into system models for microservices and shared queue architectures for a multi-tier OLTP application, using the example of Olympic ticketing.
 
 Build the applications for those architectures and instrument them to measure throughput.
 Test the models against the real applications under different scenarios of skewed demand.
