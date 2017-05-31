@@ -5,18 +5,22 @@
  *
  */
 
-a1 = 10.0; /* Arrival rate 1 */
-s1 = 5.0; /* Service rate 1 */
-a2 = 1.0; /* Arrival rate 2 */
-s2 = 5.0; /* Service rate 2 */
+a_1 = 10.0; /* Arrival rate 1 */
+s_1 = 5.0; /* Service rate 1 */
+a_2 = 1.0; /* Arrival rate 2 */
+s_2 = 5.0; /* Service rate 2 */
 
-Arrival1 = (arrive1, a1).Arrival1; /* Arrival process 1 */
-Service1 = (serve1, T).Service1; /* Service process 1 */
+Arrival_1 = (arrive_1, a_1).Arrival_1; /* Arrival process 1 */
+Service_1 = (serve_1, s_1).Service_1; /* Service process 1 */
 
-Arrival2 = (arrive2, a2).Arrival2; /* Arrival process 2 */
-Service2 = (serve2, T).Service2; /* Service process 2 */
+Arrival_2 = (arrive_2, a_2).Arrival_2; /* Arrival process 2 */
+Service_2 = (serve_2, s_2).Service_2; /* Service process 2 */
 
-Qempty = (arrive1, T).Q1 + (arrive2, T).Q1;
-Q1 = (serve1, s1).Qempty + (serve2, s2).Qempty;
+/* Shared queue */
+Q_0 = (arrive_1, T).Q_1 + (arrive_2, T).Q_1;
+Q_1 = (serve_1, T).Q_0 + (serve_2, T).Q_0;
 
-((Arrival1 <arrive1> Qempty[2] <serve1> Service1) <arrive2> Arrival2) <serve2> Service2
+Arrival_1 <arrive_1> Q_0[50]
+  <serve_1> Service_1
+  <arrive_2> Arrival_2
+  <serve_2> Service_2
