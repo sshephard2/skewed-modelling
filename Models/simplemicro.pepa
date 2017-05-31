@@ -12,29 +12,29 @@ w = 1000.0; /* Rate of consuming from worker applications */
 db = 100.0; /* Rate of servicing DB requests */
 
 /* Web front-end process */
-Website = (book_athletics, a).Website + (book_cycling, c).Website;
+Website = (book_a, a).Website + (book_c, c).Website;
 
 /* Worker processes */
-Athletics_Worker = (book_athletics, T).Athletics_Worker_srv;
-Athletics_Worker_srv = (book_athletics_db, T).Athletics_Worker;
+Worker_A = (book_a, T).WorkerSrv_A;
+WorkerSrv_A = (worker_a, T).Worker_A;
 
-Cycling_Worker = (book_cycling, T).Cycling_Worker_srv;
-Cycling_Worker_srv = (book_cycling_db, T).Cycling_Worker;
+Worker_C = (book_c, T).WorkerSrv_C;
+WorkerSrv_C = (worker_c, T).Worker_C;
 
 /* DB  processes */
-DB_1 = (book_athletics_db, w).DB_1_srv;
-DB_1_srv = (srv_db_1, db).DB_1;
+DB_1 = (worker_a, w).DBsrv_1;
+DBsrv_1 = (dbsrv_1, db).DB_1;
 
-DB_2 = (book_cycling_db, w).DB_2_srv;
-DB_2_srv = (srv_db_2, db).DB_2;
+DB_2 = (worker_c, w).DBsrv_2;
+DBsrv_2 = (dbsrv_2, db).DB_2;
 
 /* Service processes for DBs */
-Service1 = (srv_db_1, db).Service1;
-Service2 = (srv_db_2, db).Service2;
+Service_1 = (dbsrv_1, db).Service_1;
+Service_2 = (dbsrv_2, db).Service_2;
 
-Website <book_athletics> Athletics_Worker
-  <book_cycling> Cycling_Worker
-  <book_athletics_db> DB_1
-  <book_cycling_db> DB_2
-  <srv_db_1> Service1
-  <srv_db_2> Service2
+Website <book_a> Worker_A
+  <book_c> Worker_C
+  <worker_a> DB_1
+  <worker_c> DB_2
+  <dbsrv_1> Service_1
+  <dbsrv_2> Service_2
