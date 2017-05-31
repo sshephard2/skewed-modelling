@@ -3,26 +3,30 @@
  *
  * middleware architecture with distributed database
  * one DB node for Athletics tickets, one node for Cycling
+ * no separate modelling of queue arrival processes
  *
  */
 
-a = 10.0; /* Rate of booking Athletics tickets */
+a = 20.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 
-db_1 = 2.0; /* Maximum throughput of DB node 1 */
-db_2 = 2.0; /* Maximum throughput of DB node 2 */
+q = 100.0; /* Maximum queue service throughput */
+db = 10.0; /* Maximum throughput of DB nodes */
 
 Website = (book_athletics, a).Website + (book_cycling, c).Website; /* Web front-end process */
+Service = (srv_db_1, T).Service + (srv_db_2, T).Service;
 
-Athletics_arrival = (book_athletics, T).Athletics_arrival; /* Athletics arrival process */
-Cycling_arrival = (book_cycling, T).Cycling_arrival; /* Cycling arrival process */
+DBnode_1 = (book_athletics_db, q).DBnode_1_srv; /* DB node 1 arrival process */
+DBnode_2 = (book_cycling_db, q).DBnode_2_srv; /* DB node 2 arrival process */
 
-DBnode_1 = (book_athletics_db, db_1).DBnode_1; /* DB node 1 service process */
-DBnode_2 = (book_cycling_db, db_2).DBnode_2; /* DB node 2 service process */
+DBnode_1_srv = (srv_db_1, db).DBnode_1; /* DB node 1 service process */
+DBnode_2_srv = (srv_db_2, db).DBnode_2; /* DB node 2 service process */
 
 Q_empty = (book_athletics, T).Q_athletics + (book_cycling, T).Q_cycling;
 Q_athletics = (book_athletics_db, T).Q_empty;
 Q_cycling = (book_cycling_db, T).Q_empty;
 
-Website <book_athletics, book_cycling>
-(((Athletics_arrival <book_athletics> Q_empty[10] <book_athletics_db> DBnode_1) <book_cycling> Cycling_arrival) <book_cycling_db> DBnode_2)
+Website <book_athletics, book_cycling> Q_empty[10]
+  <book_athletics_db> DBnode_1
+  <book_cycling_db> DBnode_2
+  <srv_db_1, srv_db_2> Service
