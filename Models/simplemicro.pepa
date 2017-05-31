@@ -5,19 +5,36 @@
  *
  */
 
-a = 10.0; /* Rate of booking Athletics tickets */
+a = 100.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 
-db_a = 2.0; /* Maximum throughput of Athletics DB */
-db_c = 2.0; /* Maximum throughput of Cycling DB */
+w = 1000.0; /* Rate of consuming from worker applications */
+db = 100.0; /* Rate of servicing DB requests */
 
-Website = (book_athletics, a).Website + (book_cycling, c).Website; /* Web front-end process */
+/* Web front-end process */
+Website = (book_athletics, a).Website + (book_cycling, c).Website;
 
-Athletics_Worker = (book_athletics, T).Athletics_Worker; /* Athletics ticket booking worker process */
-Athletics_DB = (book_athletics, db_a).Athletics_DB; /* Athletics ticket booking DB */
+/* Worker processes */
+Athletics_Worker = (book_athletics, T).Athletics_Worker_srv;
+Athletics_Worker_srv = (book_athletics_db, T).Athletics_Worker;
 
-Cycling_Worker = (book_cycling, T).Cycling_Worker; /* Cycling ticket booking worker process */
-Cycling_DB = (book_cycling, db_c).Cycling_DB; /* Cycling ticket booking DB */
+Cycling_Worker = (book_cycling, T).Cycling_Worker_srv;
+Cycling_Worker_srv = (book_cycling_db, T).Cycling_Worker;
 
-/* System Equation */
-((Athletics_Worker <book_athletics> Website <book_cycling> Cycling_Worker) <book_athletics> Athletics_DB) <book_cycling> Cycling_DB
+/* DB  processes */
+DB_1 = (book_athletics_db, w).DB_1_srv;
+DB_1_srv = (srv_db_1, db).DB_1;
+
+DB_2 = (book_cycling_db, w).DB_2_srv;
+DB_2_srv = (srv_db_2, db).DB_2;
+
+/* Service processes for DBs */
+Service1 = (srv_db_1, db).Service1;
+Service2 = (srv_db_2, db).Service2;
+
+Website <book_athletics> Athletics_Worker
+  <book_cycling> Cycling_Worker
+  <book_athletics_db> DB_1
+  <book_cycling_db> DB_2
+  <srv_db_1> Service1
+  <srv_db_2> Service2

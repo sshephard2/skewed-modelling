@@ -11,17 +11,23 @@
 a = 2.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 
-db = 100.0; /* Maximum throughput of DB node */
+db = 100.0; /* Rate of servicing DB requests */
 
-Website = (book_athletics, a).Website + (book_cycling, c).Website; /* Web front-end process */
-Service = (srv_db_1, T).Service + (srv_db_2, T).Service;
+/* Web front-end process */
+Website = (book_athletics, a).Website + (book_cycling, c).Website;
 
-DBnode_1 = (book_athletics, a).DBnode_1_srv; /* DB node 1 arrival process */
-DBnode_2 = (book_cycling, c).DBnode_2_srv; /* DB node 2 arrival process */
+/* DB node processes */
+DBnode_1 = (book_athletics, T).DBnode_1_srv;
+DBnode_1_srv = (srv_db_1, T).DBnode_1;
 
-DBnode_1_srv = (srv_db_1, db).DBnode_1; /* DB node 1 service process */
-DBnode_2_srv = (srv_db_2, db).DBnode_2; /* DB node 2 service process */
+DBnode_2 = (book_cycling, T).DBnode_2_srv;
+DBnode_2_srv = (srv_db_2, T).DBnode_2;
+
+/* Service processes for DB nodes */
+Service1 = (srv_db_1, db).Service1;
+Service2 = (srv_db_2, db).Service2;
 
 Website <book_athletics> DBnode_1
   <book_cycling> DBnode_2
-  <srv_db_1, srv_db_2> Service
+  <srv_db_1> Service1
+  <srv_db_2> Service2
