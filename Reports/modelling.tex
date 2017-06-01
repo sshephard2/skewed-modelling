@@ -110,12 +110,12 @@ CloudSim simulations require Java development for creation and modification, whi
 	\begin{tikzpicture}
 	\begin{axis}[
 		title={Demo chart},
-		xlabel={Temperature [degrees C]},
-		ylabel={Solubility [g per 100 g water]},
-		xmin=0, xmax=100,
-		ymin=0, ymax=120,
-		xtick={0,20,40,60,80,100},
-		ytick={0,20,40,60,80,100,120},
+		xlabel={Rate a\textsubscript{1}},
+		ylabel={Throughput arrive\textsubscript{1}},
+		xmin=0, xmax=10,
+		ymin=0, ymax=10,
+		xtick={0, 2, 4, 6, 8, 10},
+		ytick={0, 2, 4, 6, 8, 10},
 		legend pos=north west,
 		ymajorgrids=true,
 		grid style=dashed,
@@ -125,11 +125,23 @@ CloudSim simulations require Java development for creation and modification, whi
 		color=blue,
 		mark=square,
 		]
-		coordinates {
-			(0,23.1)(10,27.5)(20,32)(30,37.8)(40,44.6)(60,61.8)(80,83.8)(100,114)
-		};
-		\legend{CuSO$_4\cdot$5H$_2$O}
+		table [x index={0}, y index={1}, col sep=comma]{data/N1_arrive_1.csv};
+		\legend{N = 1}
 	
+	\addplot[
+		color=red,
+		mark=x,
+		]
+		table [x index={0}, y index={1}, col sep=comma]{data/N2_arrive_1.csv};
+		\legend{N = 2}
+
+	\addplot[
+		color=green,
+		mark=diamond,
+		]
+		table [x index={0}, y index={1}, col sep=comma]{data/N5_arrive_1.csv};
+		\legend{N = 5}
+
 	\end{axis}
 	\end{tikzpicture}
 \end{figure}
