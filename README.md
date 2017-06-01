@@ -9,7 +9,7 @@ Platform decisions:
 
 ## Plan outline
 
-Build PEPA models for components of the architectures.
+Build [PEPA models](/Models/ "Models") for components of the architectures.
 
 * Separate DBs behind the same Website
 * Distributed DB
