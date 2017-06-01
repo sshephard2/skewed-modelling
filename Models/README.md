@@ -23,6 +23,10 @@ A queue shared between two pairs of Arrival/Service processes.
 
 Uses aggregation to specify the number of places in the queue i.e. `Qempty[N]`
 
+Experiments
+
+For N=1,2,5,10 and 20 places in the queue, use service rates s1 = s2 = 5.0, arrival rate a2 = 1.0, arrival rates a1 from 1.0-10.0
+
 Note that:
 * the higher the number N of places in the queue, the closer the actual throughputs get to their intended rates, so the arrival rates become less limited by the service rates (they become less tightly coupled)
 
