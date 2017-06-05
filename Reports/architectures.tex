@@ -13,7 +13,7 @@ For each architecture it will be assumed that the web application will be design
 %
 \subsection{Simple microservices}
 
-There are two separate databases, one for Cycling tickets, one for Cycling.  Athletics will have skewed demand.
+There are two separate databases, one for Athletics tickets, one for Cycling.  Athletics will have skewed demand.
 
 It's expected that this architecture will lead to isolation of the skewed demand and that the results of testing the model will not be surprising, but that this will provide a useful control for other architectures.
 
@@ -28,7 +28,7 @@ It's expected that this architecture will lead to isolation of the skewed demand
 %
 \subsection{Operational microservices}
 
-A more 'natural' microservices archtecture partitions the system by operation (Book, Search, Return) with a separate database for each.  The databases maintain eventual consistency via an event streaming application e.g. using Kafka.
+A more `natural' microservices architecture partitions the system by operation (Book, Search, Return) with a separate database for each.  The databases maintain eventual consistency via an event streaming application e.g. using Kafka.
 \begin{enumerate}
 \item Book is an event producer and consumer (produces when a ticket is booked, consumes returned tickets).
 \item Search is an event consumer (consumes the state of tickets that are booked and returned).
