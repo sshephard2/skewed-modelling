@@ -1,0 +1,9 @@
+# Untracked files for MSc project
+
+# LaTeX intermediate files
+
+*.aux
+*.bbl
+*.blg
+*.synctex.gz
+Reports/*.log
