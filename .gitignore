@@ -7,3 +7,8 @@
 *.blg
 *.synctex.gz
 Reports/*.log
+
+# Eclipse files
+
+# PEPA config files
+Models/*.config
