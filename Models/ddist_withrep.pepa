@@ -25,8 +25,8 @@ DBsrv_1 = (dbsrv_1, T).DB_1;
 DB_2 = (book_c, T).DBsrv_2 + (book_d, T).DBsrv_2;
 DBsrv_2 = (dbsrv_2, T).DB_2;
 
-DB_3 = (book_d, T).DB_3_srv + (book_a, T).DB_3_srv;
-DB_3_srv = (dbsrv_3, T).DB_3;
+DB_3 = (book_d, T).DBsrv_3 + (book_a, T).DBsrv_3;
+DBsrv_3 = (dbsrv_3, T).DB_3;
 
 /* Service processes for DB nodes */
 Service_1 = (dbsrv_1, db).Service_1;

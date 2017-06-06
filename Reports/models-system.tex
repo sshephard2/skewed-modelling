@@ -1,0 +1,42 @@
+%
+% ---- PEPA System Models
+%
+
+\section{PEPA System Models}
+
+%
+% ---- Simple microservices
+%
+\subsection{Simple microservices}
+
+\begin{figure}
+	\caption{Simple microservices PEPA model}
+	\centering
+% --begin
+\begin{displaymath}
+	\begin{array}{rcl}
+		\mathit{Website} & \rmdef & (\mathit{book\_athletics},\mathit{a}).\mathit{Website}+(\mathit{book\_cycling},\mathit{c}).\mathit{Website}\\
+		\mathit{Athletics_{Worker}} & \rmdef & (\mathit{book\_athletics},\top).\mathit{Athletics_{Worker}}\\
+		\mathit{Athletics_{DB}} & \rmdef & (\mathit{book\_athletics},\mathit{db\_a}).\mathit{Athletics_{DB}}\\
+		\mathit{Cycling_{Worker}} & \rmdef & (\mathit{book\_cycling},\top).\mathit{Cycling_{Worker}}\\
+		\mathit{Cycling_{DB}} & \rmdef & (\mathit{book\_cycling},\mathit{db\_c}).\mathit{Cycling_{DB}}\\
+		[0.0ex]		\multicolumn{3}{l}{\mathit{Athletics_{Worker}}\sync{book\_athletics}\mathit{Website}\sync{book\_cycling}\mathit{Cycling_{Worker}}\sync{book\_athletics}\mathit{Athletics_{DB}}\sync{book\_cycling}\mathit{Cycling_{DB}}}\\
+		[0.0ex]	\end{array}
+\end{displaymath}
+% --end
+\end{figure}
+
+\begin{figure}
+	\caption{Simple microservices PEPA model - without worker processes}
+	\centering
+% --begin
+\begin{displaymath}
+\begin{array}{rcl}
+		\mathit{Website} & \rmdef & (\mathit{book\_athletics},\mathit{a}).\mathit{Website}+(\mathit{book\_cycling},\mathit{c}).\mathit{Website}\\
+\mathit{Athletics} & \rmdef & (\mathit{book\_athletics},\mathit{db\_a}).\mathit{Athletics}\\
+\mathit{Cycling} & \rmdef & (\mathit{book\_cycling},\mathit{db\_c}).\mathit{Cycling}\\
+[0.0ex]		\multicolumn{3}{l}{\mathit{Athletics}\sync{book\_athletics}\mathit{Website}\sync{book\_cycling}\mathit{Cycling}}\\
+[0.0ex]	\end{array}
+\end{displaymath}
+% --end
+\end{figure}
