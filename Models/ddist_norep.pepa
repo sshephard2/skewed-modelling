@@ -8,8 +8,8 @@
  *
  */
 
-a = 2.0; /* Rate of booking Athletics tickets */
-c = 1.0; /* Rate of booking Cycling tickets */
+a = 210.0; /* Rate of booking Athletics tickets */
+c = 10.0; /* Rate of booking Cycling tickets */
 
 db = 100.0; /* Rate of servicing DB requests */
 
