@@ -9,9 +9,9 @@
  *
  */
 
-a = 100.0; /* Rate of booking Athletics tickets */
-c = 1.0; /* Rate of booking Cycling tickets */
-d = 1.0; /* Rate of booking Diving tickets */
+a = 20.0; /* Rate of booking Athletics tickets */
+c = 10.0; /* Rate of booking Cycling tickets */
+d = 10.0; /* Rate of booking Diving tickets */
 
 db = 100.0; /* Rate of servicing DB requests */
 
