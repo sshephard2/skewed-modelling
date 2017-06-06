@@ -46,21 +46,15 @@ The system may be implemented using different distributed architectures but all 
 Models will be built in PEPA (Performance Evaluation Process Algebra) \cite{RN1051} for the following Cloud technology components:
 
 \begin{itemize}
-\item Databases
-	\begin{itemize}
-	\item Separate databases
-	\item Distributed database nodes using horizontal partitioning \cite{RN68}
-	\item Distributed database nodes with Cassandra-style replication \cite{RN1050}
-	\end{itemize}
+\item Distributed database nodes using horizontal partitioning \cite{RN68}
+\item Distributed database nodes with Cassandra-style replication \cite{RN1050}
 \item Shared middleware queue \cite{RN65}
-\item Event streaming application for eventual consistency architectures \cite{RN1071}
 \end{itemize}
 
 The PEPA component models will be tested then composed into a set of different system architectures below, which will also be built on the Microsoft Azure platform.  Both the models and real systems will be tested under different scenarios of skewed demand.
 
 \begin{description}
 	\item[Simple microservices] Two separate databases, one for Athletics tickets, one for Cycling.
-	\item[Operational microservices] A more `natural' microservices architecture partitioning the system by operation (Book, Search, Return) with a separate database for each.  The databases maintain eventual consistency via an event streaming application e.g. using Kafka.
 	\item[Shared queue middleware] Requests via a shared queue to worker applications going to a distributed database with two nodes, Athletics and Cycling.
 	\item[Distributed database with replication] Requests via a shared queue to worker applications going to a distributed database with three nodes, Athletics, Cycling and Diving, where each partition is replicated on another node.
 \end{description}

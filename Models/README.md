@@ -40,7 +40,4 @@ Architecture model for a shared middleware queue with a distributed database wit
 
 ## To-do list
 
-Models for
-
-* Event streaming - model of a Kafka-like streaming component (the event streaming process may be modelled as a queue?)
-* Operational microservices - DBs by operation (Book, Search, Return) plus DB eventual consistency via event streaming
+Conduct experiments for the component and architectural models

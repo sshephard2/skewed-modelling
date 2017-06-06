@@ -11,11 +11,9 @@ Platform decisions:
 
 Build [PEPA models](/Models/ "Models") for components of the architectures.
 
-* Separate DBs behind the same Website
 * Distributed DB
 * Distributed DB with replication
 * Shared middleware queue
-* Event stream
 
 Compose the PEPA component models into system models for microservices and shared queue architectures for a multi-tier OLTP application, using the example of Olympic ticketing.
 
@@ -35,25 +33,13 @@ It's expected that this architecture will lead to isolation of the skewed demand
 
 ![simple microservices](simplemicro.png "simple microservices")
 
-### Model 2 - operational microservices
-
-A more 'natural' microservices architecture.  Seperate DBs by operation (Book, Search, Return) plus DB eventual consistency via event streaming e.g. using Kafka.
-
-`Book` is an event producer and consumer (produces when a ticket is booked, consumes returned tickets).
-
-`Search` is an event consumer (consumes the state of tickets that are booked and returned).
-
-`Return` is an event producer (produces returned tickets).
-
-![operational microservices](operationmicro.png "operational microservices")
-
-### Model 3 - shared queue middleware
+### Model 2 - shared queue middleware
 
 Requests via a shared queue to worker applications going to a distributed DB with two nodes, Athletics and Cycling.
 
 ![shared queue middleware](sharedqueue.png "shared queue middleware")
 
-### Model 4 - distributed DB with replication
+### Model 3 - distributed DB with replication
 
 Requests via a shared queue to worker applications going to a distributed database with three nodes, Athletics, Cycling and Diving, where each partition is replicated on another node.
 
@@ -68,6 +54,18 @@ As 'shared queue middleware' but more than queue, e.g. by priority.
 ### Database distributions
 
 Modelling different database distribution and replication strategies.
+
+### Operational microservices
+
+A more 'natural' microservices architecture.  Seperate DBs by operation (Book, Search, Return) plus DB eventual consistency via event streaming e.g. using Kafka.
+
+`Book` is an event producer and consumer (produces when a ticket is booked, consumes returned tickets).
+
+`Search` is an event consumer (consumes the state of tickets that are booked and returned).
+
+`Return` is an event producer (produces returned tickets).
+
+![operational microservices](operationmicro.png "operational microservices")
 
 ### Smaller microservices
 
