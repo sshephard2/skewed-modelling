@@ -1,7 +1,11 @@
 \documentclass{llncs}
-\usepackage{graphicx}
+\usepackage{graphicx,pgfplotstable}
 
 \begin{document}
+
+%
+% ---- Title page
+%
 	
 \title{Performance modelling and simulation of skewed demand in complex systems}
 \subtitle{Interim Report}
@@ -11,8 +15,13 @@
 \institute{School of Computing Science, Newcastle University, Newcastle upon Tyne, NE1 7RU\\
 	\email{s.shephard2@newcastle.ac.uk}}
 
-
 \maketitle
+
+\vspace*{\fill}
+\begin{center}
+\includegraphics[width=\textwidth]{img/ncllogo}
+\end{center}
+\newpage
 
 %
 % ---- Introduction
@@ -33,73 +42,85 @@ In a complex system we need to examine how these components interact.  What impa
 
 \section{Aims and Objectives}
 
-We will consider an example system based on the Olympic ticketing use case above.  Such a ticketing application may be generalised to any system for allocating and releasing other resources with variable demand.  Tickets will be for a multi-sport event, and each will consist of a ticket type (the sport), date, row, and seat number.
+The aim is to demonstrate that PEPA (Performance Evaluation Process Algebra) \cite{RN1051} may be used to construct models that are good predictors of the behaviour of real systems under skewed demand scenarios, and provide insights into the effectiveness of Cloud technologies for handling skewed demand.
 
-The system may be implemented using different distributed architectures but all will have the same features.  Users will access the system from a web-based front end.  Tickets will be stored in a database partitioned across several data stores.  In between the web servers and database will be worker applications to service user requests, connected to the web servers by some middleware.
+\subsection{Objectives}
+\begin{enumerate}
+	\item Show that distributed databases and middleware queues may be modelled in PEPA
+	\item Show that these PEPA component models may be used to test skewed demand 
+	\item Show that the component models may be composed into system models and their behaviour under test is different to the components alone
+	\item Build test system architectures for the PEPA models and show that the test system behaviour matches that predicted by the models
+	\item Identify areas of further work
+\end{enumerate}
+
+\section{Method}
+
+We will consider an example system based on the Olympic ticketing use case above, where tickets will be available for a number of sports.  Such an application may be generalised to any system for allocating and releasing other resources with variable demand.
+
+In all system architectures users will access the system from a web-based front end.  Tickets will be stored in a database partitioned across several data stores.  In between the web servers and database will be worker applications to service user requests, connected to the web servers by some middleware (see Figure \ref{figure:architecture}).
 
 \begin{figure}
 	\caption{Ticketing application distributed architecture}
+	\label{figure:architecture}
 	\centering
 	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/application}
 \end{figure}
 
-Models will be built in PEPA (Performance Evaluation Process Algebra) \cite{RN1051} for the following Cloud technology components:
-
-\begin{itemize}
-\item Distributed database nodes using horizontal partitioning \cite{RN68}
-\item Distributed database nodes with Cassandra-style replication \cite{RN1050}
-\item Shared middleware queue \cite{RN65}
-\end{itemize}
-
-The PEPA component models will be tested then composed into a set of different system architectures below, which will also be built on the Microsoft Azure platform.  Both the models and real systems will be tested under different scenarios of skewed demand.
-
-\begin{description}
-	\item[Simple microservices] Two separate databases, one for Athletics tickets, one for Cycling.
-	\item[Shared queue middleware] Requests via a shared queue to worker applications going to a distributed database with two nodes, Athletics and Cycling.
-	\item[Distributed database with replication] Requests via a shared queue to worker applications going to a distributed database with three nodes, Athletics, Cycling and Diving, where each partition is replicated on another node.
-\end{description}
-
-\paragraph{Objectives.}  The objectives are to determine whether or not PEPA models of the components examined, once composed into architectural models:
-\begin{itemize}
-	\item are good predictors of the behaviour of real systems under skewed demand scenarios
-	\item provide insights into the effectiveness of Cloud technologies for handling skewed demand.
-\end{itemize}
+The components modelled will be distributed database nodes using horizontal partitioning \cite{RN68}, distributed database nodes with Cassandra-style replication \cite{RN1050} and a shared middleware queue \cite{RN65}.  These will be tested then composed into three system architectures - \textit{simple microservices} (separate worker applications and databases for Athletics and Cycling tickets), \textit{distributed database via a shared queue}  and \textit{distributed database with replication via a shared queue}.  Finally these system architectures will be built on Microsoft Azure and compared with the models.
 
 %
 % ---- A brief description of the progress so far made (i.e. areas researched, analysis undertaken, software or model development undertaken). 
 %
 
-\section{Progress}
+\section{Progress to date}
 
-\begin{tabular}{ p{0.1\textwidth} p{0.85\textwidth} }
-	Done & Task \\
-	\hline
-	15/03 & Completed ``Investigating Cloud Technologies to Maximise Availability of Oversubscribed Resources'' for Research Skills module \\
-	25/04 & Agreed initial scope of ``Performance modelling and simulation of skewed demand in complex systems'' \\
-	05/05 & Documented first outline plan in GitHub \\
-	08/05 & Submitted Ethics form \\
-	31/05 & Produced PEPA models for all except Event Streaming component and Operational Microservices archiecture
-\end{tabular}
+I've completed the following tasks to date. See Table \ref{table:plan} for done dates and percentage completion against each of the tasks in the timed work plan.
+\begin{itemize}
+	\item Reviewed ``Investigating Cloud Technologies to Maximise Availability of Oversubscribed Resources'' for Research Skills module
+	\item Agreed initial scope of ``Performance modelling and simulation of skewed demand in complex systems'' and submitted Ethics form
+	\item Carried out further background learning and research into technology choices
+	\item Set up GitHub structure for Model, Code and Report development and produced outline and timed work plans
+	\item Produced and tested PEPA component models
+	\item Produced PEPA system models
+\end{itemize}
 
 %
 % ---- A timed work plan for completion of the project.
 %
 
-\section{Plan}
+\section{Timed work plan}
 
-\begin{tabular}{ p{0.1\textwidth} p{0.1\textwidth} p{0.75\textwidth} }
-	Start & Due & Task \\
-	\hline
-	05/06 & 16/06 & Produce interim report \\
-	.. & .. & .. \\
-	03/08 & 09/08 & Produce presentation \\
-	10/08 & 11/08 & Attend presentation \\
-	12/08 & 25/08 & Update and submit final version of dissertation \\
-\end{tabular}
+There is a detailed Microsoft Project Plan in the project git repository at \url{https://github.com/sshephard2/msc-project}.  Table \ref{table:plan} shows a high-level summary.
+
+\subsection{Risks}
+\begin{enumerate}
+	\item Development may take longer than expected due to lack of experience in Java Spring or AngularJS.  In mitigation, I have already developed a simple Angular to Cassandra Java Spring application during the Learning phase.
+	\item The models may not after all be good matches to the behaviour of real systems.  There is contingency time in the plan, but this may also be an interesting result for discussion.
+\end{enumerate}
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Planned tasks (subtasks in italics)}
+		\label{table:plan}
+		\pgfplotstabletypeset[
+		col sep=comma,
+		string type,
+		columns/Task/.style={column name=Task, column type={p{.45\textwidth}}},
+		columns/Start/.style={column name=Start, column type={p{.2\textwidth}}},
+		columns/End/.style={column name=End, column type={p{.2\textwidth}}},
+		columns/Complete/.style={column name=Complete, column type={p{.1\textwidth}}},
+		every head row/.style={before row=\hline,after row=\hline},
+		every last row/.style={after row=\hline},
+		]{data/plan.csv}
+	\end{center}
+\end{table}
+
 
 %
 % ---- Bibliography ----
 %
+
+\newpage
 
 \bibliographystyle{splncs03}
 \bibliography{references}
