@@ -17,10 +17,11 @@ Arrival_2 = (arrive_2, a_2).Arrival_2; /* Arrival process 2 */
 Service_2 = (serve_2, s_2).Service_2; /* Service process 2 */
 
 /* Shared queue */
-Q_0 = (arrive_1, T).Q_1 + (arrive_2, T).Q_1;
-Q_1 = (serve_1, T).Q_0 + (serve_2, T).Q_0;
+Q_0 = (arrive_1, T).Q_1 + (arrive_2, T).Q_2;
+Q_1 = (serve_1, T).Q_0;
+Q_2 = (serve_2, T).Q_0;
 
-Arrival_1 <arrive_1> Q_0[50]
+Arrival_1 <arrive_1> Q_0[20]
   <serve_1> Service_1
   <arrive_2> Arrival_2
   <serve_2> Service_2
