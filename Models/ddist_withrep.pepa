@@ -33,9 +33,5 @@ Service_1 = (dbsrv_1, db).Service_1;
 Service_2 = (dbsrv_2, db).Service_2;
 Service_3 = (dbsrv_3, db).Service_3;
 
-Website <book_a, book_c> DB_1
-  <book_c, book_d> DB_2
-  <book_d, book_a> DB_3
-  <dbsrv_1> Service_1
-  <dbsrv_2> Service_2
-  <dbsrv_3> Service_3
+Website <book_a, book_c, book_d> (DB_1 || DB_2 || DB_3)
+	<dbsrv_1, dbsrv_2, dbsrv_3> (Service_1 || Service_2 || Service_3)

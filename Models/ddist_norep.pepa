@@ -8,7 +8,7 @@
  *
  */
 
-a = 210.0; /* Rate of booking Athletics tickets */
+a = 20.0; /* Rate of booking Athletics tickets */
 c = 10.0; /* Rate of booking Cycling tickets */
 
 db = 100.0; /* Rate of servicing DB requests */
@@ -27,7 +27,5 @@ DBsrv_2 = (dbsrv_2, T).DB_2;
 Service_1 = (dbsrv_1, db).Service_1;
 Service_2 = (dbsrv_2, db).Service_2;
 
-Website <book_a> DB_1
-  <book_c> DB_2
-  <dbsrv_1> Service_1
-  <dbsrv_2> Service_2
+Website <book_a, book_c> (DB_1 || DB_2)
+	<dbsrv_1, dbsrv_2> (Service_1 || Service_2)
