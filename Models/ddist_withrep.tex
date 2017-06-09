@@ -2,10 +2,10 @@
 % --begin
 \begin{displaymath}
 	\begin{array}{rcl}
-		\mathit{a} & = & 20.0\\
-		\mathit{c} & = & 10.0\\
-		\mathit{d} & = & 10.0\\
-		\mathit{db} & = & 100.0\\
+		\mathit{a} & = & 1.0\\
+		\mathit{c} & = & 1.0\\
+		\mathit{d} & = & 1.0\\
+		\mathit{db} & = & 5.0\\
 [0.0ex]		\mathit{Website} & \rmdef & (\mathit{book_a},\mathit{a}).\mathit{Website}+(\mathit{book_c},\mathit{c}).\mathit{Website}+(\mathit{book_d},\mathit{d}).\mathit{Website}\\
 		\mathit{DB_1} & \rmdef & (\mathit{book_a},\top).\mathit{DBsrv_1}+(\mathit{book_c},\top).\mathit{DBsrv_1}\\
 		\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv_1},\top).\mathit{DB_1}\\
@@ -16,7 +16,7 @@
 		\mathit{Service_1} & \rmdef & (\mathit{dbsrv_1},\mathit{db}).\mathit{Service_1}\\
 		\mathit{Service_2} & \rmdef & (\mathit{dbsrv_2},\mathit{db}).\mathit{Service_2}\\
 		\mathit{Service_3} & \rmdef & (\mathit{dbsrv_3},\mathit{db}).\mathit{Service_3}\\
-[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{book_a,book_c}\mathit{DB_1}\sync{book_c,book_d}\mathit{DB_2}\sync{book_d,book_a}\mathit{DB_3}\sync{dbsrv_1}\mathit{Service_1}\sync{dbsrv_2}\mathit{Service_2}\sync{dbsrv_3}\mathit{Service_3}}\\
+[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{book_a,book_c,book_d}\mathit{DB_1}\parallel\mathit{DB_2}\parallel\mathit{DB_3}\sync{dbsrv_1,dbsrv_2,dbsrv_3}\mathit{Service_1}\parallel\mathit{Service_2}\parallel\mathit{Service_3}}\\
 [0.0ex]	\end{array}
 \end{displaymath}
 % --end
