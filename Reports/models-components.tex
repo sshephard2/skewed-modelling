@@ -61,7 +61,7 @@ See the experimental results in Table \ref{table:dd_results}.
 		title={Throughput against input rate a},
 		xlabel={Rate a},
 		ylabel={Throughput},
-		xmin=10, xmax=210,
+		xmin=0, xmax=210,
 		ymin=0, ymax=100,
 		legend pos=north west,
 		ymajorgrids=true,
@@ -86,7 +86,7 @@ See the experimental results in Table \ref{table:dd_results}.
 		title={Throughput against input rate a},
 		xlabel={Rate a},
 		ylabel={Throughput},
-		xmin=10, xmax=210,
+		xmin=0, xmax=210,
 		ymin=0, ymax=100,
 		legend pos=north west,
 		ymajorgrids=true,
@@ -168,7 +168,7 @@ See the experimental results in Table \ref{table:ddwr_results}.
 		title={Throughput against input rate a},
 		xlabel={Rate a},
 		ylabel={Throughput},
-		xmin=10, xmax=210,
+		xmin=0, xmax=210,
 		ymin=0, ymax=100,
 		legend pos=north west,
 		ymajorgrids=true,
@@ -194,7 +194,7 @@ See the experimental results in Table \ref{table:ddwr_results}.
 		title={Throughput against input rate a},
 		xlabel={Rate a},
 		ylabel={Throughput},
-		xmin=10, xmax=210,
+		xmin=0, xmax=210,
 		ymin=0, ymax=100,
 		legend pos=north west,
 		ymajorgrids=true,
@@ -229,14 +229,19 @@ See the experimental results in Table \ref{table:ddwr_results}.
 	% --begin
 	\begin{displaymath}
 		\begin{array}{rcl}
-			\mathit{Arrival_1} & \rmdef & (\mathit{arrive_1},\mathit{a_1}).\mathit{Arrival_1}\\
+			\mathit{a_1} & = & 1.0-10.0\\
+			\mathit{s_1} & = & 5.0\\
+			\mathit{a_2} & = & 1.0\\
+			\mathit{s_2} & = & 5.0\\
+			[0.0ex]		\mathit{Arrival_1} & \rmdef & (\mathit{arrive_1},\mathit{a_1}).\mathit{Arrival_1}\\
 			\mathit{Service_1} & \rmdef & (\mathit{serve_1},\mathit{s_1}).\mathit{Service_1}\\
 			\mathit{Arrival_2} & \rmdef & (\mathit{arrive_2},\mathit{a_2}).\mathit{Arrival_2}\\
 			\mathit{Service_2} & \rmdef & (\mathit{serve_2},\mathit{s_2}).\mathit{Service_2}\\
-			\mathit{Q_0} & \rmdef & (\mathit{arrive_1},\top).\mathit{Q_1}+(\mathit{arrive_2},\top).\mathit{Q_1}\\
-			\mathit{Q_1} & \rmdef & (\mathit{serve_1},\top).\mathit{Q_0}+(\mathit{serve_2},\top).\mathit{Q_0}\\
-	[0.0ex]		\multicolumn{3}{l}{\mathit{Arrival_1}\sync{arrive_1}\mathit{Q_0}[N]\sync{serve_1}\mathit{Service_1}\sync{arrive_2}\mathit{Arrival_2}\sync{serve_2}\mathit{Service_2}}\\
-	[0.0ex]	\end{array}
+			\mathit{Q_0} & \rmdef & (\mathit{arrive_1},\top).\mathit{Q_1}+(\mathit{arrive_2},\top).\mathit{Q_2}\\
+			\mathit{Q_1} & \rmdef & (\mathit{serve_1},\top).\mathit{Q_0}\\
+			\mathit{Q_2} & \rmdef & (\mathit{serve_2},\top).\mathit{Q_0}\\
+			[0.0ex]		\multicolumn{3}{l}{\mathit{Arrival_1}\sync{arrive_1}\mathit{Q_0}[N]\sync{serve_1}\mathit{Service_1}\sync{arrive_2}\mathit{Arrival_2}\sync{serve_2}\mathit{Service_2}}\\
+			[0.0ex]	\end{array}
 	\end{displaymath}
 	% --end
 \end{figure}
@@ -250,8 +255,8 @@ See the experimental results in Table \ref{table:ddwr_results}.
 		title={Throughput of arrive\textsubscript{1} against input rate a\textsubscript{1} for different queue lengths N},
 		xlabel={Rate a\textsubscript{1}},
 		ylabel={Throughput arrive\textsubscript{1}},
-		xmin=1, xmax=10,
-		ymin=0, ymax=10,
+		xmin=0, xmax=10,
+		ymin=0, ymax=5,
 		legend pos=north west,
 		ymajorgrids=true,
 		grid style=dashed,
@@ -278,7 +283,7 @@ See the experimental results in Table \ref{table:ddwr_results}.
 	title={Throughput of serve\textsubscript{1} against input rate a\textsubscript{1} for different queue lengths N},
 	xlabel={Rate a\textsubscript{1}},
 	ylabel={Throughput serve\textsubscript{1}},
-	xmin=1, xmax=10,
+	xmin=0, xmax=10,
 	ymin=0, ymax=5,
 	legend pos=north west,
 	ymajorgrids=true,
@@ -306,8 +311,8 @@ See the experimental results in Table \ref{table:ddwr_results}.
 	title={Throughput of arrive\textsubscript{2} against input rate a\textsubscript{1} for different queue lengths N},
 	xlabel={Rate a\textsubscript{1}},
 	ylabel={Throughput arrive\textsubscript{2}},
-	xmin=1, xmax=10,
-	ymin=0.4, ymax=1,
+	xmin=0, xmax=10,
+	ymin=0, ymax=1,
 	legend pos=south west,
 	ymajorgrids=true,
 	grid style=dashed,
