@@ -8,10 +8,10 @@
  *
  */
 
-a = 20.0; /* Rate of booking Athletics tickets */
-c = 10.0; /* Rate of booking Cycling tickets */
+a = 1.0; /* Rate of booking Athletics tickets */
+c = 1.0; /* Rate of booking Cycling tickets */
 
-db = 100.0; /* Rate of servicing DB requests */
+db = 5.0; /* Rate of servicing DB requests */
 
 /* Web front-end process */
 Website = (book_a, a).Website + (book_c, c).Website;
