@@ -123,6 +123,28 @@ See the experimental results in Table \ref{table:micro_results}.
 	% --end
 \end{figure}
 
+See the experimental results in Table \ref{table:queuedd_results}.
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Shared queue and distributed database experimental results}
+		\label{table:queuedd_results}
+		\pgfplotstabletypeset[
+		col sep=comma,
+		string type,
+		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
+		columns/booka/.style={column name=book\textsubscript{a}, column type={p{.1\textwidth}}},
+		columns/bookc/.style={column name=book\textsubscript{c}, column type={p{.1\textwidth}}},
+		columns/qa/.style={column name=queue\textsubscript{a}, column type={p{.1\textwidth}}},
+		columns/qc/.style={column name=queue\textsubscript{c}, column type={p{.1\textwidth}}},
+		columns/dbsrv1/.style={column name=dbsrv\textsubscript{1}, column type={p{.1\textwidth}}},
+		columns/dbsrv2/.style={column name=dbsrv\textsubscript{2}, column type={p{.1\textwidth}}},
+		every head row/.style={before row=\hline Rate & \multicolumn{4}{c}{Throughput} \\,after row=\hline},
+		every last row/.style={after row=\hline},
+		]{data/qddnr/results.csv}
+	\end{center}
+\end{table}
+
 %
 % ---- Shared queue and distributed database with replication
 %
@@ -160,3 +182,28 @@ See the experimental results in Table \ref{table:micro_results}.
 	\end{displaymath}
 	% --end
 \end{figure}
+
+See the experimental results in Table \ref{table:queueddwr_results}.
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Shared queue and distributed database with replication experimental results}
+		\label{table:queueddwr_results}
+		\pgfplotstabletypeset[
+		col sep=comma,
+		string type,
+		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
+		columns/booka/.style={column name=book\textsubscript{a}, column type={p{.1\textwidth}}},
+		columns/bookc/.style={column name=book\textsubscript{c}, column type={p{.1\textwidth}}},
+		columns/bookd/.style={column name=book\textsubscript{d}, column type={p{.1\textwidth}}},
+		columns/qa/.style={column name=queue\textsubscript{a}, column type={p{.1\textwidth}}},
+		columns/qc/.style={column name=queue\textsubscript{c}, column type={p{.1\textwidth}}},
+		columns/qd/.style={column name=queue\textsubscript{d}, column type={p{.1\textwidth}}},
+		columns/dbsrv1/.style={column name=dbsrv\textsubscript{1}, column type={p{.1\textwidth}}},
+		columns/dbsrv2/.style={column name=dbsrv\textsubscript{2}, column type={p{.1\textwidth}}},
+		columns/dbsrv3/.style={column name=dbsrv\textsubscript{3}, column type={p{.1\textwidth}}},
+		every head row/.style={before row=\hline Rate & \multicolumn{4}{c}{Throughput} \\,after row=\hline},
+		every last row/.style={after row=\hline},
+		]{data/qddwr/results.csv}
+	\end{center}
+\end{table}
