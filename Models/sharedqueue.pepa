@@ -6,11 +6,11 @@
  *
  */
 
-a = 10.0; /* Rate of booking Athletics tickets */
+a = 1.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 
-q = 1000.0; /* Rate of consuming from queue */
-db = 100.0; /* Rate of servicing DB requests */
+q = 100.0; /* Rate of consuming from queue */
+db = 5.0; /* Rate of servicing DB requests */
 
 /* Web front-end process */
 Website = (book_a, a).Website + (book_c, c).Website;
@@ -32,7 +32,5 @@ Service_1 = (dbsrv_1, db).Service_1;
 Service_2 = (dbsrv_2, db).Service_2;
 
 Website <book_a, book_c> Q_0[10]
-  <queue_a> DB_1
-  <queue_c> DB_2
-  <dbsrv_1> Service_1
-  <dbsrv_2> Service_2
+	<queue_a, queue_c> (DB_1 || DB_2)
+	<dbsrv_1, dbsrv_2> (Service_1 || Service_2)
