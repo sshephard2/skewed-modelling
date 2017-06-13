@@ -172,23 +172,21 @@ See the experimental results in Table \ref{table:ddwr_results}.
 	\begin{tikzpicture}
 	\begin{axis}[
 		title={Throughput against input rate a},
+		width=0.9\textwidth,
+		ybar=0pt,
+		bar width=.02\textwidth,
 		xlabel={Rate a},
 		ylabel={Throughput},
-		xmin=0, xmax=10,
+		xtick=data,
 		ymin=0, ymax=6,
 		legend pos=north west,
 		ymajorgrids=true,
 		grid style=dashed,
-		cycle multiindex* list={
-			mark list*
-				\nextlist
-			cyan,brown,green,blue,red
-		}
 	]
 	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_a.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_c.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_d.csv};
+	\addplot [pattern=north east lines, pattern color=blue] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_a.csv};
+	\addplot [fill=green] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_c.csv};
+	\addplot [pattern=crosshatch, pattern color=brown] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_d.csv};
 
 	\legend{a,c,d}
 
@@ -198,23 +196,21 @@ See the experimental results in Table \ref{table:ddwr_results}.
 	\begin{tikzpicture}
 	\begin{axis}[
 		title={Throughput against input rate a},
+		width=0.9\textwidth,
+		ybar=0pt,
+		bar width=.02\textwidth,
 		xlabel={Rate a},
 		ylabel={Throughput},
-		xmin=0, xmax=10,
+		xtick=data,
 		ymin=0, ymax=6,
 		legend pos=north west,
 		ymajorgrids=true,
 		grid style=dashed,
-		cycle multiindex* list={
-			mark list*
-				\nextlist
-			cyan,brown,green,blue,red
-		}
 	]
 	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddwr/dbsrv_1.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddwr/dbsrv_2.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddwr/dbsrv_3.csv};
+	\addplot [pattern=north east lines, pattern color=blue] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/dbsrv_1.csv};
+	\addplot [fill=green] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/dbsrv_2.csv};
+	\addplot [pattern=crosshatch, pattern color=brown] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/dbsrv_3.csv};
 
 	\legend{dbsrv\textsubscript{1},dbsrv\textsubscript{2},dbsrv\textsubscript{3}}
 
