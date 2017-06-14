@@ -139,7 +139,7 @@ See the experimental results in Table \ref{table:queuedd_results}.
 		columns/qc/.style={column name=queue\textsubscript{c}, column type={p{.1\textwidth}}},
 		columns/dbsrv1/.style={column name=dbsrv\textsubscript{1}, column type={p{.1\textwidth}}},
 		columns/dbsrv2/.style={column name=dbsrv\textsubscript{2}, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline Rate & \multicolumn{4}{c}{Throughput} \\,after row=\hline},
+		every head row/.style={before row=\hline Rate & \multicolumn{6}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/qddnr/results.csv}
 	\end{center}
@@ -177,7 +177,8 @@ See the experimental results in Table \ref{table:queuedd_results}.
 	\mathit{Service_1} & \rmdef & (\mathit{dbsrv_1},\mathit{db}).\mathit{Service_1}\\
 	\mathit{Service_2} & \rmdef & (\mathit{dbsrv_2},\mathit{db}).\mathit{Service_2}\\
 	\mathit{Service_3} & \rmdef & (\mathit{dbsrv_3},\mathit{db}).\mathit{Service_3}\\
-	[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{book_a,book_c,book_d}\mathit{Q_0}[10.0]\sync{queue_a,queue_c,queue_d}\mathit{DB_1}\parallel\mathit{DB_2}\parallel\mathit{DB_3}\sync{dbsrv_1,dbsrv_2,dbsrv_3}\mathit{Service_1}\parallel\mathit{Service_2}\parallel\mathit{Service_3}}\\
+	[0.0ex]		\multicolumn{3}{c}{\mathit{Website}\sync{book_a,book_c,book_d}\mathit{Q_0}[10.0]\sync{queue_a,queue_c,queue_d}\mathit{DB_1}\parallel\mathit{DB_2}\parallel\mathit{DB_3}\sync{dbsrv_1,dbsrv_2,dbsrv_3}}\\
+	\multicolumn{3}{c}{\mathit{Service_1}\parallel\mathit{Service_2}\parallel\mathit{Service_3}}\\
 	[0.0ex]	\end{array}
 	\end{displaymath}
 	% --end
@@ -202,8 +203,96 @@ See the experimental results in Table \ref{table:queueddwr_results}.
 		columns/dbsrv1/.style={column name=dbsrv\textsubscript{1}, column type={p{.1\textwidth}}},
 		columns/dbsrv2/.style={column name=dbsrv\textsubscript{2}, column type={p{.1\textwidth}}},
 		columns/dbsrv3/.style={column name=dbsrv\textsubscript{3}, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline Rate & \multicolumn{4}{c}{Throughput} \\,after row=\hline},
+		every head row/.style={before row=\hline Rate & \multicolumn{9}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/qddwr/results.csv}
 	\end{center}
 \end{table}
+
+%
+% ---- System comparison
+%
+\subsection{Comparison}
+
+The system results are compared in Table \ref{table:comparison_results}.
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Comparison of system results}
+		\label{table:comparison_results}
+		\pgfplotstabletypeset[
+		col sep=comma,
+		string type,
+		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
+		columns/amicro/.style={column name=athletics, column type={p{.15\textwidth}}},
+		columns/cmicro/.style={column name=cycling, column type={p{.15\textwidth}}},
+		columns/aqddnr/.style={column name=athletics, column type={p{.15\textwidth}}},
+		columns/cqddnr/.style={column name=cycling, column type={p{.15\textwidth}}},
+		columns/aqddwr/.style={column name=athletics, column type={p{.15\textwidth}}},
+		columns/cqddwr/.style={column name=cycling, column type={p{.15\textwidth}}},
+		every head row/.style={before row=\hline Rate & \multicolumn{2}{l}{Microservices} & \multicolumn{2}{l}{Queue + Distributed DB} & \multicolumn{2}{l}{Queue + DB with Replication} \\,after row=\hline},
+		every last row/.style={after row=\hline},
+		]{data/compare.csv}
+	\end{center}
+\end{table}
+
+\begin{figure}
+	\caption{Simple microservices experimental results}
+	\label{figure:comparison_charts}
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Throughput of athletics against input rate a},
+	width=0.9\textwidth,
+	xlabel={Rate a},
+	ylabel={Throughput},
+	xmin=0, xmax=10,
+	ymin=0, ymax=10,
+	legend pos=north west,
+	legend cell align={left},
+	ymajorgrids=true,
+	grid style=dashed,
+	cycle multiindex* list={
+		mark list*
+		\nextlist
+		cyan,brown,green,blue,red
+	}
+	]
+	
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/book_a.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/book_a.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/book_a.csv};
+	
+	\legend{Simple Microservices,Queue + Distributed DB,Queue + Distributed DB with Replication}
+	
+	\end{axis}
+	\end{tikzpicture}
+	
+		\begin{tikzpicture}
+	\begin{axis}[
+	title={Throughput of cycling against input rate a},
+	width=0.9\textwidth,
+	xlabel={Rate a},
+	ylabel={Throughput},
+	xmin=0, xmax=10,
+	ymin=0, ymax=1.2,
+	legend pos=south west,
+	legend cell align={left},
+	ymajorgrids=true,
+	grid style=dashed,
+	cycle multiindex* list={
+		mark list*
+		\nextlist
+		cyan,brown,green,blue,red
+	}
+	]
+	
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/book_c.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/book_c.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/book_c.csv};
+	
+	\legend{Simple Microservices,Queue + Distributed DB,Queue + Distributed DB with Replication}
+	
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
