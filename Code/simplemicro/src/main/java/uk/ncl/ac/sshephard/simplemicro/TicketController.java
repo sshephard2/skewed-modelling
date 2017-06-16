@@ -16,12 +16,12 @@ public class TicketController {
 
     @CrossOrigin(origins = "http://localhost:9000")
     @RequestMapping("/search")
-    public List<Ticket> search(@RequestParam(value="sport", defaultValue="") String sport) {
+    public List<Ticket> search(@RequestParam(value="sport", defaultValue="") String sport, @RequestParam(value="owner", defaultValue="") String owner) {
     	if (sport.isEmpty()) {
     		return repository.findAllBy();
     	}
     	else {
-    		return repository.findBySport(sport);
+    		return repository.findBySportAndOwner(sport, owner);
     	}
     }
     

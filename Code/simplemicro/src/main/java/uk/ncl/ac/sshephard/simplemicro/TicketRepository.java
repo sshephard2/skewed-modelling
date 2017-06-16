@@ -9,4 +9,6 @@ public interface TicketRepository extends CrudRepository<Ticket, Integer> {
 	List<Ticket> findAllBy();
 	
 	List<Ticket> findBySport(String sport);
+	
+	List<Ticket> findBySportAndOwner(String sport, String owner);
 }

@@ -93,7 +93,7 @@ public class Dbinit {
 		    session.execute("DROP TABLE IF EXISTS ticket;");
 		    
 		    // Create ticket table
-		    session.execute("CREATE TABLE ticket (id int, sport varchar, day int, seat int, owner varchar, PRIMARY KEY (sport, id)) WITH comment = 'Tickets';");
+		    session.execute("CREATE TABLE ticket (id int, sport varchar, day int, seat int, owner varchar, PRIMARY KEY (sport, owner, id)) WITH comment = 'Tickets';");
 		    
 		    System.out.println("Creating " + sport + " tickets");
 		    
@@ -108,7 +108,7 @@ public class Dbinit {
 		    	for (int seat=1; seat<=seats; seat++) {
 		    		
 		    		// Insert a ticket entry
-		    		session.execute("INSERT INTO ticket (id, sport, day, seat) VALUES (?, ?, ?, ?);", id++, sport, day, seat);
+		    		session.execute("INSERT INTO ticket (id, sport, day, seat, owner) VALUES (?, ?, ?, ?, '');", id++, sport, day, seat);
 		    	}
 		    }
 		    
