@@ -12,15 +12,15 @@ public class Ticket {
 	@PrimaryKeyColumn(name = "sport", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private final String sport; // type of sport
 	private final int day; // day of event
-	private final String owner; // name of ticket owner (for booked ticket)
 	private final int seat; // seat number
+	private final String owner; // name of ticket owner (for booked ticket)
 
-	public Ticket(int id, String sport, int day, String owner, int seat) {
+	public Ticket(int id, String sport, int day, int seat, String owner) {
 		this.id = id;
 		this.sport = sport;
 		this.day = day;
-		this.owner = owner;
 		this.seat = seat;
+		this.owner = owner;
 	}
 
 	/**
@@ -45,17 +45,17 @@ public class Ticket {
 	}
 
 	/**
-	 * @return the owner
-	 */
-	public String getOwner() {
-		return owner;
-	}
-
-	/**
 	 * @return the seat
 	 */
 	public int getSeat() {
 		return seat;
+	}
+	
+	/**
+	 * @return the owner
+	 */
+	public String getOwner() {
+		return owner;
 	}
 	
 }

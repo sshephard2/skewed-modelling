@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.cassandra.config.java.AbstractCassandraConfiguration;
+import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 @Configuration
+@EnableCassandraRepositories
 @PropertySource(value = { "classpath:cassandra.properties" })
 public class AppConfig extends AbstractCassandraConfiguration {
 
