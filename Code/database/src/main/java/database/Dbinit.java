@@ -83,8 +83,8 @@ public class Dbinit {
 		     * int seat - seat number
 		     * varchar owner - name of ticket owner (for booked ticket)
 		     * 
-		     * The partition key is sport.
-		     * The clustering column is id.
+		     * The partition key is sport
+		     * The clustering columns are owner, day, id
 		     */
 		    
 		    System.out.println("Creating ticket table in keyspace " + keyspace);
@@ -93,7 +93,7 @@ public class Dbinit {
 		    session.execute("DROP TABLE IF EXISTS ticket;");
 		    
 		    // Create ticket table
-		    session.execute("CREATE TABLE ticket (id int, sport varchar, day int, seat int, owner varchar, PRIMARY KEY (sport, owner, id)) WITH comment = 'Tickets';");
+		    session.execute("CREATE TABLE ticket (id int, sport varchar, day int, seat int, owner varchar, PRIMARY KEY (sport, owner, day, id)) WITH comment = 'Tickets';");
 		    
 		    System.out.println("Creating " + sport + " tickets");
 		    
