@@ -8,9 +8,18 @@
 
 	<body>
 		<div ng-controller="Ticket">
-			<p>The ID is {{booking.id}}</p>
-			<p>The owner is {{booking.owner}}</p>
-			<p>The seat is {{booking.seat}}</p>
-		</div>
+		<table>
+			<tr>
+				<th>day</th>
+				<th>seat</th>
+				<th>id</th>
+			</tr>
+			<tr ng-repeat="ticket in tickets">
+				<td>{{ticket.day}}</td>
+				<td>{{ticket.seat}}</td>
+				<td>{{ticket.id}}</td>
+			</tr>
+		</table>
+	</div>
 	</body>
 </html>
