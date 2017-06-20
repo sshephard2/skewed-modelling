@@ -52,7 +52,10 @@ table: ticket
 #
 queries:
    search:
-      cql: select * from ticket LIMIT 10
+      cql: select * from ticket LIMIT 1
+      fields: samerow             # samerow or multirow (select arguments from the same row, or randomly from all rows in the partition)
+   athletics:
+      cql: select * from ticket where sport='Athletics'
       fields: samerow             # samerow or multirow (select arguments from the same row, or randomly from all rows in the partition)
 
 #
