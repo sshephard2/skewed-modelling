@@ -1,0 +1,25 @@
+# For details see:
+# * http://wiki.apache.org/cassandra/Metrics
+# * https://github.com/addthis/metrics-reporter-config
+
+# This is an example file for configuring which metrics should go
+# where.  The sample sends everything to a flat file for humans to
+# poke at.  metrics-ganglia or metrics-graphite are more likely to
+# operationally useful.
+
+# Some metrics are global for a node (KeyCache capacity) while others
+# are broken down by column family or even IP.  The sample list
+# includes all of the global metrics via a while list.  To include
+# metrics for the system column family for example add
+# "^org.apache.cassandra.metrics.ColumnFamily.system.+".
+
+csv:
+  -
+    outdir: '/tmp/throughput_metrics'
+    period: 10
+    timeunit: 'SECONDS'
+    predicate:
+      color: "white"
+      useQualifiedName: true
+      patterns:
+        - "^org.apache.cassandra.metrics.ThreadPools.CompletedTasks.request.ReadStage"

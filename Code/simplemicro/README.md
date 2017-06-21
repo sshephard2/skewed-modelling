@@ -17,6 +17,14 @@ Run the `dbinit` tool on each DB as follows:
 `dbinit host1 Simplemicro Athletics 1000 100 5`
 `dbinit host2 Simplemicro Cycling 2000 50 10`
 
+# Cassandra metrics
+
+The file `metrics-reporter-throughput.yaml` has been configured to record `org.apache.cassandra.metrics.ThreadPools.CompletedTasks.request.ReadStage` every 10s to a csv file in `/tmp/throughput_metrics/`.
+
+To use this metric configuration, start Cassandra from the command line as below:
+
+`bin/cassandra -Dcassandra.metricsReporterConfigFile=metrics-reporter-throughput.yaml`
+
 # Stress testing Cassandra
 
 Test for op/s rate that Cassandra can support using cassandra-stress.  Installation below shows a limit of 670 op/s.
