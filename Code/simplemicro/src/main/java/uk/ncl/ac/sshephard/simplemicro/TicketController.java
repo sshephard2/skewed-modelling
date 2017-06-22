@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.codahale.metrics.annotation.Metered;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
@@ -22,6 +25,7 @@ public class TicketController {
 
     @CrossOrigin(origins = "http://localhost:9000")
     @RequestMapping("/search")
+    @Metered
     public List<Ticket> search(@RequestParam Map<String,String> requestParams) {
     	
     	// If a sport is not specified, then return all

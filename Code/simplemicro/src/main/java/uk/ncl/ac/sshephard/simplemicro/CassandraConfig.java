@@ -10,7 +10,7 @@ import org.springframework.data.cassandra.repository.config.EnableCassandraRepos
 @Configuration
 @EnableCassandraRepositories
 @PropertySource(value = { "classpath:cassandra.properties" })
-public class AppConfig extends AbstractCassandraConfiguration {
+public class CassandraConfig extends AbstractCassandraConfiguration {
 
 	@Autowired
 	private Environment env;
