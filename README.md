@@ -6,6 +6,7 @@ Platform decisions:
 * Use an Azure Storage Queue for the shared queue
 * Use Cassandra for the distributed database
 * Develop in AngularJS and Java Spring
+* Use [JMeter](http://jmeter.apache.org/ "JMeter") for load testing
 
 ## Plan outline
 
