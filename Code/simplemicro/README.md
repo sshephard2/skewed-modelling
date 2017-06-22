@@ -49,3 +49,22 @@ Test for op/s rate that Cassandra can support using cassandra-stress.  Installat
 	Avg GC time               :    7.9 ms
 	StdDev GC time            :    1.5 ms
 	Total operation time      : 00:00:33
+
+# Stress testing system
+
+Use [JMeter](http://jmeter.apache.org "JMeter") for testing against RESTful APIs with load.
+
+Use test plans `calibration.jmx` and `Simplemicro.jmx` for development.
+
+Using a Thread Group with:
+
+	threads = 100
+	loop count = 100
+
+and a Poisson random timer with:
+
+	lambda = 10,000ms
+
+Gives an approximate input arrival rate of 10 events per second.
+
+For a desired rate of *r* events per second, suggest lambda of *100,000/r* ms and loop count of at least *3r* to get enough samples for a mean rate over 5 minutes, *5r* is better.
