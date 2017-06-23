@@ -4,6 +4,10 @@
 
 Changes to `conf/cassandra.yaml`
 
+	rpc_address: 0.0.0.0
+	
+	...
+	
 	broadcast_rpc_address: (IP address of server)
 
 Create a separate Cassandra database for each sport.
