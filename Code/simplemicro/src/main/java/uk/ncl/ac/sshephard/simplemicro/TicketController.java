@@ -23,7 +23,7 @@ public class TicketController {
 	@Autowired
 	private TicketRepository repository;
 
-    @CrossOrigin(origins = "http://localhost:9000")
+    @CrossOrigin
     @RequestMapping("/search")
     @Metered
     public List<Ticket> search(@RequestParam Map<String,String> requestParams) {
