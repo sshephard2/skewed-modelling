@@ -23,6 +23,12 @@ public class TicketController {
 	@Autowired
 	private TicketRepository repository;
 
+	/**
+	 * RESTful API - /search is mapped to search method
+	 * Perform searches on tickets
+	 * @param requestParams map of query parameters (sport, owner, day)
+	 * @return list of Ticket entities
+	 */
     @CrossOrigin
     @RequestMapping("/search")
     @Metered
@@ -60,5 +66,26 @@ public class TicketController {
 		// Day has been parsed
 		logger.info("search,{},{},{}", sport, owner, dayString);
 		return repository.findBySportAndOwnerAndDay(sport, owner, day);
+    }
+    
+    /**
+     * RESTful API - /control is mapped to control method
+     * A 'dummy' method that doesn't access the database
+     * for control measurement of throughput
+     * @param log GET /control?log="Y" to log requests to the API
+     * @return a ticket entity
+     */
+    @CrossOrigin
+    @RequestMapping("/control")
+    @Metered
+    public Ticket control(@RequestParam(required=false, defaultValue="N") String log) {
+    	
+    	// If log parameter is "Y" then log this request
+    	if (log.equals("Y")) {
+    		logger.info("control");
+    	}
+    	
+    	// Return a dummy ticket entity that indicates this is returned from /control
+    	return new Ticket(0, "Control", 0, 0, "");
     }
 }
