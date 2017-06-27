@@ -31,10 +31,10 @@ To use this metric configuration, start Cassandra from the command line as below
 
 # Stress testing Cassandra
 
-Run the `dbstress` tool on each DB as follows.  This runs 10,000 CQL queries against the `ticket` table using a metred metric, output as `logs/queries.csv`
+Run the `dbstress` tool on each DB as follows.  This runs 2 threads of 10,000 CQL queries each against the `ticket` table using a metred metric, output as `logs/queries.csv`
 
-`dbstress host1 Simplemicro Athletics 10000`
-`dbstress host2 Simplemicro Cycling 10000`
+`dbstress host1 Simplemicro Athletics 10000 2`
+`dbstress host2 Simplemicro Cycling 10000 2`
 
 # Stress testing system
 
