@@ -2,13 +2,21 @@
 
 ## Cassandra setup
 
-Changes to `conf/cassandra.yaml`
+Changes to `conf/cassandra.yaml` for basic setup and to throttle performance.
 
 	rpc_address: 0.0.0.0
-	
 	...
-	
 	broadcast_rpc_address: (IP address of server)
+	...
+	concurrent_reads: 2
+	concurrent_writes: 2
+	concurrent_counter_writes: 2
+	...
+	native_transport_max_concurrent_connections: 2
+	...
+	rpc_max_threads: 2
+	...
+	stream_throughput_outbound_megabits_per_sec: 1
 
 Create a separate Cassandra database for each sport.
 
@@ -18,8 +26,8 @@ Run the CQL script below on each DB.
 
 Run the `dbinit` tool on each DB as follows:
 
-`dbinit host1 Simplemicro Athletics 1000 100 5`
-`dbinit host2 Simplemicro Cycling 2000 50 10`
+	dbinit host1 Simplemicro Athletics 1000 100 5
+	dbinit host2 Simplemicro Cycling 2000 50 10
 
 # Cassandra metrics
 
@@ -33,8 +41,8 @@ To use this metric configuration, start Cassandra from the command line as below
 
 Run the `dbstress` tool on each DB as follows.  This runs 2 threads of 10,000 CQL queries each against the `ticket` table using a metred metric, output as `logs/queries.csv`
 
-`dbstress host1 Simplemicro Athletics 10000 2`
-`dbstress host2 Simplemicro Cycling 10000 2`
+	dbstress host1 Simplemicro Athletics 10000 2
+	dbstress host2 Simplemicro Cycling 10000 2
 
 # Stress testing system
 
