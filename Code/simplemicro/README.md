@@ -22,7 +22,7 @@ Create a separate Cassandra database for each sport.
 
 Run the CQL script below on each DB.
 
-`SOURCE 'simplemicro.cql'`
+`SOURCE 'simplemicro.cql';`
 
 Run the `dbinit` tool on each DB as follows:
 
@@ -47,6 +47,10 @@ Run the `dbstress` tool on each DB as follows.  This runs 2 threads of 10,000 CQ
 # Stress testing system
 
 Use [JMeter](http://jmeter.apache.org "JMeter") for testing against RESTful APIs with load.
+
+Run from command line as:
+
+	jmeter-n.cmd Simplemicro.jmx
 
 Use test plans `calibration.jmx` and `Simplemicro.jmx` for development.
 
