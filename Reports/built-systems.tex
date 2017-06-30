@@ -8,7 +8,7 @@ Reference to github at \cite{RN1073}
 
 General design decisions:
 
-Cassandra \cite{RN1050}\cite{RN1075} database.
+Cassandra \cite{RN1050}\cite{RN1075} database.  Create a Dbstress program and measured throughput of Cassandra node at 130 queries per second.
 
 Measurement using Coda Hale Metrics \cite{RN1079}.
 
@@ -21,7 +21,15 @@ Load testing using Apache JMeter \cite{RN1074}.
 
 RESTful APIs using Java Spring \cite{RN1076}.
 
+Implemented a \\control API which doesn't access the database.
+
+Use JMeter with Poisson random timer (negative exponential distribution) with Cycling at a constant 10 threads/users and Athletics ramping up from 10-100 in steps of 10, so the desired demand is 20-200 requests per second.
+
+Run the experiment 5 times and average the results (taking the maximum rolling 1 minute average for each number of users).
+
 See the experimental results in Table \ref{table:builtmicro_results}.
+
+Control shows that throughput approaches demand (difference likely to be due to random distribution, network latency, etc).  However the Athletics demand is throttled by the database throughput.  The Cycling throughput is unaffected by the Athletics demand. 
 
 \begin{table}[h!]
 	\begin{center}

@@ -216,6 +216,10 @@ See the experimental results in Table \ref{table:queueddwr_results}.
 
 The system results are compared in Table \ref{table:comparison_results}.
 
+This shows that the simple microservices system does a good job of isolating the skewed demand from the rest of the system, but it is an inefficient use of the database resources.  The actual throughput of the athletics demand is limited to its database's throughput, while the spare capacity of the cycling database goes unused.  Using a distributed database with replication by contrast uses the capacity of two database nodes to serve the skewed demand, so that the actual throughput is much closer to the desired value.
+
+(NOTE: the replication model uses 3 nodes, the others use 2 - need to compare like with like.  Try all with 3 or replication with 2?)
+
 \begin{table}[h!]
 	\begin{center}
 		\caption{Comparison of system results}
