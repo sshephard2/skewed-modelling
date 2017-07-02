@@ -40,11 +40,13 @@ Control shows that throughput approaches demand (difference likely to be due to 
 		string type,
 		columns/ausers/.style={column name=users, column type={p{.1\textwidth}}},
 		columns/arate/.style={column name=rate, column type={p{.1\textwidth}}},
+		columns/athletics/.style={column name=search, column type={p{.1\textwidth}}},
+		columns/acontrol/.style={column name=control, column type={p{.1\textwidth}}},
 		columns/cusers/.style={column name=users, column type={p{.1\textwidth}}},
 		columns/crate/.style={column name=rate, column type={p{.1\textwidth}}},
-		columns/athletics/.style={column name=athletics, column type={p{.1\textwidth}}},
-		columns/cycling/.style={column name=cycling, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline \multicolumn{2}{c}{Athletics demand} & \multicolumn{2}{c}{Cycling demand} & \multicolumn{2}{c}{Throughput} \\,after row=\hline},
+		columns/cycling/.style={column name=search, column type={p{.1\textwidth}}},
+		columns/ccontrol/.style={column name=control, column type={p{.1\textwidth}}},
+		every head row/.style={before row=\hline \multicolumn{4}{c}{Athletics} & \multicolumn{4}{c}{Cycling} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/builtmicro/results.csv}
 	\end{center}
@@ -71,8 +73,8 @@ Control shows that throughput approaches demand (difference likely to be due to 
 	}
 	]
 	
-	\addplot table [x index={1}, y index={4}, col sep=comma]{data/builtmicro/results.csv};
-	\addplot table [x index={1}, y index={5}, col sep=comma]{data/builtmicro/results.csv};
+	\addplot table [x index={1}, y index={2}, col sep=comma]{data/builtmicro/results.csv};
+	\addplot table [x index={1}, y index={6}, col sep=comma]{data/builtmicro/results.csv};
 	
 	\legend{athletics,cycling}
 	
