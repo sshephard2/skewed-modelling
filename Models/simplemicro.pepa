@@ -9,28 +9,28 @@ a = 1.0; /* Rate of booking Athletics tickets */
 c = 1.0; /* Rate of booking Cycling tickets */
 
 w = 100.0; /* Rate of consuming from worker applications */
-db = 5.0; /* Rate of servicing DB requests */
+db = 6.5; /* Rate of servicing DB requests */
 
 /* Web front-end process */
-Website = (book_a, a).Website + (book_c, c).Website;
+Website = (athletics, a).Website + (cycling, c).Website;
 
 /* Worker processes */
-Worker_A = (book_a, T).WorkerSrv_A;
-WorkerSrv_A = (worker_a, T).Worker_A;
+Worker_A = (athletics, T).WorkerSrv_A;
+WorkerSrv_A = (workerA, T).Worker_A;
 
-Worker_C = (book_c, T).WorkerSrv_C;
-WorkerSrv_C = (worker_c, T).Worker_C;
+Worker_C = (cycling, T).WorkerSrv_C;
+WorkerSrv_C = (workerC, T).Worker_C;
 
 /* DB  processes */
-DB_1 = (worker_a, w).DBsrv_1;
-DBsrv_1 = (dbsrv_1, db).DB_1;
+DB_1 = (workerA, w).DBsrv_1;
+DBsrv_1 = (dbsrv1, db).DB_1;
 
-DB_2 = (worker_c, w).DBsrv_2;
-DBsrv_2 = (dbsrv_2, db).DB_2;
+DB_2 = (workerC, w).DBsrv_2;
+DBsrv_2 = (dbsrv2, db).DB_2;
 
 /* Service processes for DBs */
-Service_1 = (dbsrv_1, db).Service_1;
-Service_2 = (dbsrv_2, db).Service_2;
+Service_1 = (dbsrv1, db).Service_1;
+Service_2 = (dbsrv2, db).Service_2;
 
-Service_1 <dbsrv_1> DB_1 <worker_a> Worker_A <book_a> Website
-  <book_c> Worker_C <worker_c> DB_2 <dbsrv_2> Service_2
+Service_1 <dbsrv1> DB_1 <workerA> Worker_A <athletics> Website
+  <cycling> Worker_C <workerC> DB_2 <dbsrv2> Service_2

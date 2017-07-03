@@ -17,22 +17,22 @@
 	% --begin
 	\begin{displaymath}
 		\begin{array}{rcl}
-			\mathit{a} & = & 1.0-10.0\\
+			\mathit{a} & = & 1.0 - 10.0\\
 			\mathit{c} & = & 1.0\\
 			\mathit{w} & = & 100.0\\
-			\mathit{db} & = & 5.0\\
-			[0.0ex]		\mathit{Website} & \rmdef & (\mathit{book_a},\mathit{a}).\mathit{Website}+(\mathit{book_c},\mathit{c}).\mathit{Website}\\
-			\mathit{Worker_A} & \rmdef & (\mathit{book_a},\top).\mathit{WorkerSrv_A}\\
-			\mathit{WorkerSrv_A} & \rmdef & (\mathit{worker_a},\top).\mathit{Worker_A}\\
-			\mathit{Worker_C} & \rmdef & (\mathit{book_c},\top).\mathit{WorkerSrv_C}\\
-			\mathit{WorkerSrv_C} & \rmdef & (\mathit{worker_c},\top).\mathit{Worker_C}\\
-			\mathit{DB_1} & \rmdef & (\mathit{worker_a},\mathit{w}).\mathit{DBsrv_1}\\
-			\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv_1},\mathit{db}).\mathit{DB_1}\\
-			\mathit{DB_2} & \rmdef & (\mathit{worker_c},\mathit{w}).\mathit{DBsrv_2}\\
-			\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv_2},\mathit{db}).\mathit{DB_2}\\
-			\mathit{Service_1} & \rmdef & (\mathit{dbsrv_1},\mathit{db}).\mathit{Service_1}\\
-			\mathit{Service_2} & \rmdef & (\mathit{dbsrv_2},\mathit{db}).\mathit{Service_2}\\
-			[0.0ex]		\multicolumn{3}{l}{\mathit{Service_1}\sync{dbsrv_1}\mathit{DB_1}\sync{worker_a}\mathit{Worker_A}\sync{book_a}\mathit{Website}\sync{book_c}\mathit{Worker_C}\sync{worker_c}\mathit{DB_2}\sync{dbsrv_2}\mathit{Service_2}}\\
+			\mathit{db} & = & 6.5\\
+			[0.0ex]		\mathit{Website} & \rmdef & (\mathit{athletics},\mathit{a}).\mathit{Website}+(\mathit{cycling},\mathit{c}).\mathit{Website}\\
+			\mathit{Worker_A} & \rmdef & (\mathit{athletics},\top).\mathit{WorkerSrv_A}\\
+			\mathit{WorkerSrv_A} & \rmdef & (\mathit{workerA},\top).\mathit{Worker_A}\\
+			\mathit{Worker_C} & \rmdef & (\mathit{cycling},\top).\mathit{WorkerSrv_C}\\
+			\mathit{WorkerSrv_C} & \rmdef & (\mathit{workerC},\top).\mathit{Worker_C}\\
+			\mathit{DB_1} & \rmdef & (\mathit{workerA},\mathit{w}).\mathit{DBsrv_1}\\
+			\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{DB_1}\\
+			\mathit{DB_2} & \rmdef & (\mathit{workerC},\mathit{w}).\mathit{DBsrv_2}\\
+			\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{DB_2}\\
+			\mathit{Service_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{Service_1}\\
+			\mathit{Service_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{Service_2}\\
+			[0.0ex]		\multicolumn{3}{l}{\mathit{Service_1}\sync{dbsrv1}\mathit{DB_1}\sync{workerA}\mathit{Worker_A}\sync{athletics}\mathit{Website}\sync{cycling}\mathit{Worker_C}\sync{workerC}\mathit{DB_2}\sync{dbsrv2}\mathit{Service_2}}\\
 			[0.0ex]	\end{array}
 	\end{displaymath}
 	% --end
@@ -48,12 +48,12 @@ See the experimental results in Table \ref{table:micro_results}.
 		col sep=comma,
 		string type,
 		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
-		columns/booka/.style={column name=book\textsubscript{a}, column type={p{.1\textwidth}}},
-		columns/bookc/.style={column name=book\textsubscript{c}, column type={p{.1\textwidth}}},
-		columns/dbsrv1/.style={column name=dbsrv\textsubscript{1}, column type={p{.1\textwidth}}},
-		columns/dbsrv2/.style={column name=dbsrv\textsubscript{2}, column type={p{.1\textwidth}}},
-		columns/worka/.style={column name=worker\textsubscript{a}, column type={p{.1\textwidth}}},
-		columns/workc/.style={column name=worker\textsubscript{c}, column type={p{.1\textwidth}}},
+		columns/athletics/.style={column name=athletics, column type={p{.1\textwidth}}},
+		columns/cycling/.style={column name=cycling, column type={p{.1\textwidth}}},
+		columns/dbsrv1/.style={column name=dbsrv1, column type={p{.1\textwidth}}},
+		columns/dbsrv2/.style={column name=dbsrv2, column type={p{.1\textwidth}}},
+		columns/workerA/.style={column name=workerA, column type={p{.1\textwidth}}},
+		columns/workerC/.style={column name=workerC, column type={p{.1\textwidth}}},
 		every head row/.style={before row=\hline Rate & \multicolumn{6}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/micro/results.csv}
@@ -70,7 +70,7 @@ See the experimental results in Table \ref{table:micro_results}.
 	xlabel={Rate a},
 	ylabel={Throughput},
 	xmin=0, xmax=10,
-	ymin=0, ymax=5,
+	ymin=0, ymax=7,
 	legend pos=north west,
 	ymajorgrids=true,
 	grid style=dashed,
@@ -81,10 +81,10 @@ See the experimental results in Table \ref{table:micro_results}.
 	}
 	]
 	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/book_a.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/book_c.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/athletics.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/cycling.csv};
 	
-	\legend{a,c}
+	\legend{athletics,cycling}
 	
 	\end{axis}
 	\end{tikzpicture}
@@ -263,7 +263,7 @@ This shows that the simple microservices system does a good job of isolating the
 	}
 	]
 	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/book_a.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/athletics.csv};
 	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/book_a.csv};
 	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/book_a.csv};
 	
@@ -291,7 +291,7 @@ This shows that the simple microservices system does a good job of isolating the
 	}
 	]
 	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/book_c.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/cycling.csv};
 	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/book_c.csv};
 	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/book_c.csv};
 	
