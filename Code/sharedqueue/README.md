@@ -22,3 +22,7 @@ Run the `dbinit` tool on the DB as follows:
 	dbinit host1 Distributed Athletics 1000 100 5
 	dbinit host1 Distributed Cycling 2000 50 10
 
+Find out where the data has been put:
+
+	nodetool getendpoints distributed ticket Athletics
+	nodetool getendpoints distributed ticket Cycling
