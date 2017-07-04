@@ -83,12 +83,9 @@ public class Dbinit {
 		     */
 		    
 		    System.out.println("Creating ticket table in keyspace " + keyspace);
-		    
-		    // Drop ticket table if it exists
-		    session.execute("DROP TABLE IF EXISTS ticket;");
-		    
+		    	    
 		    // Create ticket table
-		    session.execute("CREATE TABLE ticket (id int, sport varchar, day int, seat int, owner varchar, PRIMARY KEY (sport, owner, day, id)) WITH comment = 'Tickets';");
+		    session.execute("CREATE TABLE IF NOT EXISTS ticket (id int, sport varchar, day int, seat int, owner varchar, PRIMARY KEY (sport, owner, day, id)) WITH comment = 'Tickets';");
 		    
 		    System.out.println("Creating " + sport + " tickets");
 		    
