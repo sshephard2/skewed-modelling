@@ -13,3 +13,12 @@ Otherwise JMeter test plan will be similar to the simplemicro one (distribution 
 One worker application (running on large VM), multi-threaded to dequeue and populate DB?
 (and a control version?)
 
+Run the CQL script below on the DB.
+
+`SOURCE 'distributed.cql';`
+
+Run the `dbinit` tool on the DB as follows:
+
+	dbinit host1 Distributed Athletics 1000 100 5
+	dbinit host1 Distributed Cycling 2000 50 10
+
