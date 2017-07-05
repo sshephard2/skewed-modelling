@@ -1,12 +1,27 @@
 package queueworker;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import com.codahale.metrics.CsvReporter;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 
 public class QueueWorker {
 
+	static final MetricRegistry metrics = new MetricRegistry();
+	
+	static void startMetrics() {
+		final CsvReporter reporter = CsvReporter.forRegistry(metrics)
+				.convertRatesTo(TimeUnit.SECONDS).convertDurationsTo(TimeUnit.MILLISECONDS)
+				.build(new File("./logs/"));
+		reporter.start(10, TimeUnit.SECONDS);
+	}
+	
 	/**
 	 * Main method
 	 * Supply as arguments: number of threads
@@ -53,14 +68,19 @@ public class QueueWorker {
         		"DefaultEndpointsProtocol=http;" +
         		"AccountName=" + accountName + ";" +
         		"AccountKey=" + accountKey;
+        
+		// Start metrics
+		startMetrics();
 
-		List<Thread> threads = new ArrayList<Thread>();
-		
+		// Use Meter metric
+		Meter metredReturn = metrics.meter("returns");
+
 		// Start required number of threads
+		List<Thread> threads = new ArrayList<Thread>();
 		for (int t=0; t<numThreads; t++) {
 			Runnable task;
 			try {
-				task = new QueueWorkerRunnable(storageConnectionString, queueName);
+				task = new QueueWorkerRunnable(metredReturn, storageConnectionString, queueName);
 				Thread worker = new Thread(task);
 				worker.start();
 				threads.add(worker);

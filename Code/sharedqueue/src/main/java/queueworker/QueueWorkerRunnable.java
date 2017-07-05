@@ -3,6 +3,7 @@ package queueworker;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 
+import com.codahale.metrics.Meter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.storage.*;
 import com.microsoft.azure.storage.queue.*;
@@ -14,15 +15,19 @@ public class QueueWorkerRunnable implements Runnable {
 	private final CloudQueueClient queueClient;
 	private final CloudQueue queue;
 	
+	// Metrics
+	private Meter metredReturn;
+	
 	/**
 	 * Constructor for QueueWorkerRunnable
+	 * @param metredReturn
 	 * @param storageConnectionString
 	 * @param queueName
 	 * @throws URISyntaxException 
 	 * @throws InvalidKeyException 
 	 * @throws StorageException 
 	 */
-	public QueueWorkerRunnable(String storageConnectionString, String queueName) throws InvalidKeyException, URISyntaxException, StorageException {	
+	public QueueWorkerRunnable(Meter metredReturn, String storageConnectionString, String queueName) throws InvalidKeyException, URISyntaxException, StorageException {	
 		// Retrieve storage account from connection-string
 	    storageAccount = CloudStorageAccount.parse(storageConnectionString);
 
@@ -31,6 +36,9 @@ public class QueueWorkerRunnable implements Runnable {
 
 	    // Retrieve a reference to a queue
 	    queue = queueClient.getQueueReference(queueName);
+	    
+	    // Set up metrics
+	    this.metredReturn = metredReturn;
 	}
 
 	/**
@@ -46,9 +54,12 @@ public class QueueWorkerRunnable implements Runnable {
 			    if (retrievedMessage != null) {
 			        // Process the message in less than 30 seconds, and then delete the message
 					String queueMessage = retrievedMessage.getMessageContentAsString();
-				    queue.deleteMessage(retrievedMessage);
+				    queue.deleteMessage(retrievedMessage);	    
 				    
 				    Ticket ticket = mapper.readValue(queueMessage, Ticket.class);
+				    
+				    // Record this ticket return in metrics
+				    metredReturn.mark();
 				    
 				    System.out.println(ticket.getSport() + ":" + ticket.getId());
 			    }
