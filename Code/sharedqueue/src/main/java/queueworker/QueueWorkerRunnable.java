@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 
 import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.storage.*;
 import com.microsoft.azure.storage.queue.*;
@@ -16,18 +17,21 @@ public class QueueWorkerRunnable implements Runnable {
 	private final CloudQueue queue;
 	
 	// Metrics
-	private Meter metredReturn;
+	private final MetricRegistry metrics;
+	private final Meter metredControl;
+	private final Meter metredAthletics;
+	private final Meter metredCycling;
 	
 	/**
 	 * Constructor for QueueWorkerRunnable
-	 * @param metredReturn
+	 * @param metrics
 	 * @param storageConnectionString
 	 * @param queueName
 	 * @throws URISyntaxException 
 	 * @throws InvalidKeyException 
 	 * @throws StorageException 
 	 */
-	public QueueWorkerRunnable(Meter metredReturn, String storageConnectionString, String queueName) throws InvalidKeyException, URISyntaxException, StorageException {	
+	public QueueWorkerRunnable(MetricRegistry metrics, String storageConnectionString, String queueName) throws InvalidKeyException, URISyntaxException, StorageException {	
 		// Retrieve storage account from connection-string
 	    storageAccount = CloudStorageAccount.parse(storageConnectionString);
 
@@ -38,7 +42,10 @@ public class QueueWorkerRunnable implements Runnable {
 	    queue = queueClient.getQueueReference(queueName);
 	    
 	    // Set up metrics
-	    this.metredReturn = metredReturn;
+	    this.metrics = metrics;
+		metredControl = this.metrics.meter("control");
+		metredAthletics = this.metrics.meter("athletics");
+		metredCycling = this.metrics.meter("cycling");
 	}
 
 	/**
@@ -58,8 +65,19 @@ public class QueueWorkerRunnable implements Runnable {
 				    
 				    Ticket ticket = mapper.readValue(queueMessage, Ticket.class);
 				    
-				    // Record this ticket return in metrics
-				    metredReturn.mark();
+				    String sport = ticket.getSport();
+				    if (sport.equals("Control")) {
+					    // Record this ticket return in metrics
+					    metredControl.mark();				    	
+				    } else if (sport.equals("Athletics")) {
+					    // Record this ticket return in metrics
+					    metredAthletics.mark();					    	
+				    } else if (sport.equals("Cycling")) {
+					    // Record this ticket return in metrics
+					    metredCycling.mark();					    	
+				    } else {
+				    	// Unrecognised ticket, ignore
+				    }
 				    
 				    System.out.println(ticket.getSport() + ":" + ticket.getId());
 			    }

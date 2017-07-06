@@ -8,7 +8,6 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import com.codahale.metrics.CsvReporter;
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 
 public class QueueWorker {
@@ -72,15 +71,12 @@ public class QueueWorker {
 		// Start metrics
 		startMetrics();
 
-		// Use Meter metric
-		Meter metredReturn = metrics.meter("returns");
-
 		// Start required number of threads
 		List<Thread> threads = new ArrayList<Thread>();
 		for (int t=0; t<numThreads; t++) {
 			Runnable task;
 			try {
-				task = new QueueWorkerRunnable(metredReturn, storageConnectionString, queueName);
+				task = new QueueWorkerRunnable(metrics, storageConnectionString, queueName);
 				Thread worker = new Thread(task);
 				worker.start();
 				threads.add(worker);
