@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.codahale.metrics.CsvReporter;
 import com.codahale.metrics.MetricRegistry;
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 
 public class QueueWorker {
 
@@ -59,6 +61,7 @@ public class QueueWorker {
             return;
         }
 		
+        // Azure Storage Queue properties
         final String accountName = prop.getProperty("AccountName");
         final String accountKey = prop.getProperty("AccountKey");
         final String queueName = prop.getProperty("QueueName");
@@ -68,6 +71,18 @@ public class QueueWorker {
         		"AccountName=" + accountName + ";" +
         		"AccountKey=" + accountKey;
         
+        // Cassandra properties
+        final String cassandraHost = prop.getProperty("CassandraHost");
+        final String cassandraKeyspace = prop.getProperty("CassandraKeyspace");
+        
+        // Set up Cassandra cluster connection
+		Cluster cassandraCluster = Cluster.builder()
+				.addContactPoint(cassandraHost)
+				.build();
+
+		// Attempt to open session to Cassandra
+		Session cassandraSession = cassandraCluster.connect(cassandraKeyspace);
+        
 		// Start metrics
 		startMetrics();
 
@@ -76,7 +91,7 @@ public class QueueWorker {
 		for (int t=0; t<numThreads; t++) {
 			Runnable task;
 			try {
-				task = new QueueWorkerRunnable(metrics, storageConnectionString, queueName);
+				task = new QueueWorkerRunnable(cassandraSession, metrics, storageConnectionString, queueName);
 				Thread worker = new Thread(task);
 				worker.start();
 				threads.add(worker);
