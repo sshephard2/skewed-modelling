@@ -31,4 +31,6 @@ Load test with cassandra-stress
 
 `bin/cassandra-stress user profile=cqlstress-distributed.yaml "ops(athletics=1)" -rate threads=1`
 
-Tested - was 475 ops/s
+Tested:
+* Distributed - 475 ops/s
+* Replicated - 600 ops/s
