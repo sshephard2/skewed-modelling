@@ -84,7 +84,7 @@ public class QueueWorkerRunnable implements Runnable {
 				    	case "Athletics":
 				    	case "Cycling":
 				    		// CQL - insert returned ticket
-				    		ResultSet rs = cassandraSession.execute("INSERT INTO ticket (sport, owner, day, id) VALUES(?, ?, ?, ?);", sport, ticket.getOwner(), ticket.getDay(), ticket.getId());
+				    		ResultSet rs = cassandraSession.execute("SELECT * FROM ticket WHERE sport=? AND owner='' AND day=? AND id=?;", sport, ticket.getDay(), ticket.getId());
 
 				    		if (sport.equals("Athletics")) {
 				    			// Record Athletics metric
