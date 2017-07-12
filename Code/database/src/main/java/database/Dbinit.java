@@ -68,28 +68,10 @@ public class Dbinit {
 		            .addContactPoint(host) // use supplied Cassandra host
 		            .build();
 		    Session session = cluster.connect(keyspace); // attempt to connect to Cassandra   
-		    
-		    /**
-		     * Ticket table schema
-		     * 
-		     * int id - unique ticket id
-		     * varchar sport - type of sport
-		     * int day - day of event
-		     * int seat - seat number
-		     * varchar owner - name of ticket owner (for booked ticket)
-		     * 
-		     * The partition key is sport
-		     * The clustering columns are owner, day, id
-		     */
-		    
-		    System.out.println("Creating ticket table in keyspace " + keyspace);
-		    	    
-		    // Create ticket table
-		    session.execute("CREATE TABLE IF NOT EXISTS ticket (id int, sport varchar, day int, seat int, owner varchar, PRIMARY KEY (sport, owner, day, id)) WITH comment = 'Tickets';");
-		    
+		    	    	    
+		    // Generate and insert tickets
 		    System.out.println("Creating " + sport + " tickets");
 		    
-		    // Generate and insert tickets
 		    int id = prefix;
 		    
 		    // For each day of the sporting event
