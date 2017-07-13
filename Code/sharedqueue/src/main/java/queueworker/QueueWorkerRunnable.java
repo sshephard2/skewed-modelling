@@ -101,7 +101,8 @@ public class QueueWorkerRunnable implements Runnable {
 				    		// Unrecognised ticket type, ignore
 				    }
 				    
-				    System.out.println(ticket.getSport() + ":" + ticket.getId());
+				    // Debugging message
+				    // System.out.println(ticket.getSport() + ":" + ticket.getId());
 			    }
 				
 			} catch (Exception e) {
