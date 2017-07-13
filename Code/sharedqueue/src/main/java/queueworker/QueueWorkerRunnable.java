@@ -6,6 +6,7 @@ import java.security.InvalidKeyException;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.storage.*;
@@ -83,12 +84,16 @@ public class QueueWorkerRunnable implements Runnable {
 				    		
 				    	case "Athletics":
 				    	case "Cycling":
-				    		// CQL - insert returned ticket
-				    		ResultSet rs = cassandraSession.execute("SELECT * FROM ticket WHERE sport=? AND owner='' AND day=? AND id=?;", sport, ticket.getDay(), ticket.getId());
+				    		// CQL - select returned ticket
+				    		// ResultSet rs = cassandraSession.execute("SELECT * FROM ticket WHERE sport=? AND owner='' AND day=? AND id=?;", sport, ticket.getDay(), ticket.getId());
+				    		// Get all tickets for the chosen sport
+				    		ResultSet rs = cassandraSession.execute("SELECT * FROM ticket WHERE sport=?;", sport);
 				    		if (rs.isExhausted()) {
 				    			// Nothing was returned, so do not mark the metric
 				    			break;
 				    		}
+				    		// Retrieve one of the rows
+				    		Row r = rs.one();
 				    		if (sport.equals("Athletics")) {
 				    			// Record Athletics metric
 				    			metredAthletics.mark();	
