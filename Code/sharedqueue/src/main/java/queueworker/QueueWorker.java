@@ -11,6 +11,7 @@ import com.codahale.metrics.CsvReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.policies.RoundRobinPolicy;
 
 public class QueueWorker {
 
@@ -75,9 +76,10 @@ public class QueueWorker {
         final String cassandraHost = prop.getProperty("CassandraHost");
         final String cassandraKeyspace = prop.getProperty("CassandraKeyspace");
         
-        // Set up Cassandra cluster connection
+        // Set up Cassandra cluster connection with Round Robin load balancing
 		Cluster cassandraCluster = Cluster.builder()
 				.addContactPoint(cassandraHost)
+				.withLoadBalancingPolicy(new RoundRobinPolicy())
 				.build();
 
 		// Attempt to open session to Cassandra
