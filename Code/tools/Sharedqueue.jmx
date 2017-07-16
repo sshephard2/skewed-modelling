@@ -56,7 +56,7 @@
             <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout">1000</stringProp>
           </HTTPSamplerProxy>
           <hashTree/>
           <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
@@ -70,7 +70,7 @@
           </RegexExtractor>
           <hashTree/>
           <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-            <stringProp name="ConstantTimer.delay">60000</stringProp>
+            <stringProp name="ConstantTimer.delay">10000</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
@@ -79,9 +79,9 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">2500</stringProp>
+          <stringProp name="LoopController.loops">1500</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(athletics,17)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(athletics,15)}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">0</stringProp>
         <longProp name="ThreadGroup.start_time">1498133884000</longProp>
         <longProp name="ThreadGroup.end_time">1498133884000</longProp>
@@ -142,7 +142,7 @@ vars.put(&quot;queueMessage&quot;, new String(encodedMsg));</stringProp>
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout">1000</stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
@@ -150,9 +150,9 @@ vars.put(&quot;queueMessage&quot;, new String(encodedMsg));</stringProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">2500</stringProp>
+          <stringProp name="LoopController.loops">1500</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">17</stringProp>
+        <stringProp name="ThreadGroup.num_threads">15</stringProp>
         <stringProp name="ThreadGroup.ramp_time">0</stringProp>
         <longProp name="ThreadGroup.start_time">1498133884000</longProp>
         <longProp name="ThreadGroup.end_time">1498133884000</longProp>
@@ -213,7 +213,7 @@ vars.put(&quot;queueMessage&quot;, new String(encodedMsg));</stringProp>
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout">1000</stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
