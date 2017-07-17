@@ -6,10 +6,10 @@
 import csv
 
 # Metrics filename
-METRICS_FILE = '../sharedqueue/results/run3/db2.csv'
+METRICS_FILE = '../sharedqueue/results/run4/db1.csv'
 
 # Processed output filename
-OUTPUT_FILE = '../sharedqueue/results/run3/pro_db2.csv'
+OUTPUT_FILE = '../sharedqueue/results/run4/pro_db1.csv'
 
 # Starting values
 start_timestamp = 0
