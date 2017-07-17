@@ -6,10 +6,10 @@
 import csv
 
 # Metrics filename
-METRICS_FILE = '../sharedqueue/results/run4/pro_db2.csv'
+METRICS_FILE = '../sharedqueue/results/run5/pro_db2.csv'
 
 # Processed output filename
-OUTPUT_FILE = '../sharedqueue/results/run4/ppro_db2.csv'
+OUTPUT_FILE = '../sharedqueue/results/run5/ppro_db2.csv'
 
 # Number of queries per user
 QUERIES_PERUSER = 1425
