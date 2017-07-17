@@ -6,10 +6,10 @@
 import csv
 
 # Metrics filename
-METRICS_FILE = 'results/run5_control_cycling.csv'
+METRICS_FILE = '../sharedqueue/results/run3/db2.csv'
 
 # Processed output filename
-OUTPUT_FILE = 'test.csv'
+OUTPUT_FILE = '../sharedqueue/results/run3/pro_db2.csv'
 
 # Starting values
 start_timestamp = 0
@@ -25,7 +25,7 @@ with open(METRICS_FILE, 'r', newline='') as infile:
         writer.writeheader()        
         for row in reader:
 
-            count = int(row['count'])
+            count = int(row['value'])
             
             # mean_rate
             if start_timestamp == 0:
