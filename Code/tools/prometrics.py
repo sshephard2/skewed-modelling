@@ -6,16 +6,16 @@
 import csv
 
 # Metrics filename
-METRICS_FILE = '../sharedqueue/results/run5/pro_db2.csv'
+METRICS_FILE = '../sharedqueue/results/run1/control.csv'
 
 # Processed output filename
-OUTPUT_FILE = '../sharedqueue/results/run5/ppro_db2.csv'
+OUTPUT_FILE = '../sharedqueue/results/run1/pro_control.csv'
 
 # Number of queries per user
 QUERIES_PERUSER = 1425
 
 # Starting number of users
-USER_START = 15
+USER_START = 30
 
 # User increment per test run
 USER_INCREMENT = 15
