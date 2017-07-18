@@ -24,6 +24,7 @@ public class QueueWorkerRunnable implements Runnable {
 	private final Meter metredControl;
 	private final Meter metredAthletics;
 	private final Meter metredCycling;
+	private final Meter metredDiving;
 	
 	// Cassandra session
 	private final Session cassandraSession;
@@ -53,6 +54,7 @@ public class QueueWorkerRunnable implements Runnable {
 		metredControl = this.metrics.meter("control");
 		metredAthletics = this.metrics.meter("athletics");
 		metredCycling = this.metrics.meter("cycling");
+		metredDiving = this.metrics.meter("diving");
 		
 		// Cassandra session
 		this.cassandraSession = cassandraSession;
@@ -84,6 +86,7 @@ public class QueueWorkerRunnable implements Runnable {
 				    		
 				    	case "Athletics":
 				    	case "Cycling":
+				    	case "Diving":
 				    		// CQL - select returned ticket
 				    		// ResultSet rs = cassandraSession.execute("SELECT * FROM ticket WHERE sport=? AND owner='' AND day=? AND id=?;", sport, ticket.getDay(), ticket.getId());
 				    		// Get all tickets for the chosen sport
@@ -101,6 +104,10 @@ public class QueueWorkerRunnable implements Runnable {
 				    		if (sport.equals("Cycling")) {
 							    // Record Cycling metric
 							    metredCycling.mark();					    	
+						    }
+				    		if (sport.equals("Diving")) {
+							    // Record Diving metric
+							    metredDiving.mark();					    	
 						    }
 				    	default:
 				    		// Unrecognised ticket type, ignore
