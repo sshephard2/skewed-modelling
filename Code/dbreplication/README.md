@@ -13,6 +13,14 @@ Otherwise JMeter test plan will be similar to the simplemicro one (distribution 
 One worker application (running on large VM), multi-threaded to dequeue and populate DB?
 (and a control version?)
 
+Cassandra configured with 3 nodes, using `ByteOrderedPartitioner`.
+
+There are 3 tokens (one per node) to force partitioning by sport (first byte of each token = ascii code of first letter of each sport):
+
+	41ffffffffffffffff
+	43ffffffffffffffff
+	44ffffffffffffffff
+
 Run the CQL script below on the DB.
 
 `SOURCE 'replicated.cql';`
@@ -21,8 +29,10 @@ Run the `dbinit` tool on the DB as follows:
 
 	dbinit host1 Replicated Athletics 1000 100 5
 	dbinit host1 Replicated Cycling 2000 50 10
+	dbinit host1 Replicated Diving 3000 50 10
 
 Find out where the data has been put:
 
 	nodetool getendpoints replicated ticket Athletics
 	nodetool getendpoints replicated ticket Cycling
+	nodetool getendpoints replicated ticket Diving
