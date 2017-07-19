@@ -6,10 +6,10 @@
 import csv
 
 # Metrics filename
-METRICS_FILE = '../sharedqueue/results/run5/db2.csv'
+METRICS_FILE = '../dbreplication/results/run1/db2/org.apache.cassandra.metrics.ThreadPools.CompletedTasks.request.ReadStage.csv'
 
 # Processed output filename
-OUTPUT_FILE = '../sharedqueue/results/run5/pro_db2.csv'
+OUTPUT_FILE = '../dbreplication/results/run1/pro_db2.csv'
 
 # Starting values
 start_timestamp = 0
