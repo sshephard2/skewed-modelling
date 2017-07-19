@@ -87,6 +87,62 @@ Control shows that throughput approaches demand (difference likely to be due to 
 %
 \subsection{Shared queue middleware}
 
+See the experimental results in Table \ref{table:builtddnr_results}.
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Shared queue with distributed DB experimental results}
+		\label{table:builtddnr_results}
+		\pgfplotstabletypeset[
+		col sep=comma,
+		string type,
+		columns/conusers/.style={column name=users, column type={p{.1\textwidth}}},
+		columns/conrate/.style={column name=rate, column type={p{.1\textwidth}}},
+		columns/ausers/.style={column name=users, column type={p{.1\textwidth}}},
+		columns/arate/.style={column name=rate, column type={p{.1\textwidth}}},
+		columns/cusers/.style={column name=users, column type={p{.1\textwidth}}},
+		columns/crate/.style={column name=rate, column type={p{.1\textwidth}}},
+		columns/db1/.style={column name=db1, column type={p{.1\textwidth}}},
+		columns/db2/.style={column name=db2, column type={p{.1\textwidth}}},
+		every head row/.style={before row=\hline \multicolumn{2}{c}{Control} &
+		\multicolumn{2}{c}{Athletics} & \multicolumn{2}{c}{Cycling} &
+		\multicolumn{2}{c}{Database} \\,after row=\hline},
+		every last row/.style={after row=\hline},
+		]{data/builtddnr/results.csv}
+	\end{center}
+\end{table}
+
+\begin{figure}
+	\caption{Shared queue with distributed DB experimental results}
+	\label{figure:builtddnr_charts}
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Throughput against athletics demand},
+	xlabel={Athletics demand},
+	ylabel={Throughput},
+	xmin=0, xmax=150,
+	ymin=0, ymax=1000,
+	legend pos=north west,
+	ymajorgrids=true,
+	grid style=dashed,
+	cycle multiindex* list={
+		mark list*
+		\nextlist
+		cyan,brown,green,blue,red
+	}
+	]
+
+	\addplot table [x index={2}, y index={3}, col sep=comma]{data/builtddnr/results.csv};
+	\addplot table [x index={2}, y index={5}, col sep=comma]{data/builtddnr/results.csv};
+	\addplot table [x index={2}, y index={1}, col sep=comma]{data/builtddnr/results.csv};
+	
+	\legend{athletics,cycling,control}
+	
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
+
 %
 % ---- Distributed database with replication
 %
