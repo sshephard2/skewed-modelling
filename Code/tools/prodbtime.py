@@ -6,14 +6,14 @@
 import csv
 
 # Metrics filename
-METRICS_FILE = '../dbreplication/results/run2/pro_db3.csv'
+METRICS_FILE = '../dbreplication/results/run3/pro_db3.csv'
 
 # Processed output filename
-OUTPUT_FILE = '../dbreplication/results/run2/ppro_db3.csv'
+OUTPUT_FILE = '../dbreplication/results/run3/ppro_db3.csv'
 
 # Timestamps for each run
-timestamps = ['1500474643', '1500474853', '1500475073', '1500475323', '1500475593',
-              '1500475922', '1500476312', '1500476772', '1500477272', '1500477811']
+timestamps = ['1500546219', '1500546409', '1500546609', '1500546839', '1500547099',
+              '1500547409', '1500547759', '1500548149', '1500548609', '1500549099']
 
 # Number of queries per user
 QUERIES_PERUSER = 1425
