@@ -6,10 +6,10 @@
 import csv
 
 # Metrics filename
-METRICS_FILE = '../dbreplication/results/run3/diving.csv'
+METRICS_FILE = '../dbreplication/results/run5/diving.csv'
 
 # Processed output filename
-OUTPUT_FILE = '../dbreplication/results/run3/pro_diving.csv'
+OUTPUT_FILE = '../dbreplication/results/run5/pro_diving.csv'
 
 # Number of queries per user
 QUERIES_PERUSER = 1425

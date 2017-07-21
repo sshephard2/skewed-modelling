@@ -6,7 +6,7 @@
 import csv
 
 # Metrics filename
-METRICS_FILE = '../dbreplication/results/run3/athletics.csv'
+METRICS_FILE = '../dbreplication/results/run5/athletics.csv'
 
 # Timestamp list
 timestamps = []
