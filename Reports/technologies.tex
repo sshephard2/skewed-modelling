@@ -29,25 +29,19 @@ There are two main messaging models, both of which are offered by Microsoft Azur
 
 \paragraph{Publish/subscribe.}  Publish/subscribe (in Azure, topics and subscriptions) are a properly one-to-many or many-to-many communication mechanism.  Any single producer may send one message to a topic, and then all consumers that subscribe to that topic receive a copy of the same message.
 
-\subsubsection{Evaluation.}
-The MOM services from Microsoft and Amazon provide tools for monitoring the number of messages in a queue or topic, and middleware can be examined by measuring whether a queue size reaches a steady state, or grows faster than downstream services can consume the messages.  However, this is affected more by the services using the middleware than the choice of middleware itself.  This is likely to be best achieved by end to end measurement.
-
 %
 % ---- Microservices
 %
 
 \subsection{Microservices}
 
-Microservice architecture is an approach to structuring applications as suites of small services, defined by business capability verticals rather than technological layers  \cite{RN1069} \cite{RN1070}.  Each of our use case requirements - search for tickets, book tickets, return tickets - might be microservices with their own worker applications and data nodes.  Ticket data would be denormalised across the data nodes and made eventually consistent via a backplane messaging service \cite{RN1071}.  This would certainly isolate the demand for search, book and return from each other - returning tickets would not be blocked by a system where booking tickets was overloaded.  We would need a lower level of granularity however to deal with skewed demand for a particular type of ticket, perhaps a separate microservice for booking each type. 
+Microservice architecture is an approach to structuring applications as suites of small services, defined by business capability verticals rather than technological layers \cite{RN1069} \cite{RN1070}.  Each of our use case requirements - search for tickets, book tickets, return tickets - might be microservices with their own worker applications and data nodes.  Ticket data would be denormalised across the data nodes and made eventually consistent via a backplane messaging service \cite{RN1071}.  This would certainly isolate the demand for search, book and return from each other - returning tickets would not be blocked by a system where booking tickets was overloaded.  We would need a lower level of granularity however to deal with skewed demand for a particular type of ticket, perhaps a separate microservice for booking each type. 
 
 \begin{figure}
 \caption{Microservices}
 \centering
 \includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/microservices}
 \end{figure}
-
-\subsubsection{Evaluation.}
-As for middleware, evaluation of different microservices approaches depends on end to end measurement.   However, one area of interest is the efficiency of highly granular microservices.  If the demand for the microservices is isolated then it is possible that some low demand services are underutilised.
 
 %
 % ---- Distributed databases
@@ -69,7 +63,3 @@ Where the high demand is unknown in advance, we need an adaptive strategy.  Work
 \centering
 \includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/dbdist}
 \end{figure}
-
-\subsubsection{Evaluation.}
-
-A successful partitioning strategy will ensure that an individual operation only uses a single data node; that every data node is equally used when demand is evenly distributed; and that any impact from skewed demand is limited to the directly affected data node.

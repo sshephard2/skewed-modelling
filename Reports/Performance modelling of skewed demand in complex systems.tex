@@ -31,7 +31,7 @@ There are many high-profile examples of whole IT systems brought down by custome
 
 It is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others.  Skewed demand may be isolated so that it only affects parts of a system, or shared equally between different components. (The system may also adapt to demand by elastic scaling of resources, but this will not be considered as part of this paper).
 
-We will briefly discuss Middleware, Microservices and Distributed Databases and show how they provide strategies for managing demand.  In a complex system we need to examine the end to end impacts.  Does removing a bottleneck at the Web or Worker Application layer shift the stress to the middleware, or the database?  If we accept that some levels of demand cannot be met on a limited budget, and that some components will no longer meet the required throughput, how do we determine the impact on the remainder of the system?  To examine these questions we will build models of an example system using different architectures; to test the models we will build out these systems and measure how demand impacts the throughput.
+It is proposed that a selection of technologies may be modelled as simple components, that may be composed into more complex system models that make end to end predictions.  When combining a middleware solution with a distributed database, where is the system bottleneck?  If there are levels of demand that cannot be met on a limited budget, and that therefore some components will no longer meet the required throughput, what is the impact on the remainder of the system?  The models will then be tested against actual built systems.
 
 %
 % ---- Background
@@ -39,22 +39,28 @@ We will briefly discuss Middleware, Microservices and Distributed Databases and 
 
 \section{Background}
 
-We will consider an example system based on the Olympic ticketing use case above.  Such a ticketing application may be generalised to any system for allocating and releasing other resources with variable demand.
+Consider a general OLTP application using a distributed architecture.  Users access the application with a web-based front end.  Resources are stored in one or more databases.  In between the web servers and database are worker applications that service user requests, connected to the web servers by some middleware.  There are strategies for coping with skewed demand at each of the layers of this architecture.
 
-Tickets will be for a multi-sport event, and each will consist of a ticket type (the sport), date, row, and seat number.  The system will support three operations:
+\paragraph{Adapting.} A system using Cloud technologies may adapt to increased demand. {\itshape Rapid elasticity} is an essential characteristic of Cloud Computing by the NIST definition \cite{RN56}.  Computing resources, for example web servers or worker applications, can be elastically and often automatically scaled to meet current demand.  This gives the appearance of resources that are limited only by the system owner's budget.
+
+\paragraph{Sharing.} High demand may be shared between resources.  HTTP load balancing improves the scalability of a web-based application by distributing the demand across multiple web servers \cite{RN73}.  Shared middleware such as a point-to-point queue, provides a competing consumer pattern to balance load from several producers, e.g. web servers, between multiple consumers e.g. worker applications.
+
+\paragraph{Isolating.} If it is not possible to satisfy the skewed demand within a given budget, then it may be appropriate to isolate that demand from the rest of the system.  Horizontal partitioning of a distributed database can place high demand resources on different data nodes.  Microservices architecture offers a pattern for partitioning the data resources, the worker applications and the web servers using them into entirely separate smaller end to end services.
+
+\subsection{Use Case}
+
+The concrete use case for constructing models and building systems is a ticketing application.  Following the Olympic example given in the Introduction, tickets will be for a multi-sport event.  Some sports are more popular than others and it will be assumed that there will be skewed demand for {\itshape athletics} tickets.
+
+The application has three possible operations:
 \begin{enumerate}
 \item Search (for available tickets)
 \item Book (allocate a ticket to a customer)
 \item Return (customer releases a ticket allocation)
 \end{enumerate}
 
-If it is not possible to search for or book tickets of one type because some component is overloaded due to demand, then the system should allow booking of other ticket types.  It must also always be possible to return tickets of any type.
+Such a ticketing application may be generalised to any system for allocating and releasing other resources with variable demand.
 
-In this paper, we are considering the problem of high demand for types of ticket.  This is not about the number of tickets available and we will not consider issues of fair allocation of scarce resources.  The demand may be:
-\begin{enumerate}
-\item predictable - we know which functions or ticket types are going to have the highest demand; or
-\item unknown - we discover the areas of highest demand once the application goes online.
-\end{enumerate}
+This paper considers the problem of higher than average demand for a particular type of ticket, and to what extent the system will allow users to search for other ticket types if some component is overloaded by the skewed demand for the most popular tickets.  It does not consider issues of fair allocation of scarce resources.
 
 %
 % ---- Technologies sub-document
