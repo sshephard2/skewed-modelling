@@ -3,11 +3,11 @@
 ########## Average of processed metrics output files ##########
 
 # Metrics filename
-METRICS_PATH = '../sharedqueue/results/run*/'
-METRICS_FILE = 'ppro_db2.csv'
+METRICS_PATH = '../dbreplication/results/run*/'
+METRICS_FILE = 'ppro_db3.csv'
 
 # Processed output filename
-OUTPUT_FILE = '../../Reports/data/builtddnr/average_db2.csv'
+OUTPUT_FILE = '../../Reports/data/builtddwr/average_db3.csv'
 
 import pandas as pd
 import glob
