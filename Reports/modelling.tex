@@ -1,31 +1,40 @@
 \section{Modelling}
 
-We can decouple worker applications from the front-end using asynchronous middleware.  Shared middleware balances the load, microservice architecture isolates it.  The system can adapt to current demand by using elastic scaling to create or destroy worker applications, and by using scaling groups we can ensure that the number of each application type is appropriate to the demand.
-
-With care, we can use horizontal database partitioning to ensure that functions and/or data types are not shared between data nodes, isolating their demand from each other.
-
-At the component level we can see whether an approach will balance or isolate load, or adapt to it, but at the system level we will need modelling techniques to predict the end to end throughput.
+The modelling technique must enable predictions about throughput for varying levels of skewed demand.  It must also be possible to compose system models from simpler components.  Two approaches for the latter are programming language-based models (e.g. {\itshape CloudSim}) or mathematical language-based models (e.g. {\itshape Process Algebra}).
 
 \paragraph{CloudSim.}  CloudSim \cite{RN69} is a Java framework for developing cloud datacentre simulations.  Much of it is concerned with modelling the efficient running of that infrastructure, for example the power usage, but it also includes utilisation models and may be useful for predicting the effect of elastic scaling.
 
-CloudSim simulations require Java development for creation and modification, which is an overhead in building the models but offers more flexibility in applying them.  Process Algebra has closed-form solutions, though there is a PEPA Workbench tool \cite{RN51} that allows PEPA specifications to be parsed and run like programs, aiding experimentation on a range of action rates by automating repetitive calculations.  Both currently have their place as they predict different quantities of interest.
+CloudSim simulations require Java development for creation and modification, which is an overhead in building the models but offers flexibility in applying them.
 
-\paragraph{Process Algebra.} Process Algebras (such as PEPA or TIPP \cite{RN64}) allow us to model throughput in interdependent processes, with a mixture of independent and shared actions operating at different rates.  Each of our components can be described in this way, and queues have already been extensively modelled in PEPA \cite{RN75}.  The nature of process algebra as a mathematical language also means that it is possible to build a model of a whole system by composition of the component models.
+\paragraph{Process Algebra.} Process Algebras (such as PEPA or TIPP \cite{RN64}) model throughput in interdependent processes, with a mixture of independent and shared actions operating at different rates.  There is a PEPA Workbench tool \cite{RN51} that allows PEPA specifications to be parsed and run like programs, aiding experimentation on a range of action rates by automating repetitive calculations.
+
+\subsection{PEPA (Performance Evaluation Process Algebra)}
+
+The models will be produced using PEPA.  This paper is concerned with distribution of throughput in complex systems, rather than right-sizing those systems.  The PEPA Workbench will allow the automation of testing with a range of skewed demand values.
+
+A PEPA model describes a system of interacting {\itshape components} which carry out {\itshape activites} at specified or passive {\itshape rates}.  A component is usually denoted by a name with an initial upper case letter, e.g. {\itshape Website}, and an activity type and rate are expressed as a bracketed pair e.g. $\mathit(request, r)$ where the activity type is a full lower case name (or Greek letter) and the rate is a single letter or the top symbol $\top$, denoting an unspecified (passive) rate.  There is a set of combinators that describe how the components and activities interact.  This paper uses the following subset, for the full syntax see {\cite{RN1048}}:
+
+\subsubsection{Prefix:} $(\mathit{\alpha},\mathit{r}).\mathit{P}$ - a component carries out activity $\mathit{\alpha}$ at rate $\mathit{r}$ and then behaves as component $\mathit{P}$.
+\subsubsection{Constant:} $\mathit{A} \rmdef \mathit{P}$ - assign the behaviour of component $\mathit{P}$ to the constant $\mathit{A}$.  Used with prefix, this can be used to define a recurring process e.g. $\mathit{P} \rmdef (\mathit{\alpha},\mathit{r}).\mathit{P}$.
+\subsubsection{Choice:} $\mathit{P} + \mathit{Q}$ - a component may behave {\itshape either} as component $\mathit{P}$ or $\mathit{Q}$, nondeterministically.  This represents a race condition between components.
+\subsubsection{Cooperation:} $\mathit{P} \sync{L} \mathit{Q}$ - for shared activities in the set $\mathit{L}$, components $\mathit{P}$ and $\mathit{Q}$ may only proceed with the simultaneous execution of those activities at the rate of the slowest component, otherwise they behave independently.
+\subsubsection{Parallel:} $\mathit{P} \parallel \mathit{Q}$ - shorthand for components that synchronize with no shared activities i.e. equivalent to $\mathit{P} \sync{\emptyset} \mathit{Q}$.
+\subsubsection{Aggregation:} $\mathit{P}[N]$ - represents $\mathit{N}$ instances of component $\mathit{P}$, where the number of instances in each state is important but the individual states are not signficant.
 
 \begin{figure}
-\caption{PEPA queue model}
-\centering
-% Automatically generated by PEPA2Latex
-% --begin
-\begin{displaymath}
+	\caption{PEPA queue model}
+	\centering
+	% Automatically generated by PEPA2Latex
+	% --begin
+	\begin{displaymath}
 	\begin{array}{rcl}
-%[0.0ex]		
-\mathit{Website} & \rmdef & (\mathit{request},\mathit{r}).\mathit{Website}\\
-		\mathit{Worker} & \rmdef & (\mathit{service},\mathit{s}).\mathit{Worker}\\
-		\mathit{Queue_{0}} & \rmdef & (\mathit{request},\mathit{r}).\mathit{Queue_{1}}\\
-		\mathit{Queue_{1}} & \rmdef & (\mathit{service},\mathit{s}).\mathit{Queue_{0}}\\
-[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{request}\mathit{Queue_{0}}[N]\sync{service}\mathit{Worker}}\\
-[0.0ex]	\end{array}
-\end{displaymath}
-% --end
+	%[0.0ex]		
+	\mathit{Website} & \rmdef & (\mathit{request},\mathit{r}).\mathit{Website}\\
+	\mathit{Worker} & \rmdef & (\mathit{service},\mathit{s}).\mathit{Worker}\\
+	\mathit{Queue_{0}} & \rmdef & (\mathit{request},\mathit{r}).\mathit{Queue_{1}}\\
+	\mathit{Queue_{1}} & \rmdef & (\mathit{service},\mathit{s}).\mathit{Queue_{0}}\\
+	[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{request}\mathit{Queue_{0}}[N]\sync{service}\mathit{Worker}}\\
+	[0.0ex]	\end{array}
+	\end{displaymath}
+	% --end
 \end{figure}
