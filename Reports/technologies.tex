@@ -54,6 +54,10 @@ In our use case, the quantity of data does not approach the levels of ``Big Data
 
 The scalability of distributed databases usually comes at the price of a relaxed consistency model - so-called BASE (Basically Available, Soft state, Eventually Consistent) rather than ACID (Atomic, Consistent, Isolated, Durable) transactions.  In our ticketing system, eventual consistency is clearly sufficient for the return ticket scenario - returned tickets do not have to be made immediately available for booking.  Individual ticket bookings must exist on only one partition to prevent the same ticket being booked more than once.  Eventual consistency between search and book operations requires the customer to tolerate the concept of ``reservation'' of a ticket for a short period until a booking can be confirmed \cite{RN1071}\cite{RN67}.
 
+\begin{shaded}
+Discuss Cassandra replication model, and refer to other distributed databases using it
+\end{shaded}
+
 Another issue to be aware of is {\itshape replication}.   Most distributed databases offer replication of data from one partition to another for availability.  In our use case, if a data node is overloaded by demand, the system may failover to a copy of the data on another data node, but this will just transfer the demand elsewhere.  If this is also the primary data node of an otherwise low demand data type, then it may be overwhelmed in turn.
 
 Where the high demand is unknown in advance, we need an adaptive strategy.  Workload-aware clustering algorithms do exist for the placement of new data, e.g. \cite{RN63}, but our use case has a fixed set of tickets.  Re-placement of existing data onto different partitions would be likely to require many reads, writes and deletes.

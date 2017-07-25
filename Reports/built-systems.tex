@@ -3,34 +3,55 @@
 %
 
 \section{Built systems}
+\begin{shaded}
 
 Reference to github at \cite{RN1073}
 
 General design decisions:
 
-Cassandra \cite{RN1050}\cite{RN1075} database.  Create a Dbstress program and measured throughput of Cassandra node at 130 queries per second.
+Cassandra \cite{RN1050}\cite{RN1075} database.  There are 500 tickets of each sport stored in the databases in different configurations.
 
-Measurement using Coda Hale Metrics \cite{RN1079}.
+/*
+* Ticket table schema
+* 
+* int id - unique ticket id
+* varchar sport - type of sport
+* int day - day of event
+* int seat - seat number
+* varchar owner - name of ticket owner (for booked ticket)
+* 
+* The partition key is sport
+* The clustering columns are owner, day, id
+*/
 
 Load testing using Apache JMeter \cite{RN1074}.
+
+Measurement using Meters from Coda Hale Metrics \cite{RN1079}.  Metrics are logged every 10 seconds. The largest 1-minute moving average over a run for a chosen demand is extracted by a Python script.  Each experiment was carried out 5 times and the mean was taken of the 5 sets of results.
+
+\end{shaded}
 
 %
 % ---- Simple microservices
 %
 \subsection{Simple microservices}
+\begin{shaded}
+Two completely separate Cassandra databases, each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, one containing Athletics tickets, one containing Cycling tickets.
 
-RESTful APIs using Java Spring \cite{RN1076}.
+Two worker applications using RESTful APIs using Java Spring \cite{RN1076}.  Each worker application runs on a separate Azure Standard DS1 v2 (1 core, 3.5 GB memory) Ubuntu Virtual Machine.  Each connects to one of the Cassandra databases.
 
-Implemented a \\control API which doesn't access the database.
+Each worker application has a \\control API which doesn't access the database, but for which metrics are recorded.
+Each worker application also has a \\search API which takes a sport parameter (Athletics or Cycling) and queries the database for all matching tickets.
 
-Use JMeter with Poisson random timer (negative exponential distribution) with Cycling at a constant 10 threads/users and Athletics ramping up from 10-100 in steps of 10, so the desired demand is 20-200 requests per second.
+Use JMeter with Poisson random timer (negative exponential distribution) with a lambda value of 500 milliseconds, Cycling at a constant 10 threads/users (approximately 20 requests per second) and Athletics ramping up from 10-100 in steps of 10, so the desired demand is 20-200 requests per second.  Each thread group has a loop count of 500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.
 
-Run the experiment 5 times and average the results (taking the maximum rolling 1 minute average for each number of users).
+The control version of the above JMeter test plan uses the same variables, but sends both Athletics and Cycling requests to the \\control API.
+
+Limit of throughput using \\search was measured at 130 queries per second.  This is lower than the throughput suggested by using the cassandra-stress tool, and suggests that using Java Spring Data adds overheads to the database requests (most likely, as the RESTful requests to the worker applications are sessionless, this is starting a new database session for each request).
 
 See the experimental results in Table \ref{table:builtmicro_results}.
 
 Control shows that throughput approaches demand (difference likely to be due to random distribution, network latency, etc).  However the Athletics demand is throttled by the database throughput.  The Cycling throughput is unaffected by the Athletics demand. 
-
+\end{shaded}
 \begin{table}[h!]
 	\begin{center}
 		\caption{Simple microservices experimental results}
@@ -86,8 +107,34 @@ Control shows that throughput approaches demand (difference likely to be due to 
 % ---- Shared queue middleware
 %
 \subsection{Shared queue middleware}
+\begin{shaded}
+This would normally be used for the return ticket operation.  To ensure that a usable Cassandra metric was available, a search operation was used again.
+
+Distributed Cassandra databases using two nodes each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, using a Distributed keyspace with SimpleStrategy, replication\_factor=1.  Cassandra's partitioning places Athletics tickets on one node, and Cycling tickets on the other.  This is validated using nodetool getendpoints e.g.
+
+nodetool getendpoints Distributed ticket Athletics
+
+Cassandra configured to record metrics of a count of all completed read queries every 10s i.e.
+
+org.apache.cassandra.metrics.ThreadPools.CompletedTasks.request.ReadStage
+
+A Python script calculates the rolling 1-minute average throughput from these counts.
+
+A single shared Azure Storage Queue is used.
+
+A single multithreaded QueueWorker application dequeues every request from the shared Azure Storage Queue.  It runs on an Azure Standard DS3 v2 Promo (4 cores, 14 GB memory) Ubuntu Virtual Machine.  As populating the queue with JMeter and processing it with the worker application are decoupled, it was possible to run QueueWorker on a prepopulated queue to determine its maximum throughput i.e. regardless of the incoming demand. Using this technique suggested that maximum performance came with QueueWorker running with 16 threads.
+
+Note that without the overheads of starting a new Cassandra database session for each request, it is necessary to slow Cassandra down by turning on tracing for 100\% of queries - bin/nodetool settraceprobability 1.0
+
+QueueWorker processes both Control tickets and real (Athletics, Cycling) tickets.  Metrics are recorded for all requests, but for real ticket requests a database select of all tickets for the matching sport is carried out first and the metric is only recorded if the query returns results.
+
+Use JMeter with Poisson random timer (negative exponential distribution) with a lambda value of 100 milliseconds, Cycling at a constant 15 threads/users (approximately 95 requests per second) and Athletics ramping up from 15-150 in steps of 15, so the desired demand is 95-950 requests per second.  Each thread group has a loop count of 1500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.
+
+The control version of the above JMeter test plan uses the same variables, but sending Control tickets rather than Athletics and Cycling tickets to the queue.
 
 See the experimental results in Table \ref{table:builtddnr_results}.
+
+\end{shaded}
 
 \begin{table}[h!]
 	\begin{center}
@@ -148,3 +195,26 @@ See the experimental results in Table \ref{table:builtddnr_results}.
 %
 \subsection{Distributed database with replication}
 
+\begin{shaded}
+Distributed Cassandra databases using three nodes each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, using a Replicated keyspace with SimpleStrategy, replication\_factor=2.  Cassandra's partitioning places Athletics, Cycling and Diving tickets on different nodes with each node also containing replicas of one other ticket type.  Note that it was necessary to use ByteOrderedPartitioner to force this.
+
+This is validated using nodetool getendpoints e.g.
+
+nodetool getendpoints Distributed ticket Athletics
+
+Athletics/Cycling
+Cycling/Diving
+Diving/Athletics
+
+Cassandra metrics configured and processed as above.
+
+The same shared Azure Storage Queue and QueueWorker application running with 16 threads used again.
+
+Cassandra with tracing for 100\% of queries as before.
+
+Use JMeter with Poisson random timer (negative exponential distribution) with a lambda value of 100 milliseconds, Cycling and Diving at a constant 15 threads/users (approximately 95 requests per second) and Athletics ramping up from 15-150 in steps of 15, so the desired demand is 95-950 requests per second.  Each thread group has a loop count of 1500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.
+
+The control version of the above JMeter test plan uses the same variables, but sending Control tickets rather than real tickets to the queue.
+
+See the experimental results in Table \ref{table:builtddnr_results}.
+\end{shaded}
