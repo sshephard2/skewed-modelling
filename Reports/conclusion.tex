@@ -18,6 +18,8 @@ Different queue strategies.  A priority queue for the skewed demand?
 
 An interesting area of future work might be in using the modelling techniques in adaptive algorithms.  A model might be used as a policy for elastic scaling, and compared with the performance of other right-sizing strategies; control theory, machine learning and other model based techniques including statistical.
 
+Data partionining - where the high demand is unknown in advance, we need an adaptive strategy.  Workload-aware clustering algorithms do exist for the placement of new data, e.g. \cite{RN63}, but our use case has a fixed set of tickets.  Re-placement of existing data onto different partitions would be likely to require many reads, writes and deletes.
+
 %
 % ---- Operational microservices
 %
