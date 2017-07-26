@@ -16,29 +16,29 @@ q = 100.0; /* Rate of consuming from queue */
 db = 5.0; /* Rate of servicing DB requests */
 
 /* Web front-end process */
-Website = (book_a, a).Website + (book_c, c).Website  + (book_d, d).Website;
+Website = (athletics, a).Website + (cycling, c).Website  + (diving, d).Website;
 
 /* Shared queue process */
-Q_0 = (book_a, T).Q_A + (book_c, T).Q_C + (book_d, T).Q_D;
-Q_A = (queue_a, T).Q_0;
-Q_C = (queue_c, T).Q_0;
-Q_D = (queue_d, T).Q_0;
+Q_0 = (athletics, T).Q_A + (cycling, T).Q_C + (diving, T).Q_D;
+Q_A = (queueA, T).Q_0;
+Q_C = (queueC, T).Q_0;
+Q_D = (queueD, T).Q_0;
 
 /* DB node processes */
-DB_1 = (queue_a, q).DBsrv_1 + (queue_c, q).DBsrv_1;
-DBsrv_1 = (dbsrv_1, T).DB_1;
+DB_1 = (queueA, q).DBsrv_1 + (queueC, q).DBsrv_1;
+DBsrv_1 = (dbsrv1, T).DB_1;
 
-DB_2 = (queue_c, q).DBsrv_2 + (queue_d, q).DBsrv_2;
-DBsrv_2 = (dbsrv_2, T).DB_2;
+DB_2 = (queueC, q).DBsrv_2 + (queueD, q).DBsrv_2;
+DBsrv_2 = (dbsrv2, T).DB_2;
 
-DB_3 = (queue_d, q).DBsrv_3 + (queue_a, q).DBsrv_3;
-DBsrv_3 = (dbsrv_3, T).DB_3;
+DB_3 = (queueD, q).DBsrv_3 + (queueA, q).DBsrv_3;
+DBsrv_3 = (dbsrv3, T).DB_3;
 
 /* Service processes for DB nodes */
-Service_1 = (dbsrv_1, db).Service_1;
-Service_2 = (dbsrv_2, db).Service_2;
-Service_3 = (dbsrv_3, db).Service_3;
+Service_1 = (dbsrv1, db).Service_1;
+Service_2 = (dbsrv2, db).Service_2;
+Service_3 = (dbsrv3, db).Service_3;
 
-Website <book_a, book_c, book_d> Q_0[10]
- 	<queue_a, queue_c, queue_d> (DB_1 || DB_2 || DB_3)
-	<dbsrv_1, dbsrv_2, dbsrv_3> (Service_1 || Service_2 || Service_3)
+Website <athletics, cycling, diving> Q_0[10]
+ 	<queueA, queueC, queueD> (DB_1 || DB_2 || DB_3)
+	<dbsrv1, dbsrv2, dbsrv3> (Service_1 || Service_2 || Service_3)

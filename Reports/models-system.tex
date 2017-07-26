@@ -3,11 +3,26 @@
 %
 
 \section{PEPA System Models}
+\begin{shaded}
+The proposed system will use distributed architectures.  Users will access it from a web-based front end.  Tickets will be stored in a database partitioned across several data nodes.  In between the web servers and database will be a number of worker applications to service user requests, connected to the web servers by some middleware.
+
+For each architecture it will be assumed that the web application will be designed to cope with the required demand, using a cluster of web servers where the throughput is managed using some HTTP Load Balancing algorithm \cite{RN73}, and potentially Elastic Scaling of servers e.g. using the autoscaling features of Amazon Web Services \cite{RN1064} or Microsoft Azure \cite{RN1065}.
+\end{shaded}
 
 %
 % ---- Simple microservices
 %
 \subsection{Simple microservices}
+
+There are two separate databases, one for Athletics tickets, one for Cycling.
+
+It's expected that this architecture will lead to isolation of the skewed demand and that the results of testing the model will not be surprising, but that this will provide a useful control for other architectures.
+
+\begin{figure}
+	\caption{Simple microservices architecture}
+	\centering
+	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/simplemicro}
+\end{figure}
 
 \begin{figure}
 	\caption{Simple microservices PEPA model}
@@ -21,7 +36,7 @@
 			\mathit{c} & = & 1.0\\
 			\mathit{w} & = & 100.0\\
 			\mathit{db} & = & 6.5\\
-			[0.0ex]		\mathit{Website} & \rmdef & (\mathit{athletics},\mathit{a}).\mathit{Website}+(\mathit{cycling},\mathit{c}).\mathit{Website}\\
+			[2.0ex]		\mathit{Website} & \rmdef & (\mathit{athletics},\mathit{a}).\mathit{Website}+(\mathit{cycling},\mathit{c}).\mathit{Website}\\
 			\mathit{Worker_A} & \rmdef & (\mathit{athletics},\top).\mathit{WorkerSrv_A}\\
 			\mathit{WorkerSrv_A} & \rmdef & (\mathit{workerA},\top).\mathit{Worker_A}\\
 			\mathit{Worker_C} & \rmdef & (\mathit{cycling},\top).\mathit{WorkerSrv_C}\\
@@ -32,8 +47,8 @@
 			\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{DB_2}\\
 			\mathit{Service_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{Service_1}\\
 			\mathit{Service_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{Service_2}\\
-			[0.0ex]		\multicolumn{3}{l}{\mathit{Service_1}\sync{dbsrv1}\mathit{DB_1}\sync{workerA}\mathit{Worker_A}\sync{athletics}\mathit{Website}\sync{cycling}\mathit{Worker_C}\sync{workerC}\mathit{DB_2}\sync{dbsrv2}\mathit{Service_2}}\\
-			[0.0ex]	\end{array}
+			[2.0ex]		\multicolumn{3}{l}{\mathit{Service_1}\sync{dbsrv1}\mathit{DB_1}\sync{workerA}\mathit{Worker_A}\sync{athletics}\mathit{Website}\sync{cycling}\mathit{Worker_C}\sync{workerC}\mathit{DB_2}\sync{dbsrv2}\mathit{Service_2}}\\
+			[2.0ex]	\end{array}
 	\end{displaymath}
 	% --end
 \end{figure}
@@ -50,10 +65,10 @@ See the experimental results in Table \ref{table:micro_results}.
 		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
 		columns/athletics/.style={column name=athletics, column type={p{.1\textwidth}}},
 		columns/cycling/.style={column name=cycling, column type={p{.1\textwidth}}},
-		columns/dbsrv1/.style={column name=dbsrv1, column type={p{.1\textwidth}}},
-		columns/dbsrv2/.style={column name=dbsrv2, column type={p{.1\textwidth}}},
 		columns/workerA/.style={column name=workerA, column type={p{.1\textwidth}}},
 		columns/workerC/.style={column name=workerC, column type={p{.1\textwidth}}},
+		columns/dbsrv1/.style={column name=dbsrv1, column type={p{.1\textwidth}}},
+		columns/dbsrv2/.style={column name=dbsrv2, column type={p{.1\textwidth}}},
 		every head row/.style={before row=\hline Rate & \multicolumn{6}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/micro/results.csv}
@@ -95,6 +110,14 @@ See the experimental results in Table \ref{table:micro_results}.
 %
 \subsection{Shared queue and distributed database}
 
+Requests via a shared queue to worker applications going to a distributed database with two nodes, Athletics and Cycling.
+
+\begin{figure}
+	\caption{Shared queue middleware architecture}
+	\centering
+	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/sharedqueue}
+\end{figure}
+
 \begin{figure}
 	\caption{Shared queue and distributed database}
 	\label{figure:queuedd}
@@ -103,22 +126,22 @@ See the experimental results in Table \ref{table:micro_results}.
 	% --begin
 	\begin{displaymath}
 	\begin{array}{rcl}
-	\mathit{a} & = & 1.0-10.0\\
+	\mathit{a} & = & 1.0\\
 	\mathit{c} & = & 1.0\\
 	\mathit{q} & = & 100.0\\
 	\mathit{db} & = & 5.0\\
-	[0.0ex]		\mathit{Website} & \rmdef & (\mathit{book_a},\mathit{a}).\mathit{Website}+(\mathit{book_c},\mathit{c}).\mathit{Website}\\
-	\mathit{Q_0} & \rmdef & (\mathit{book_a},\top).\mathit{Q_A}+(\mathit{book_c},\top).\mathit{Q_C}\\
-	\mathit{Q_A} & \rmdef & (\mathit{queue_a},\top).\mathit{Q_0}\\
-	\mathit{Q_C} & \rmdef & (\mathit{queue_c},\top).\mathit{Q_0}\\
-	\mathit{DB_1} & \rmdef & (\mathit{queue_a},\mathit{q}).\mathit{DBsrv_1}\\
-	\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv_1},\mathit{db}).\mathit{DB_1}\\
-	\mathit{DB_2} & \rmdef & (\mathit{queue_c},\mathit{q}).\mathit{DBsrv_2}\\
-	\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv_2},\mathit{db}).\mathit{DB_2}\\
-	\mathit{Service_1} & \rmdef & (\mathit{dbsrv_1},\mathit{db}).\mathit{Service_1}\\
-	\mathit{Service_2} & \rmdef & (\mathit{dbsrv_2},\mathit{db}).\mathit{Service_2}\\
-	[0.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{book_a,book_c}\mathit{Q_0}[10.0]\sync{queue_a,queue_c}\mathit{DB_1}\parallel\mathit{DB_2}\sync{dbsrv_1,dbsrv_2}\mathit{Service_1}\parallel\mathit{Service_2}}\\
-	[0.0ex]	\end{array}
+	[2.0ex]		\mathit{Website} & \rmdef & (\mathit{athletics},\mathit{a}).\mathit{Website}+(\mathit{cycling},\mathit{c}).\mathit{Website}\\
+	\mathit{Q_0} & \rmdef & (\mathit{athletics},\top).\mathit{Q_A}+(\mathit{cycling},\top).\mathit{Q_C}\\
+	\mathit{Q_A} & \rmdef & (\mathit{queueA},\top).\mathit{Q_0}\\
+	\mathit{Q_C} & \rmdef & (\mathit{queueC},\top).\mathit{Q_0}\\
+	\mathit{DB_1} & \rmdef & (\mathit{queueA},\mathit{q}).\mathit{DBsrv_1}\\
+	\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{DB_1}\\
+	\mathit{DB_2} & \rmdef & (\mathit{queueC},\mathit{q}).\mathit{DBsrv_2}\\
+	\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{DB_2}\\
+	\mathit{Service_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{Service_1}\\
+	\mathit{Service_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{Service_2}\\
+	[2.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{\substack{athletics\\cycling}}\mathit{Q_0}[N]\sync{\substack{queueA\\queueC}}\mathit{DB_1}\parallel\mathit{DB_2}\sync{\substack{dbsrv1\\dbsrv2}}\mathit{Service_1}\parallel\mathit{Service_2}}\\
+	[2.0ex]	\end{array}
 	\end{displaymath}
 	% --end
 \end{figure}
@@ -133,12 +156,12 @@ See the experimental results in Table \ref{table:queuedd_results}.
 		col sep=comma,
 		string type,
 		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
-		columns/booka/.style={column name=book\textsubscript{a}, column type={p{.1\textwidth}}},
-		columns/bookc/.style={column name=book\textsubscript{c}, column type={p{.1\textwidth}}},
-		columns/qa/.style={column name=queue\textsubscript{a}, column type={p{.1\textwidth}}},
-		columns/qc/.style={column name=queue\textsubscript{c}, column type={p{.1\textwidth}}},
-		columns/dbsrv1/.style={column name=dbsrv\textsubscript{1}, column type={p{.1\textwidth}}},
-		columns/dbsrv2/.style={column name=dbsrv\textsubscript{2}, column type={p{.1\textwidth}}},
+		columns/athletics/.style={column name=athletics, column type={p{.1\textwidth}}},
+		columns/cycling/.style={column name=cycling, column type={p{.1\textwidth}}},
+		columns/qa/.style={column name=queueA, column type={p{.1\textwidth}}},
+		columns/qc/.style={column name=queueC, column type={p{.1\textwidth}}},
+		columns/dbsrv1/.style={column name=dbsrv1, column type={p{.1\textwidth}}},
+		columns/dbsrv2/.style={column name=dbsrv2, column type={p{.1\textwidth}}},
 		every head row/.style={before row=\hline Rate & \multicolumn{6}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/qddnr/results.csv}
@@ -150,6 +173,14 @@ See the experimental results in Table \ref{table:queuedd_results}.
 %
 \subsection{Shared queue and distributed database with replication}
 
+Requests via a shared queue to worker applications going to a distributed database with three nodes, Athletics, Cycling and Diving, where each partition is replicated on another node.
+
+\begin{figure}
+	\caption{Distributed database with replication architecture}
+	\centering
+	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/sharedqueue_withrep}
+\end{figure}
+
 \begin{figure}
 	\caption{Shared queue and distributed database with replication}
 	\label{figure:queueddrep}
@@ -158,28 +189,27 @@ See the experimental results in Table \ref{table:queuedd_results}.
 	% --begin
 	\begin{displaymath}
 	\begin{array}{rcl}
-	\mathit{a} & = & 1.0-10.0\\
+	\mathit{a} & = & 1.0\\
 	\mathit{c} & = & 1.0\\
 	\mathit{d} & = & 1.0\\
 	\mathit{q} & = & 100.0\\
 	\mathit{db} & = & 5.0\\
-	[0.0ex]		\mathit{Website} & \rmdef & (\mathit{book_a},\mathit{a}).\mathit{Website}+(\mathit{book_c},\mathit{c}).\mathit{Website}+(\mathit{book_d},\mathit{d}).\mathit{Website}\\
-	\mathit{Q_0} & \rmdef & (\mathit{book_a},\top).\mathit{Q_A}+(\mathit{book_c},\top).\mathit{Q_C}+(\mathit{book_d},\top).\mathit{Q_D}\\
-	\mathit{Q_A} & \rmdef & (\mathit{queue_a},\top).\mathit{Q_0}\\
-	\mathit{Q_C} & \rmdef & (\mathit{queue_c},\top).\mathit{Q_0}\\
-	\mathit{Q_D} & \rmdef & (\mathit{queue_d},\top).\mathit{Q_0}\\
-	\mathit{DB_1} & \rmdef & (\mathit{queue_a},\mathit{q}).\mathit{DBsrv_1}+(\mathit{queue_c},\mathit{q}).\mathit{DBsrv_1}\\
-	\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv_1},\top).\mathit{DB_1}\\
-	\mathit{DB_2} & \rmdef & (\mathit{queue_c},\mathit{q}).\mathit{DBsrv_2}+(\mathit{queue_d},\mathit{q}).\mathit{DBsrv_2}\\
-	\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv_2},\top).\mathit{DB_2}\\
-	\mathit{DB_3} & \rmdef & (\mathit{queue_d},\mathit{q}).\mathit{DBsrv_3}+(\mathit{queue_a},\mathit{q}).\mathit{DBsrv_3}\\
-	\mathit{DBsrv_3} & \rmdef & (\mathit{dbsrv_3},\top).\mathit{DB_3}\\
-	\mathit{Service_1} & \rmdef & (\mathit{dbsrv_1},\mathit{db}).\mathit{Service_1}\\
-	\mathit{Service_2} & \rmdef & (\mathit{dbsrv_2},\mathit{db}).\mathit{Service_2}\\
-	\mathit{Service_3} & \rmdef & (\mathit{dbsrv_3},\mathit{db}).\mathit{Service_3}\\
-	[0.0ex]		\multicolumn{3}{c}{\mathit{Website}\sync{book_a,book_c,book_d}\mathit{Q_0}[10.0]\sync{queue_a,queue_c,queue_d}\mathit{DB_1}\parallel\mathit{DB_2}\parallel\mathit{DB_3}\sync{dbsrv_1,dbsrv_2,dbsrv_3}}\\
-	\multicolumn{3}{c}{\mathit{Service_1}\parallel\mathit{Service_2}\parallel\mathit{Service_3}}\\
-	[0.0ex]	\end{array}
+	[2.0ex]		\mathit{Website} & \rmdef & (\mathit{athletics},\mathit{a}).\mathit{Website}+(\mathit{cycling},\mathit{c}).\mathit{Website}+(\mathit{diving},\mathit{d}).\mathit{Website}\\
+	\mathit{Q_0} & \rmdef & (\mathit{athletics},\top).\mathit{Q_A}+(\mathit{cycling},\top).\mathit{Q_C}+(\mathit{diving},\top).\mathit{Q_D}\\
+	\mathit{Q_A} & \rmdef & (\mathit{queueA},\top).\mathit{Q_0}\\
+	\mathit{Q_C} & \rmdef & (\mathit{queueC},\top).\mathit{Q_0}\\
+	\mathit{Q_D} & \rmdef & (\mathit{queueD},\top).\mathit{Q_0}\\
+	\mathit{DB_1} & \rmdef & (\mathit{queueA},\mathit{q}).\mathit{DBsrv_1}+(\mathit{queueC},\mathit{q}).\mathit{DBsrv_1}\\
+	\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv1},\top).\mathit{DB_1}\\
+	\mathit{DB_2} & \rmdef & (\mathit{queueC},\mathit{q}).\mathit{DBsrv_2}+(\mathit{queueD},\mathit{q}).\mathit{DBsrv_2}\\
+	\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv2},\top).\mathit{DB_2}\\
+	\mathit{DB_3} & \rmdef & (\mathit{queueD},\mathit{q}).\mathit{DBsrv_3}+(\mathit{queueA},\mathit{q}).\mathit{DBsrv_3}\\
+	\mathit{DBsrv_3} & \rmdef & (\mathit{dbsrv3},\top).\mathit{DB_3}\\
+	\mathit{Service_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{Service_1}\\
+	\mathit{Service_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{Service_2}\\
+	\mathit{Service_3} & \rmdef & (\mathit{dbsrv3},\mathit{db}).\mathit{Service_3}\\
+	[2.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{\substack{athletics\\cycling\\diving}}\mathit{Q_0}[N]\sync{\substack{queueA\\queueC\\queueD}}\mathit{DB_1}\parallel\mathit{DB_2}\parallel\mathit{DB_3}\sync{\substack{dbsrv1\\dbsrv2\\dbsrv3}}\mathit{Service_1}\parallel\mathit{Service_2}\parallel\mathit{Service_3}}\\
+	[2.0ex]	\end{array}
 	\end{displaymath}
 	% --end
 \end{figure}
@@ -194,15 +224,15 @@ See the experimental results in Table \ref{table:queueddwr_results}.
 		col sep=comma,
 		string type,
 		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
-		columns/booka/.style={column name=book\textsubscript{a}, column type={p{.1\textwidth}}},
-		columns/bookc/.style={column name=book\textsubscript{c}, column type={p{.1\textwidth}}},
-		columns/bookd/.style={column name=book\textsubscript{d}, column type={p{.1\textwidth}}},
-		columns/qa/.style={column name=queue\textsubscript{a}, column type={p{.1\textwidth}}},
-		columns/qc/.style={column name=queue\textsubscript{c}, column type={p{.1\textwidth}}},
-		columns/qd/.style={column name=queue\textsubscript{d}, column type={p{.1\textwidth}}},
-		columns/dbsrv1/.style={column name=dbsrv\textsubscript{1}, column type={p{.1\textwidth}}},
-		columns/dbsrv2/.style={column name=dbsrv\textsubscript{2}, column type={p{.1\textwidth}}},
-		columns/dbsrv3/.style={column name=dbsrv\textsubscript{3}, column type={p{.1\textwidth}}},
+		columns/athletics/.style={column name=athletics, column type={p{.1\textwidth}}},
+		columns/cycling/.style={column name=cycling, column type={p{.1\textwidth}}},
+		columns/diving/.style={column name=diving, column type={p{.1\textwidth}}},
+		columns/qa/.style={column name=queueA, column type={p{.1\textwidth}}},
+		columns/qc/.style={column name=queueC, column type={p{.1\textwidth}}},
+		columns/qd/.style={column name=queueD, column type={p{.1\textwidth}}},
+		columns/dbsrv1/.style={column name=dbsrv1, column type={p{.1\textwidth}}},
+		columns/dbsrv2/.style={column name=dbsrv2, column type={p{.1\textwidth}}},
+		columns/dbsrv3/.style={column name=dbsrv3, column type={p{.1\textwidth}}},
 		every head row/.style={before row=\hline Rate & \multicolumn{9}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/qddwr/results.csv}
@@ -266,8 +296,8 @@ This shows that the simple microservices system does a good job of isolating the
 	]
 	
 	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/athletics.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/book_a.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/book_a.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/athletics.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/athletics.csv};
 	
 	\legend{Simple Microservices,Queue + Distributed DB,Queue + Distributed DB with Replication}
 	
@@ -294,8 +324,8 @@ This shows that the simple microservices system does a good job of isolating the
 	]
 	
 	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/cycling.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/book_c.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/book_c.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/cycling.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/cycling.csv};
 	
 	\legend{Simple Microservices,Queue + Distributed DB,Queue + Distributed DB with Replication}
 	

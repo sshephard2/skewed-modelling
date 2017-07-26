@@ -24,9 +24,13 @@ Cassandra \cite{RN1050}\cite{RN1075} database.  There are 500 tickets of each sp
 * The clustering columns are owner, day, id
 */
 
-Load testing using Apache JMeter \cite{RN1074}.
+The web application and its users were simulated using Apache JMeter \cite{RN1074} to consume the RESTful APIs of each system (for the simple microservices architecture, the Java Spring APIs; for the shared queue architectures, the Microsoft Azure Storage Queue REST APIs).
 
-Measurement using Meters from Coda Hale Metrics \cite{RN1079}.  Metrics are logged every 10 seconds. The largest 1-minute moving average over a run for a chosen demand is extracted by a Python script.  Each experiment was carried out 5 times and the mean was taken of the 5 sets of results.
+\paragraph{Measurands.} Throughputs as described below.
+
+\paragraph{Measurement method.} Measurement using Meters from Coda Hale Metrics \cite{RN1079}.  Metrics are logged every 10 seconds.
+
+\paragraph{Measurement procedure.} The largest 1-minute moving average over a run for a chosen demand is extracted by a Python script.  Each experiment was carried out 5 times and the mean was taken of the 5 sets of results.
 
 \end{shaded}
 

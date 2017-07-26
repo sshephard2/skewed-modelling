@@ -13,24 +13,24 @@ q = 100.0; /* Rate of consuming from queue */
 db = 5.0; /* Rate of servicing DB requests */
 
 /* Web front-end process */
-Website = (book_a, a).Website + (book_c, c).Website;
+Website = (athletics, a).Website + (cycling, c).Website;
 
 /* Shared queue process */
-Q_0 = (book_a, T).Q_A + (book_c, T).Q_C;
-Q_A = (queue_a, T).Q_0;
-Q_C = (queue_c, T).Q_0;
+Q_0 = (athletics, T).Q_A + (cycling, T).Q_C;
+Q_A = (queueA, T).Q_0;
+Q_C = (queueC, T).Q_0;
 
 /* DB node processes */
-DB_1 = (queue_a, q).DBsrv_1;
-DBsrv_1 = (dbsrv_1, db).DB_1;
+DB_1 = (queueA, q).DBsrv_1;
+DBsrv_1 = (dbsrv1, db).DB_1;
 
-DB_2 = (queue_c, q).DBsrv_2;
-DBsrv_2 = (dbsrv_2, db).DB_2;
+DB_2 = (queueC, q).DBsrv_2;
+DBsrv_2 = (dbsrv2, db).DB_2;
 
 /* Service processes for DB nodes */
-Service_1 = (dbsrv_1, db).Service_1;
-Service_2 = (dbsrv_2, db).Service_2;
+Service_1 = (dbsrv1, db).Service_1;
+Service_2 = (dbsrv2, db).Service_2;
 
-Website <book_a, book_c> Q_0[10]
-	<queue_a, queue_c> (DB_1 || DB_2)
-	<dbsrv_1, dbsrv_2> (Service_1 || Service_2)
+Website <athletics, cycling> Q_0[10]
+	<queueA, queueC> (DB_1 || DB_2)
+	<dbsrv1, dbsrv2> (Service_1 || Service_2)
