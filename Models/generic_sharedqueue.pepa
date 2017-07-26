@@ -5,23 +5,23 @@
  *
  */
 
-a_1 = 10.0; /* Arrival rate 1 */
-s_1 = 5.0; /* Service rate 1 */
-a_2 = 1.0; /* Arrival rate 2 */
-s_2 = 5.0; /* Service rate 2 */
+a = 10.0; /* Athletics arrival rate */
+c = 1.0; /* Cycling arrival rate */
+s1 = 5.0; /* Service rate 1 */
+s2 = 5.0; /* Service rate 2 */
 
-Arrival_1 = (arrive_1, a_1).Arrival_1; /* Arrival process 1 */
-Service_1 = (serve_1, s_1).Service_1; /* Service process 1 */
+Arrival_A = (athletics, a).Arrival_A; /* Athletics arrival process */
+Arrival_C = (cycling, c).Arrival_C; /* Cycling arrival process */
 
-Arrival_2 = (arrive_2, a_2).Arrival_2; /* Arrival process 2 */
-Service_2 = (serve_2, s_2).Service_2; /* Service process 2 */
+Service_1 = (serve1, s1).Service_1; /* Service process 1 */
+Service_2 = (serve2, s2).Service_2; /* Service process 2 */
 
 /* Shared queue */
-Q_0 = (arrive_1, T).Q_1 + (arrive_2, T).Q_2;
-Q_1 = (serve_1, T).Q_0;
-Q_2 = (serve_2, T).Q_0;
+Q_0 = (athletics, T).Q_1 + (cycling, T).Q_2;
+Q_1 = (serve1, T).Q_0;
+Q_2 = (serve2, T).Q_0;
 
-Arrival_1 <arrive_1> Q_0[20]
-  <serve_1> Service_1
-  <arrive_2> Arrival_2
-  <serve_2> Service_2
+Arrival_A <athletics> Q_0[20]
+  <serve1> Service_1
+  <cycling> Arrival_C
+  <serve2> Service_2

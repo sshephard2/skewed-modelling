@@ -16,22 +16,22 @@ d = 1.0; /* Rate of booking Diving tickets */
 db = 5.0; /* Rate of servicing DB requests */
 
 /* Web front-end process */
-Website = (book_a, a).Website + (book_c, c).Website  + (book_d, d).Website;
+Website = (athletics, a).Website + (cycling, c).Website  + (diving, d).Website;
 
 /* DB node processes */
-DB_1 = (book_a, T).DBsrv_1 + (book_c, T).DBsrv_1;
-DBsrv_1 = (dbsrv_1, T).DB_1;
+DB_1 = (athletics, T).DBsrv_1 + (cycling, T).DBsrv_1;
+DBsrv_1 = (dbsrv1, T).DB_1;
 
-DB_2 = (book_c, T).DBsrv_2 + (book_d, T).DBsrv_2;
-DBsrv_2 = (dbsrv_2, T).DB_2;
+DB_2 = (cycling, T).DBsrv_2 + (diving, T).DBsrv_2;
+DBsrv_2 = (dbsrv2, T).DB_2;
 
-DB_3 = (book_d, T).DBsrv_3 + (book_a, T).DBsrv_3;
-DBsrv_3 = (dbsrv_3, T).DB_3;
+DB_3 = (diving, T).DBsrv_3 + (athletics, T).DBsrv_3;
+DBsrv_3 = (dbsrv3, T).DB_3;
 
 /* Service processes for DB nodes */
-Service_1 = (dbsrv_1, db).Service_1;
-Service_2 = (dbsrv_2, db).Service_2;
-Service_3 = (dbsrv_3, db).Service_3;
+Service_1 = (dbsrv1, db).Service_1;
+Service_2 = (dbsrv2, db).Service_2;
+Service_3 = (dbsrv3, db).Service_3;
 
-Website <book_a, book_c, book_d> (DB_1 || DB_2 || DB_3)
-	<dbsrv_1, dbsrv_2, dbsrv_3> (Service_1 || Service_2 || Service_3)
+Website <athletics, cycling, diving> (DB_1 || DB_2 || DB_3)
+	<dbsrv1, dbsrv2, dbsrv3> (Service_1 || Service_2 || Service_3)
