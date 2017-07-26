@@ -2,7 +2,7 @@
 % ---- Built systems
 %
 
-\section{Built systems}
+\section{Built systems}\label{sec:built-systems}
 \begin{shaded}
 
 Reference to github at \cite{RN1073}
@@ -135,6 +135,8 @@ QueueWorker processes both Control tickets and real (Athletics, Cycling) tickets
 Use JMeter with Poisson random timer (negative exponential distribution) with a lambda value of 100 milliseconds, Cycling at a constant 15 threads/users (approximately 95 requests per second) and Athletics ramping up from 15-150 in steps of 15, so the desired demand is 95-950 requests per second.  Each thread group has a loop count of 1500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.
 
 The control version of the above JMeter test plan uses the same variables, but sending Control tickets rather than Athletics and Cycling tickets to the queue.
+
+Does the predicted result, that the queue will be the overriding constraint, still hold true with a real, effectively unlimited queue?
 
 See the experimental results in Table \ref{table:builtddnr_results}.
 

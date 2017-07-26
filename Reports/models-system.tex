@@ -2,7 +2,7 @@
 % ---- PEPA System Models
 %
 
-\section{PEPA System Models}
+\section{PEPA System Models}\label{sec:pepa-system-models}
 \begin{shaded}
 The proposed system will use distributed architectures.  Users will access it from a web-based front end.  Tickets will be stored in a database partitioned across several data nodes.  In between the web servers and database will be a number of worker applications to service user requests, connected to the web servers by some middleware.
 
@@ -140,7 +140,7 @@ Requests via a shared queue to worker applications going to a distributed databa
 	\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{DB_2}\\
 	\mathit{Service_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{Service_1}\\
 	\mathit{Service_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{Service_2}\\
-	[2.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{\substack{athletics\\cycling}}\mathit{Q_0}[N]\sync{\substack{queueA\\queueC}}\mathit{DB_1}\parallel\mathit{DB_2}\sync{\substack{dbsrv1\\dbsrv2}}\mathit{Service_1}\parallel\mathit{Service_2}}\\
+	[2.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{\substack{athletics\\cycling}}\mathit{Q_0}[10]\sync{\substack{queueA\\queueC}}\mathit{DB_1}\parallel\mathit{DB_2}\sync{\substack{dbsrv1\\dbsrv2}}\mathit{Service_1}\parallel\mathit{Service_2}}\\
 	[2.0ex]	\end{array}
 	\end{displaymath}
 	% --end
@@ -208,7 +208,7 @@ Requests via a shared queue to worker applications going to a distributed databa
 	\mathit{Service_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{Service_1}\\
 	\mathit{Service_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{Service_2}\\
 	\mathit{Service_3} & \rmdef & (\mathit{dbsrv3},\mathit{db}).\mathit{Service_3}\\
-	[2.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{\substack{athletics\\cycling\\diving}}\mathit{Q_0}[N]\sync{\substack{queueA\\queueC\\queueD}}\mathit{DB_1}\parallel\mathit{DB_2}\parallel\mathit{DB_3}\sync{\substack{dbsrv1\\dbsrv2\\dbsrv3}}\mathit{Service_1}\parallel\mathit{Service_2}\parallel\mathit{Service_3}}\\
+	[2.0ex]		\multicolumn{3}{l}{\mathit{Website}\sync{\substack{athletics\\cycling\\diving}}\mathit{Q_0}[10]\sync{\substack{queueA\\queueC\\queueD}}\mathit{DB_1}\parallel\mathit{DB_2}\parallel\mathit{DB_3}\sync{\substack{dbsrv1\\dbsrv2\\dbsrv3}}\mathit{Service_1}\parallel\mathit{Service_2}\parallel\mathit{Service_3}}\\
 	[2.0ex]	\end{array}
 	\end{displaymath}
 	% --end
