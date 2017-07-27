@@ -21,12 +21,10 @@
 %
 % ---- Abstract and keywords
 %
-\begin{shaded}
 \begin{abstract}
-On-line Transaction Processing (OLTP) applications must frequently deal with the issue of skewed demand for some resources.  This demand may overwhelm the whole system, affecting the owner's reputation and revenue.  In this article we present a ticketing use case and argue that at each layer of the architecture, the distributed computing technologies of the Cloud may maintain throughput to the lower demand resources, maximising the available functionality of the system.  
+On-line Transaction Processing (OLTP) applications must frequently deal with the issue of skewed demand for some resources.  This demand may overwhelm the whole system, affecting the owner's reputation and revenue.  This paper presents system architectures for a ticketing use case using a selection of distributed computing technologies of the Cloud.  It proposes models of these architectures and uses them to predict throughput in skewed demand scenarios.  The experimental results of the models are then tested against simple built systems.
 	\keywords{Cloud, middleware, microservices, distributed databases, modelling, performance}
 \end{abstract}
-\end{shaded}
 
 %
 % ---- Introduction
@@ -35,10 +33,14 @@ On-line Transaction Processing (OLTP) applications must frequently deal with the
 \section{Introduction}\label{sec:introduction}
 
 There are many high-profile examples of whole IT systems brought down by customer demand for part of their services.  Customers were prevented from using any part of the London 2012 Olympic ticketing website on launch day to avoid demand overloading the system \cite{RN1067}.  HBO Go was brought down by demand for the finale of ``True Detective'' \cite{RN1066}.  Apple's iTunes Store suffered outage on the launch day of the iPhone 7 (new iPhone registration is carried out via an iTunes function) \cite{RN1068}.
+\begin{shaded}
+Some more examples, preferably from peer-reviewed papers? (p2p file sharing, multi-tenanting?)
+\end{shaded}
+It is claimed that it is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others.  Skewed demand may be isolated so that it only affects parts of a system, or shared equally between different components. (The system may also adapt to demand by elastic scaling of resources, but this will not be considered as part of this paper).
 
-It is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others.  Skewed demand may be isolated so that it only affects parts of a system, or shared equally between different components. (The system may also adapt to demand by elastic scaling of resources, but this will not be considered as part of this paper).
+It is proposed that a selection of technologies may be modelled as simple components, that may be composed into more complex system models that make end to end predictions.  When combining a middleware solution with a distributed database, where is the system bottleneck?  If there are levels of demand that cannot be met on a limited budget, and that therefore some components will no longer meet the required throughput, what is the impact on the remainder of the system?
 
-It is proposed that a selection of technologies may be modelled as simple components, that may be composed into more complex system models that make end to end predictions.  When combining a middleware solution with a distributed database, where is the system bottleneck?  If there are levels of demand that cannot be met on a limited budget, and that therefore some components will no longer meet the required throughput, what is the impact on the remainder of the system?  The models will then be tested against actual built systems.
+The models will then be tested against actual systems, built using Java and the Java Spring framework \cite{RN1076}, Cassandra \cite{RN1050}\cite{RN1075} databases, and where appropriate Microsoft Azure Storage Queues \cite{RN1072}.  These systems will be instrumented with Coda Hale Metrics \cite{RN1079} and measured under different scenarios of skewed demand, using Apache JMeter test plans \cite{RN1074}.
 
 %
 % ---- Background
@@ -46,7 +48,14 @@ It is proposed that a selection of technologies may be modelled as simple compon
 
 \section{Background}\label{sec:background}
 
-Consider a general OLTP application using a distributed architecture.  Users access the application with a web-based front end.  Resources are stored in one or more databases.  In between the web servers and database are worker applications that service user requests, connected to the web servers by some middleware.  There are strategies for coping with skewed demand at each of the layers of this architecture.
+Consider a general OLTP application using a distributed architecture, as shown in Figure \ref{figure:oltpapplication}.  Users access the application with a web-based front end.  Resources are stored in one or more databases.  In between the web servers and database are worker applications that service user requests, connected to the web servers by some middleware.  There are strategies for coping with skewed demand at each of the layers of this architecture.
+
+\begin{figure}
+	\caption{OLTP application distributed architecture}
+	\label{figure:oltpapplication}
+	\centering
+	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/application}
+\end{figure}
 
 \paragraph{Adapting.} A system using Cloud technologies may adapt to increased demand. {\itshape Rapid elasticity} is an essential characteristic of Cloud Computing by the NIST definition \cite{RN56}.  Computing resources, for example web servers or worker applications, can be elastically and often automatically scaled to meet current demand.  This gives the appearance of resources that are limited only by the system owner's budget.
 
@@ -56,7 +65,7 @@ Consider a general OLTP application using a distributed architecture.  Users acc
 
 \subsection{Use Case}
 
-The concrete use case for constructing models and building systems is a ticketing application.  Following the Olympic example given in the Introduction, tickets will be for a multi-sport event.  Some sports are more popular than others and it will be assumed that there will be skewed demand for {\itshape athletics} tickets.
+The concrete use case for constructing models and building systems is a ticketing application.  Following the Olympic example given in the Introduction, tickets will be for a multi-sport event.  Some sports are more popular than others and it will be assumed that there will be predictable skewed demand for {\itshape athletics} tickets.  Use cases where the skewed demand is unknown - where the areas of highest demand are only discovered once the application goes online, requiring some adaptive approach - are out of scope.
 
 The application has three possible operations:
 \begin{enumerate}
