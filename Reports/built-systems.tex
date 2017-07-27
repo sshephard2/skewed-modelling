@@ -37,6 +37,7 @@ The web application and its users were simulated using Apache JMeter \cite{RN107
 %
 % ---- Simple microservices
 %
+\FloatBarrier
 \subsection{Simple microservices}
 \begin{shaded}
 Two completely separate Cassandra databases, each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, one containing Athletics tickets, one containing Cycling tickets.
@@ -110,6 +111,7 @@ Control shows that throughput approaches demand (difference likely to be due to 
 %
 % ---- Shared queue middleware
 %
+\FloatBarrier
 \subsection{Shared queue middleware}
 \begin{shaded}
 This would normally be used for the return ticket operation.  To ensure that a usable Cassandra metric was available, a search operation was used again.
@@ -172,7 +174,7 @@ See the experimental results in Table \ref{table:builtddnr_results}.
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Throughput against athletics demand},
-	xlabel={Athletics demand},
+	xlabel={Athletics demand (users)},
 	ylabel={Throughput},
 	xmin=0, xmax=150,
 	ymin=0, ymax=1000,
@@ -199,6 +201,7 @@ See the experimental results in Table \ref{table:builtddnr_results}.
 %
 % ---- Distributed database with replication
 %
+\FloatBarrier
 \subsection{Distributed database with replication}
 
 \begin{shaded}
@@ -222,5 +225,88 @@ Use JMeter with Poisson random timer (negative exponential distribution) with a 
 
 The control version of the above JMeter test plan uses the same variables, but sending Control tickets rather than real tickets to the queue.
 
-See the experimental results in Table \ref{table:builtddnr_results}.
+See the experimental results in Table \ref{table:builtddwr_results}.
 \end{shaded}
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Shared queue and distributed database with replication experimental results}
+		\label{table:builtddwr_results}
+		\pgfplotstabletypeset[
+		col sep=comma,
+		string type,
+		columns/ausers/.style={column name=(users), column type={p{.1\textwidth}}},
+		columns/arate/.style={column name=athletics, column type={p{.1\textwidth}}},
+		columns/crate/.style={column name=cycling, column type={p{.1\textwidth}}},
+		columns/drate/.style={column name=diving, column type={p{.1\textwidth}}},
+		columns/total/.style={column name=total, column type={p{.1\textwidth}}},
+		columns/conrate/.style={column name=control, column type={p{.1\textwidth}}},
+		columns/ratio/.style={column name=ratio, column type={p{.1\textwidth}}},
+		columns/db1/.style={column name=db1, column type={p{.1\textwidth}}},
+		columns/db2/.style={column name=db2, column type={p{.1\textwidth}}},
+		columns/db3/.style={column name=db3, column type={p{.1\textwidth}}},
+		every head row/.style={before row=\hline Rate & \multicolumn{9}{c}{Throughput} \\,after row=\hline},
+		every last row/.style={after row=\hline},
+		]{data/builtddwr/results_table.csv}
+	\end{center}
+\end{table}
+
+\begin{figure}
+	\caption{Shared queue and distributed database with replication - sport throughput}
+	\label{figure:builtddnr_sport}
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Throughput against athletics demand},
+	xlabel={Athletics demand (users)},
+	ylabel={Throughput},
+	xmin=0, xmax=150,
+	ymin=0, ymax=1000,
+	legend pos=north west,
+	ymajorgrids=true,
+	grid style=dashed,
+	cycle multiindex* list={
+		mark list*
+		\nextlist
+		cyan,brown,green,blue,red
+	}
+	]
+	
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/builtddwr/results_table.csv};
+	\addplot table [x index={0}, y index={2}, col sep=comma]{data/builtddwr/results_table.csv};
+	\addplot table [x index={0}, y index={5}, col sep=comma]{data/builtddwr/results_table.csv};
+	
+	\legend{athletics,cycling,control}
+	
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
+
+\begin{figure}
+	\caption{Shared queue and distributed database with replication - database throughput}
+	\label{figure:queueddwr_database}
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Database throughput against athletics users},
+	width=0.9\textwidth,
+	ybar=0pt,
+	bar width=.02\textwidth,
+	xlabel={Athletics users},
+	ylabel={Throughput},
+	xtick=data,
+	ymin=0, ymax=350,
+	legend pos=north west,
+	ymajorgrids=true,
+	grid style=dashed,
+	]
+	
+	\addplot [pattern=north east lines, pattern color=blue] table [x index={1}, y index={2}, col sep=comma]{data/builtddwr/average_db1.csv};
+	\addplot [fill=green] table [x index={1}, y index={2}, col sep=comma]{data/builtddwr/average_db2.csv};
+	\addplot [pattern=crosshatch, pattern color=brown] table [x index={1}, y index={2}, col sep=comma]{data/builtddwr/average_db3.csv};
+	
+	\legend{db1,db2,db3}
+	
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}

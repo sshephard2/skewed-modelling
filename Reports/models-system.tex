@@ -12,6 +12,7 @@ For each architecture it will be assumed that the web application will be design
 %
 % ---- Simple microservices
 %
+\FloatBarrier
 \subsection{Simple microservices}
 
 There are two separate databases, one for Athletics tickets, one for Cycling.
@@ -108,6 +109,7 @@ See the experimental results in Table \ref{table:micro_results}.
 %
 % ---- Shared queue and distributed database
 %
+\FloatBarrier
 \subsection{Shared queue and distributed database}
 
 Requests via a shared queue to worker applications going to a distributed database with two nodes, Athletics and Cycling.
@@ -171,6 +173,7 @@ See the experimental results in Table \ref{table:queuedd_results}.
 %
 % ---- Shared queue and distributed database with replication
 %
+\FloatBarrier
 \subsection{Shared queue and distributed database with replication}
 
 Requests via a shared queue to worker applications going to a distributed database with three nodes, Athletics, Cycling and Diving, where each partition is replicated on another node.
@@ -223,25 +226,56 @@ See the experimental results in Table \ref{table:queueddwr_results}.
 		\pgfplotstabletypeset[
 		col sep=comma,
 		string type,
-		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
+		columns/a/.style={column name=a, column type={p{.07\textwidth}}},
 		columns/athletics/.style={column name=athletics, column type={p{.1\textwidth}}},
 		columns/cycling/.style={column name=cycling, column type={p{.1\textwidth}}},
 		columns/diving/.style={column name=diving, column type={p{.1\textwidth}}},
-		columns/qa/.style={column name=queueA, column type={p{.1\textwidth}}},
-		columns/qc/.style={column name=queueC, column type={p{.1\textwidth}}},
-		columns/qd/.style={column name=queueD, column type={p{.1\textwidth}}},
-		columns/dbsrv1/.style={column name=dbsrv1, column type={p{.1\textwidth}}},
-		columns/dbsrv2/.style={column name=dbsrv2, column type={p{.1\textwidth}}},
-		columns/dbsrv3/.style={column name=dbsrv3, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline Rate & \multicolumn{9}{c}{Throughput} \\,after row=\hline},
+		columns/ratio/.style={column name=ratio, column type={p{.07\textwidth}}},
+		columns/qa/.style={column name=queueA, column type={p{.09\textwidth}}},
+		columns/qc/.style={column name=queueC, column type={p{.09\textwidth}}},
+		columns/qd/.style={column name=queueD, column type={p{.09\textwidth}}},
+		columns/dbsrv1/.style={column name=dbsrv1, column type={p{.09\textwidth}}},
+		columns/dbsrv2/.style={column name=dbsrv2, column type={p{.09\textwidth}}},
+		columns/dbsrv3/.style={column name=dbsrv3, column type={p{.09\textwidth}}},
+		every head row/.style={before row=\hline Rate & \multicolumn{10}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/qddwr/results.csv}
 	\end{center}
 \end{table}
 
+\begin{figure}
+	\caption{Shared queue and distributed databasee with replication experimental results}
+	\label{figure:queueddwr_chart}
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Throughput against input rate a},
+	width=0.9\textwidth,
+	ybar=0pt,
+	bar width=.02\textwidth,
+	xlabel={Rate a},
+	ylabel={Throughput},
+	xtick=data,
+	ymin=0, ymax=6,
+	legend pos=north west,
+	ymajorgrids=true,
+	grid style=dashed,
+	]
+	
+	\addplot [pattern=north east lines, pattern color=blue] table [x index={0}, y index={1}, col sep=comma]{data/qddwr/dbsrv_1.csv};
+	\addplot [fill=green] table [x index={0}, y index={1}, col sep=comma]{data/qddwr/dbsrv_2.csv};
+	\addplot [pattern=crosshatch, pattern color=brown] table [x index={0}, y index={1}, col sep=comma]{data/qddwr/dbsrv_3.csv};
+	
+	\legend{dbsrv1,dbsrv2,dbsrv3}
+	
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
+
 %
 % ---- System comparison
 %
+\FloatBarrier
 \subsection{Comparison}
 
 \begin{shaded}
@@ -273,7 +307,7 @@ This shows that the simple microservices system does a good job of isolating the
 \end{table}
 
 \begin{figure}
-	\caption{Simple microservices experimental results}
+	\caption{Comparison of system results}
 	\label{figure:comparison_charts}
 	\centering
 	\begin{tikzpicture}
@@ -304,7 +338,7 @@ This shows that the simple microservices system does a good job of isolating the
 	\end{axis}
 	\end{tikzpicture}
 	
-		\begin{tikzpicture}
+	\begin{tikzpicture}
 	\begin{axis}[
 	title={Throughput of cycling against input rate a},
 	width=0.9\textwidth,

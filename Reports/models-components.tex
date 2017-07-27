@@ -9,6 +9,7 @@ The first stage is to create suitable PEPA models for the selected technology co
 %
 % ---- Shared middleware queue
 %
+\FloatBarrier
 \subsection{Shared middleware queue}
 
 \begin{shaded}
@@ -157,6 +158,7 @@ The PEPA model for a general shared queue is shown in Figure \ref{figure:pepa_qu
 %
 % ---- Database models
 %
+\FloatBarrier
 \subsection{Database models}
 \begin{shaded}
 A very simple representation of a single database process is a component that receives a request for data (either read or write) at some rate based on demand, and serves it at a rate based on the database's performance, e.g.
@@ -169,7 +171,7 @@ What doesn't this model?  Statement about how the models below show that it can 
 %
 % ---- Distributed database without replication
 %
-
+\FloatBarrier
 \begin{shaded}
 \subsubsection{Distributed database.} Figure \ref{figure:pepa_ddnr_model} shows a model of a distributed database, where the data has been partitioned by sport onto two different database nodes with identical performance.  The data request activities are {\itshape athletics} and {\itshape cycling}.  These may represent search, book or return operations on athletics or cycling tickets.  Users may search for either type of ticket from the website component, and the code or database engine will route the search to the correct data node.  Thus $\mathit{DB_1}$ here is able to service {\itshape athletics} requests, at a maximum rate of {\itshape db}, and $\mathit{DB_2}$ can service {\itshape cycling} requests at the same rate.  Both nodes execute in parallel without cooperating on any activities.
 Experiments are carried out in PEPA workbench by fixing the input rate of {\itshape db} at 5.0, the rate {\itshape c} of cycling requests to 1.0 and by testing each input rate {\itshape a} of athletics requests from 1.0 to 10.0 in steps of 1.0, to simulate increasing levels of skewed demand for athletics tickets which becomes too high for a database node to service.  The results appear in Table \ref{table:ddnr_results}.
@@ -275,6 +277,7 @@ Experiments are carried out in PEPA workbench by fixing the input rate of {\itsh
 %
 % ---- Distributed database with replication
 %
+\FloatBarrier
 \begin{shaded}
 \subsubsection{Distributed database with replication.} The PEPA model for a distributed database is shown in Figure \ref{figure:pepa_ddwr_model}.
 \end{shaded}

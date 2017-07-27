@@ -30,16 +30,25 @@ There are two main messaging models, both of which are offered by Microsoft Azur
 
 \paragraph{Publish/subscribe.}  Publish/subscribe (in Azure, topics and subscriptions) are a properly one-to-many or many-to-many communication mechanism.  Any single producer may send one message to a topic, and then all consumers that subscribe to that topic receive a copy of the same message.
 
+\begin{figure}
+	\caption{Point-to-Point Queue Middleware}
+	\label{figure:queuemiddleware}
+	\centering
+	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/p2pq}
+\end{figure}
+
+
 %
 % ---- Microservices
 %
-
+\FloatBarrier
 \subsection{Microservices}\label{sec:microservices}
 
 Microservice architecture is an approach to structuring applications as suites of small services, defined by business capability verticals rather than technological layers \cite{RN1069} \cite{RN1070}.  Each of the use case requirements - search for tickets, book tickets, return tickets - might typically be microservices with their own worker applications and data nodes.  Ticket data would be denormalised across the data nodes and made eventually consistent via a backplane messaging service \cite{RN1071}.  This would certainly isolate the demand for search, book and return from each other - returning tickets would not be blocked by a system where booking tickets was overloaded.  In the ticketing use case however, there is skewed demand for Athletics tickets.  In a real-world system the booking microservice might be further broken down to a lower level of granularity to deal with this, i.e. a separate microservice for booking each ticket type.
 
 \begin{figure}
 \caption{Microservices}
+\label{figure:microservices}
 \centering
 \includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/microservices}
 \end{figure}
@@ -47,7 +56,7 @@ Microservice architecture is an approach to structuring applications as suites o
 %
 % ---- Distributed databases
 %
-
+\FloatBarrier
 \subsection{Distributed databases}\label{sec:distributed-databases}
 Modern databases both SQL and NoSQL are designed to scale both data and the load of operations accessing that data over many servers that do not share disk or RAM, so-called ``shared nothing'' architecture \cite{RN67}.  We may partition data {\itshape vertically}, dividing tables into groups of columns that may be placed on different data nodes; or {\itshape horizontally}, where the split is by row \cite{RN68}. 
 
