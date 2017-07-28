@@ -1,8 +1,8 @@
 %
-% ---- Technologies
+% ---- Conclusions and Future Work
 %
 
-\section{Conclusion and Future Work}\label{sec:conclusion-and-future-work}
+\section{Conclusions}\label{sec:conclusions}
 
 \begin{shaded}
 	
@@ -10,22 +10,31 @@ The models are useful for qualitative prediction.  They successfully predicted t
 
 However, the models were less successful at quantitative predictions.  When using replication, the throughput was not spread evenly (or randomly) between database nodes, and this also meant that the system was not able to satisfy as much demand as predicted.  This means that it was not possible to use the models to compare which system would make best use of the resources available, as the models suggested - i.e. the models as they stand are not suitable for right-sizing.
 
+Conclusions about the modelled/built systems - how well they isolate demand vs how well they utilise resources, whether or not a shared queue worked, whether or not the database partitioning strategy worked
+
+\end{shaded}
+
+\section{Future Work}\label{sec:future-work}
+
+\begin{shaded}
+	
+With a set of simple models, there is much potential for future work to build on them.
+
 The real Cassandra database behaviour is more complex than described by these simple models.  An area of future work might be to adapt these models to make them closer to the true behaviour.  However models tied closely to a particular database implementation are likely to be less universally applicable.
 
-Other areas - different partitioning strategies.
+Other areas - different partitioning strategies. For example, where the partitioning strategy does not attempt to isolate demand, but shares it between database nodes, 
 
-Different queue strategies.  A priority queue for the skewed demand?
+Different queue strategies.  A priority queue for the skewed demand? Choking skewed demand in the queue before it overwhelms the whole database?  Trigger based on when the normal demand resources begin to get affected by the skewed demand.
 
-An interesting area of future work might be in using the modelling techniques in adaptive algorithms.  A model might be used as a policy for elastic scaling, and compared with the performance of other right-sizing strategies; control theory, machine learning and other model based techniques including statistical.
+An interesting area of future work might be in using the modelling techniques in adaptive algorithms.
 
-Data partionining - where the high demand is unknown in advance, we need an adaptive strategy.  Workload-aware clustering algorithms do exist for the placement of new data, e.g. \cite{RN63}, but our use case has a fixed set of tickets.  Re-placement of existing data onto different partitions would be likely to require many reads, writes and deletes.
+Models might be used to change the queueing policy on-demand.
 
-%
-% ---- Operational microservices
-%
-\subsection{Operational microservices}
+A model might be used as a policy for elastic scaling? and compared with the performance of other right-sizing strategies; control theory, machine learning and other model based techniques including statistical.
 
-A more `natural' microservices architecture partitions the system by operation (Book, Search, Return) with a separate database for each.  The databases maintain eventual consistency via an event streaming application e.g. using Kafka.
+Data partitioning - where the high demand is unknown in advance, we need an adaptive strategy.  Workload-aware clustering algorithms do exist for the placement of new data, e.g. \cite{RN63}, but our use case has a fixed set of tickets.  Re-placement of existing data onto different partitions would be likely to require many reads, writes and deletes.
+
+A more `natural' microservices architecture that partitions the system by operation (Book, Search, Return) with a separate database for each.  The databases maintain eventual consistency via an event streaming application e.g. using Kafka.  A new model for this, it may be generalised to a model of publish/subscribe message oriented middleware.
 \begin{enumerate}
 \item Book is an event producer and consumer (produces when a ticket is booked, consumes returned tickets).
 \item Search is an event consumer (consumes the state of tickets that are booked and returned).

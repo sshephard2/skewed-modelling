@@ -3,10 +3,9 @@
 %
 
 \section{Built systems}\label{sec:built-systems}
+
+\subsection{Design}
 \begin{shaded}
-
-Reference to github at \cite{RN1073}
-
 General design decisions:
 
 Cassandra \cite{RN1050}\cite{RN1075} database.  There are 500 tickets of each sport stored in the databases in different configurations.
@@ -24,6 +23,12 @@ Cassandra \cite{RN1050}\cite{RN1075} database.  There are 500 tickets of each sp
 * The clustering columns are owner, day, id
 */
 
+Reference to github at \cite{RN1073}
+
+\end{shaded}
+
+\subsection{Measurement}
+\begin{shaded}
 The web application and its users were simulated using Apache JMeter \cite{RN1074} to consume the RESTful APIs of each system (for the simple microservices architecture, the Java Spring APIs; for the shared queue architectures, the Microsoft Azure Storage Queue REST APIs).
 
 \paragraph{Measurands.} Throughputs as described below.

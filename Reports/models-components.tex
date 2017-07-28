@@ -243,7 +243,7 @@ Experiments are carried out in PEPA workbench by fixing the input rate of {\itsh
 	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddnr/book_a.csv};
 	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddnr/book_c.csv};
 
-	\legend{a,c}
+	\legend{athletics,cycling}
 
 	\end{axis}
 	\end{tikzpicture}
@@ -333,33 +333,39 @@ See the experimental results in Table \ref{table:ddwr_results}.
 \end{table}
 
 \begin{figure}
-	\caption{Distributed database with replication experimental results}
-	\label{figure:ddwr_charts}
+	\caption{Distributed database with replication - sport throughput}
+	\label{figure:ddwr_sport}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
-		title={Throughput against input rate a},
-		width=0.9\textwidth,
-		ybar=0pt,
-		bar width=.02\textwidth,
-		xlabel={Rate a},
-		ylabel={Throughput},
-		xtick=data,
-		ymin=0, ymax=6,
-		legend pos=north west,
-		ymajorgrids=true,
-		grid style=dashed,
+	title={Throughput against input rate a},
+	xlabel={Rate a},
+	ylabel={Throughput},
+	xmin=0, xmax=10,
+	ymin=0, ymax=6,
+	legend pos=north west,
+	ymajorgrids=true,
+	grid style=dashed,
+	cycle multiindex* list={
+		mark list*
+		\nextlist
+		cyan,brown,green,blue,red
+	}
 	]
 	
-	\addplot [pattern=north east lines, pattern color=blue] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_a.csv};
-	\addplot [fill=green] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_c.csv};
-	\addplot [pattern=crosshatch, pattern color=brown] table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_d.csv};
-
-	\legend{a,c,d}
-
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_a.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddwr/book_c.csv};
+	
+	\legend{athletics,cycling}
+	
 	\end{axis}
 	\end{tikzpicture}
+\end{figure}
 
+\begin{figure}
+	\caption{Distributed database with replication - database throughput}
+	\label{figure:ddwr_database}
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
 		title={Throughput against input rate a},
