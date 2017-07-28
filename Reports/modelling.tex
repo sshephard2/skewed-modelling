@@ -6,7 +6,7 @@ The modelling technique must enable predictions about throughput for varying lev
 
 CloudSim simulations require Java development for creation and modification, which is an overhead in building the models but offers flexibility in applying them.
 
-\paragraph{Process Algebra.} Process Algebras (such as PEPA or TIPP \cite{RN64}) model throughput in interdependent processes, with a mixture of independent and shared actions operating at different rates.  There is a PEPA Workbench tool \cite{RN51} that allows PEPA specifications to be parsed and run like programs, aiding experimentation on a range of action rates by automating repetitive calculations.
+\paragraph{Process Algebra.} Process Algebras (such as PEPA or TIPP \cite{RN64}) model throughput in interdependent processes, with a mixture of independent and shared actions operating at different rates.  There is a PEPA Eclipse plugin \cite{RN1080} that allows PEPA specifications to be parsed and run like programs, aiding experimentation on a range of action rates by automating repetitive calculations.
 
 \subsection{PEPA (Performance Evaluation Process Algebra)}
 
@@ -19,4 +19,4 @@ A PEPA model describes a system of interacting {\itshape components} which carry
 \subsubsection{Choice:} $\mathit{P} + \mathit{Q}$ - a component may behave {\itshape either} as component $\mathit{P}$ or $\mathit{Q}$, nondeterministically.  This represents a race condition between components.
 \subsubsection{Cooperation:} $\mathit{P} \sync{L} \mathit{Q}$ - for shared activities in the set $\mathit{L}$, components $\mathit{P}$ and $\mathit{Q}$ may only proceed with the simultaneous execution of those activities at the rate of the slowest component, otherwise they behave independently.
 \subsubsection{Parallel:} $\mathit{P} \parallel \mathit{Q}$ - shorthand for components that synchronize with no shared activities i.e. equivalent to $\mathit{P} \sync{\emptyset} \mathit{Q}$.
-\subsubsection{Aggregation:} $\mathit{P}[N]$ - represents $\mathit{N}$ instances of component $\mathit{P}$, where the number of instances in each state is important but the individual states are not signficant.
+\subsubsection{Aggregation:} $\mathit{P}[N]$ - represents $\mathit{N}$ instances of component $\mathit{P}$, but does not distinguish which instance of $\mathit{P}$ changes.

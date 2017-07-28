@@ -4,7 +4,7 @@
 
 \section{PEPA Component Models}\label{sec:pepa-component-models}
 
-The first stage is to create suitable PEPA models for the selected technology components from section \ref{sec:technologies}, simple enough to be composed into more complex system models but still able to demonstrate interesting behaviour.  These models are tested using PEPA workbench \cite{RN51} to calculate the steady-state throughputs of each activity for a given range of input rates for the activity with skewed demand.  The results are analysed for any behavioural insights.
+The first stage is to create suitable PEPA models for the selected technology components from section \ref{sec:technologies}, simple enough to be composed into more complex system models but still able to demonstrate interesting behaviour.  These models are tested using the PEPA Eclipse plugin \cite{RN1080} to calculate the steady-state throughputs of each activity for a given range of input rates for the activity with skewed demand.  The results are analysed for any behavioural insights.
 
 %
 % ---- Shared middleware queue
@@ -13,13 +13,20 @@ The first stage is to create suitable PEPA models for the selected technology co
 \subsection{Shared middleware queue}
 
 \begin{shaded}
-Queueing systems have already been extensively modelled in PEPA \cite{RN75}.
+Building on the work on modelling queueing systems in PEPA \cite{RN75} (see figure 3 page 8) and \cite{RN1051} pages 82...
 
-Queue shared between two processes.
+Using arregration, isomorphism, M/M/1/N queue modelled as Q[N]
+
+M/M/2/N queue
+Markov arrivals
+Markov service
+2 servers
+Limited buffer size of N
+
+Queue shared between 2 processes.  The PEPA model for a general shared queue is shown in Figure \ref{figure:pepa_queue_model}.
 
 Notes on applying this work to model a real Azure Storage Queue.  A real queue is effectively unlimited, determine what smaller queue size we can use for practicality (smaller state space). 
 
-The PEPA model for a general shared queue is shown in Figure \ref{figure:pepa_queue_model}.
 \end{shaded}
 
 \begin{figure}
