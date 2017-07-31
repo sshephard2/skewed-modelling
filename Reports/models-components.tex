@@ -4,7 +4,7 @@
 
 \section{PEPA Component Models}\label{sec:pepa-component-models}
 
-The first stage is to create suitable PEPA models for the selected technology components from section \ref{sec:technologies}, simple enough to be composed into more complex system models but still able to demonstrate interesting behaviour.  These models are tested using the PEPA Eclipse plugin \cite{RN1080} to calculate the steady-state throughputs of each activity for a given range of input rates for the activity with skewed demand.  The results are analysed for any behavioural insights.
+The first stage is to create suitable PEPA models for the selected technology components from section \ref{sec:technologies}, simple enough to be composed into more complex system models but still able to demonstrate interesting behaviour.  These models are tested using the PEPA Eclipse plugin \cite{RN1080} to calculate the steady-state throughputs of each activity for a given range of input rates for the activity with skewed demand.  The results are analysed to verify that the component models behave as expected for the technologies, and to discover any additional insights.
 
 %
 % ---- Shared middleware queue
@@ -12,22 +12,21 @@ The first stage is to create suitable PEPA models for the selected technology co
 \FloatBarrier
 \subsection{Shared middleware queue}
 
-\begin{shaded}
-Building on the work on modelling queueing systems in PEPA \cite{RN75} (see figure 3 page 8) and \cite{RN1051} pages 82...
+Work has already been done on modelling queueing systems in PEPA \cite{RN75}.  A single queue with a limited buffer size of $\mathit{N}$ may be written as (service and arrival components not shown, for brevity):
 
-Using arregration, isomorphism, M/M/1/N queue modelled as Q[N]
+\begin{displaymath}
+\begin{array}{rcl}
+\mathit{Queue_0} & \rmdef & (\mathit{arrival},\mathit{\top}).\mathit{Queue_1}\\
+\mathit{Queue_j} & \rmdef & (\mathit{arrival},\mathit{\top}).\mathit{Queue_{j+1}} + (\mathit{service},\mathit{\top}).\mathit{Queue_{j-1}}, \mathit{1 \le j \le N-1}\\
+\mathit{Queue_N} & \rmdef & (\mathit{service},\mathit{\top}).\mathit{Queue_{N-1}}\\
+\end{array}
+\end{displaymath}
 
-M/M/2/N queue
-Markov arrivals
-Markov service
-2 servers
-Limited buffer size of N
+Using aggregration, this may be more simply represented in an easily extensible form as $\mathit{Queue[N]}$.  The limitation of this representation however is that it makes no distinction between the states of individual queue position instances, only the numbers of instances in each state.  Therefore there is no ordering guarantee e.g. the queue is not guaranteed to be First In First Out (FIFO).  Actual cloud service queues do not necessarily implement FIFO, for example Azure Storage Queues \cite{RN1072} do not guarantee it.
 
-Queue shared between 2 processes.  The PEPA model for a general shared queue is shown in Figure \ref{figure:pepa_queue_model}.
+For the skewed demand use case, a queue must be able to support arrival actions at different rates, and must potentially be able to support service actions in different ways too.  Again \cite{RN75} suggests an approach for this model, with a queue synchronised with a linear combination of components with different characteristics.  Thus the PEPA model for a general shared queue is shown in Figure \ref{figure:pepa_queue_model}.
 
-Notes on applying this work to model a real Azure Storage Queue.  A real queue is effectively unlimited, determine what smaller queue size we can use for practicality (smaller state space). 
-
-\end{shaded}
+There are two arrival processes, one dealing with the arrival of cycling requests at a uniform, normal rate (here set to $\mathit{c=1}$) and one dealing with the athletics requests at skewed rates (starting at the same rate as cycling requests, and increasing to 10 times that rate).  The queue itself is an aggregation of $\mathit{N}$ components each of which has three states; an empty instance $\mathit{Q_0}$, `filled' with an athletics request $\mathit{Q_A}$, or filled with a cycling request $\mathit{Q_C}$.  Finally there are also two service processes, generalised here to $\mathit{Service_1}$ and $\mathit{Service_2}$ (in some of the system models, they will not necessarily be dedicated to serving athletics or cycling requests), both with the same maximum service rate of $\mathit{s=5}$.  The higher rates of skewed demand are therefore more than the service processes can handle.
 
 \begin{figure}
 	\caption{Shared queue PEPA model}
@@ -37,7 +36,7 @@ Notes on applying this work to model a real Azure Storage Queue.  A real queue i
 	% --begin
 	\begin{displaymath}
 		\begin{array}{rcl}
-			\mathit{a} & = & 10.0\\
+			\mathit{a} & = & 1.0-10.0\\
 			\mathit{c} & = & 1.0\\
 			\mathit{s1} & = & 5.0\\
 			\mathit{s2} & = & 5.0\\
@@ -45,18 +44,27 @@ Notes on applying this work to model a real Azure Storage Queue.  A real queue i
 			\mathit{Arrival_C} & \rmdef & (\mathit{cycling},\mathit{c}).\mathit{Arrival_C}\\
 			\mathit{Service_1} & \rmdef & (\mathit{serve1},\mathit{s1}).\mathit{Service_1}\\
 			\mathit{Service_2} & \rmdef & (\mathit{serve2},\mathit{s2}).\mathit{Service_2}\\
-			\mathit{Q_0} & \rmdef & (\mathit{athletics},\top).\mathit{Q_1}+(\mathit{cycling},\top).\mathit{Q_2}\\
-			\mathit{Q_1} & \rmdef & (\mathit{serve1},\top).\mathit{Q_0}\\
-			\mathit{Q_2} & \rmdef & (\mathit{serve2},\top).\mathit{Q_0}\\
+			[2.0ex]		\mathit{Q_0} & \rmdef & (\mathit{athletics},\top).\mathit{Q_A}+(\mathit{cycling},\top).\mathit{Q_C}\\
+			\mathit{Q_A} & \rmdef & (\mathit{serve1},\top).\mathit{Q_0}\\
+			\mathit{Q_C} & \rmdef & (\mathit{serve2},\top).\mathit{Q_0}\\
 			[2.0ex]		\multicolumn{3}{l}{\mathit{Arrival_A}\sync{athletics}\mathit{Q_0}[N]\sync{serve1}\mathit{Service_1}\sync{cycling}\mathit{Arrival_C}\sync{serve2}\mathit{Service_2}}\\
 			[2.0ex]	\end{array}
 	\end{displaymath}
 	% --end
 \end{figure}
 
+\FloatBarrier
+The model was tested in the Eclipse plugin using a series of different queue lengths $\mathit{N}$ and for different rates of athletics demand $\mathit{a}$ from 1 to 10.  This provided the actual throughputs in steady state of each activity.  Figure \ref{figure:queue_athletics} shows the throughput of {\itshape athletics} for exponentially increasing queue lengths from 1 to 20.  Figure \ref{figure:queue_cycling} shows the same for {\itshape cycling}.  Table \ref{table:queue_results} shows the numerical results for a queue of length N=10.
+The results demonstrate that:
+\begin{itemize}
+	\item the throughput of {\itshape athletics} is constrained by the maximum service rate of the process handling those requests.
+	\item the throughput of {\itshape cycling} is constrained by the ratio between the input rates of athletics and cycling.  When the input rate of athletics requests is 10 times that of cycling requests, then the queue holds these requests in a 10:1 ratio.  As the actual {\itshape athletics} throughput may not exceed the service rate $\mathit{s=5}$, then the cycling throughput is throttled to 0.5.
+	\item for larger queue sizes, the arrival and service processes are less coupled, and the throughputs approach their maximum limits.  A real queue service has an effectively unlimited length, but in PEPA models the state space quickly becomes too large for the Eclipse plugin to handle.  It is a useful result, therefore, to find that for a maximum skewed demand of 10 times the normal demand, a queue length of 10 gives a practical model with sufficient decoupling.
+\end{itemize}
+
 \begin{figure}
-	\caption{Shared queue experimental results}
-	\label{figure:queue_charts}
+	\caption{Shared queue experimental results - athletics}
+	\label{figure:queue_athletics}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
@@ -85,35 +93,11 @@ Notes on applying this work to model a real Azure Storage Queue.  A real queue i
 	
 	\end{axis}
 	\end{tikzpicture}
-	
-	\begin{tikzpicture}
-	\begin{axis}[
-	title={Throughput of serve1 against input rate a for different queue lengths N},
-	xlabel={Rate a},
-	ylabel={Throughput serve1},
-	xmin=0, xmax=10,
-	ymin=0, ymax=5,
-	legend pos=north west,
-	ymajorgrids=true,
-	grid style=dashed,
-	cycle multiindex* list={
-		mark list*
-		\nextlist
-		cyan,brown,green,blue,red
-	}
-	]
-	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/queue/N1_serve_1.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/queue/N2_serve_1.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/queue/N5_serve_1.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/queue/N10_serve_1.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/queue/N20_serve_1.csv};
-	
-	\legend{N = 1, N = 2, N = 5, N = 10, N = 20}
-	
-	\end{axis}
-	\end{tikzpicture}
-	
+\end{figure}
+\begin{figure}
+	\caption{Shared queue experimental results - cycling}
+	\label{figure:queue_cycling}
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Throughput of cycling against input rate a for different queue lengths N},
