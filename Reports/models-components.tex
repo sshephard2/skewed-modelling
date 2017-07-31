@@ -4,7 +4,7 @@
 
 \section{PEPA Component Models}\label{sec:pepa-component-models}
 
-The first stage is to create suitable PEPA models for the selected technology components from section \ref{sec:technologies}, simple enough to be composed into more complex system models but still able to demonstrate interesting behaviour.  These models are tested using the PEPA Eclipse plugin \cite{RN1080} to calculate the steady-state throughputs of each activity for a given range of input rates for the activity with skewed demand.  The results are analysed to verify that the component models behave as expected for the technologies, and to discover any additional insights.
+The first stage is to create suitable PEPA models for the selected technology components from section \ref{sec:technologies}, simple enough to be composed into more complex system models but still able to demonstrate interesting behaviour.  These models are tested using the PEPA Eclipse plugin \cite{RN1080} to calculate the steady-state throughputs of each activity for a given range of input rates for the activity with skewed demand.  The results are analysed to verify that the component models behave as expected for the technologies, and to discover any additional insights.  Note that there is no microservices component model.  Microservices is an architecture and will be shown in the System Modelling section.
 
 %
 % ---- Shared middleware queue
@@ -14,6 +14,7 @@ The first stage is to create suitable PEPA models for the selected technology co
 
 Work has already been done on modelling queueing systems in PEPA \cite{RN75}.  A single queue with a limited buffer size of $\mathit{N}$ may be written as (service and arrival components not shown, for brevity):
 
+\begin{center}
 \begin{displaymath}
 \begin{array}{rcl}
 \mathit{Queue_0} & \rmdef & (\mathit{arrival},\mathit{\top}).\mathit{Queue_1}\\
@@ -21,12 +22,13 @@ Work has already been done on modelling queueing systems in PEPA \cite{RN75}.  A
 \mathit{Queue_N} & \rmdef & (\mathit{service},\mathit{\top}).\mathit{Queue_{N-1}}\\
 \end{array}
 \end{displaymath}
+\end{center}
 
 Using aggregration, this may be more simply represented in an easily extensible form as $\mathit{Queue[N]}$.  The limitation of this representation however is that it makes no distinction between the states of individual queue position instances, only the numbers of instances in each state.  Therefore there is no ordering guarantee e.g. the queue is not guaranteed to be First In First Out (FIFO).  Actual cloud service queues do not necessarily implement FIFO, for example Azure Storage Queues \cite{RN1072} do not guarantee it.
 
 For the skewed demand use case, a queue must be able to support arrival actions at different rates, and must potentially be able to support service actions in different ways too.  Again \cite{RN75} suggests an approach for this model, with a queue synchronised with a linear combination of components with different characteristics.  Thus the PEPA model for a general shared queue is shown in Figure \ref{figure:pepa_queue_model}.
 
-There are two arrival processes, one dealing with the arrival of cycling requests at a uniform, normal rate (here set to $\mathit{c=1}$) and one dealing with the athletics requests at skewed rates (starting at the same rate as cycling requests, and increasing to 10 times that rate).  The queue itself is an aggregation of $\mathit{N}$ components each of which has three states; an empty instance $\mathit{Q_0}$, `filled' with an athletics request $\mathit{Q_A}$, or filled with a cycling request $\mathit{Q_C}$.  Finally there are also two service processes, generalised here to $\mathit{Service_1}$ and $\mathit{Service_2}$ (in some of the system models, they will not necessarily be dedicated to serving athletics or cycling requests), both with the same maximum service rate of $\mathit{s=5}$.  The higher rates of skewed demand are therefore more than the service processes can handle.
+There are two arrival processes, one dealing with the arrival of cycling requests at a uniform, normal rate (here set to $\mathit{c=1.0}$) and one dealing with the athletics requests at skewed rates (starting at the same rate as cycling requests, and increasing in steps of 1.0 to 10.0).  The queue itself is an aggregation of $\mathit{N}$ components each of which has three states; an empty instance $\mathit{Q_0}$, `filled' with an athletics request $\mathit{Q_A}$, or filled with a cycling request $\mathit{Q_C}$.  Finally there are also two service processes, generalised here to $\mathit{Service_1}$ and $\mathit{Service_2}$ (in some of the system models, they will not necessarily be dedicated to serving athletics or cycling requests), both with the same maximum service rate of $\mathit{s=5}$.  The higher rates of skewed demand are therefore more than the service processes can handle.
 
 \begin{figure}
 	\caption{Shared queue PEPA model}
@@ -54,7 +56,7 @@ There are two arrival processes, one dealing with the arrival of cycling request
 \end{figure}
 
 \FloatBarrier
-The model was tested in the Eclipse plugin using a series of different queue lengths $\mathit{N}$ and for different rates of athletics demand $\mathit{a}$ from 1 to 10.  This provided the actual throughputs in steady state of each activity.  Figure \ref{figure:queue_athletics} shows the throughput of {\itshape athletics} for exponentially increasing queue lengths from 1 to 20.  Figure \ref{figure:queue_cycling} shows the same for {\itshape cycling}.  Table \ref{table:queue_results} shows the numerical results for a queue of length N=10.
+The model is tested in the Eclipse plugin using a series of different queue lengths $\mathit{N}$ and for different rates of athletics demand $\mathit{a}$ from 1 to 10.  This provides the actual throughputs in steady state of each activity.  Figure \ref{figure:queue_athletics} shows the throughput of {\itshape athletics} for exponentially increasing queue lengths from 1 to 20.  Figure \ref{figure:queue_cycling} shows the same for {\itshape cycling}.  Table \ref{table:queue_results} shows the numerical results for a queue of length N=10.
 The results demonstrate that:
 \begin{itemize}
 	\item the throughput of {\itshape athletics} is constrained by the maximum service rate of the process handling those requests.
@@ -151,22 +153,17 @@ The results demonstrate that:
 %
 \FloatBarrier
 \subsection{Database models}
-\begin{shaded}
-A very simple representation of a single database process is a component that receives a request for data (either read or write) at some rate based on demand, and serves it at a rate based on the database's performance, e.g.
+A very simple representation of a single database process is a component that receives a request for data (either read or write) at some rate based on demand, and serves it at a rate based on the database's performance:
 \begin{center}
 $\mathit{DB} \rmdef (\mathit{request}, r).(\mathit{dbsrv}, db).\mathit{DB}$
 \end{center}
-What doesn't this model?  Statement about how the models below show that it can still be a useful building block.
-\end{shaded}
+This is a highly abstract representation.  It does model features such as session management, parallelism, cacheing, locking or any notion that data manipulation statements vary in complexity and expense.  Nevertheless it is a useful building block for distributed databases, as shown below.
 
 %
 % ---- Distributed database without replication
 %
 \FloatBarrier
-\begin{shaded}
 \subsubsection{Distributed database.} Figure \ref{figure:pepa_ddnr_model} shows a model of a distributed database, where the data has been partitioned by sport onto two different database nodes with identical performance.  The data request activities are {\itshape athletics} and {\itshape cycling}.  These may represent search, book or return operations on athletics or cycling tickets.  Users may search for either type of ticket from the website component, and the code or database engine will route the search to the correct data node.  Thus $\mathit{DB_1}$ here is able to service {\itshape athletics} requests, at a maximum rate of {\itshape db}, and $\mathit{DB_2}$ can service {\itshape cycling} requests at the same rate.  Both nodes execute in parallel without cooperating on any activities.
-Experiments are carried out in PEPA workbench by fixing the input rate of {\itshape db} at 5.0, the rate {\itshape c} of cycling requests to 1.0 and by testing each input rate {\itshape a} of athletics requests from 1.0 to 10.0 in steps of 1.0, to simulate increasing levels of skewed demand for athletics tickets which becomes too high for a database node to service.  The results appear in Table \ref{table:ddnr_results}.
-\end{shaded}
 
 \begin{figure}
 	\caption{Distributed database PEPA model}
@@ -191,6 +188,15 @@ Experiments are carried out in PEPA workbench by fixing the input rate of {\itsh
 	\end{displaymath}
 	% --end
 \end{figure}
+
+\FloatBarrier
+Experiments are carried out in the Eclipse plugin by fixing the input rate of {\itshape db} at 5.0, the rate {\itshape c} of cycling requests to 1.0 and by testing each input rate {\itshape a} of athletics requests from 1.0 to 10.0 in steps of 1.0, to simulate increasing levels of skewed demand for athletics tickets which becomes too high for a single database node to service.  Table \ref{table:ddnr_results} shows the numerical results, Figure \ref{figure:ddnr_sport} shows the throughput of both {\itshape athletics} and {\itshape cycling} against the skewed input rate {\itshape a}, and Figure \ref{figure:ddnr_database} shows the throughput of each database node against the same range of inputs.
+The results show that:
+\begin{itemize}
+	\item the throughput of {\itshape athletics} is constrained by the maximum service rate of the database node handling those requests, and both athletics and cycling activities demonstrate loss of throughput.
+	\item the throughput of {\itshape cycling} is independent of athletics.
+	\item the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all of the demand onto the node handling that sport.
+\end{itemize}
 
 \begin{table}[h!]
 	\begin{center}
@@ -271,9 +277,7 @@ grid style=dashed,
 % ---- Distributed database with replication
 %
 \FloatBarrier
-\begin{shaded}
-\subsubsection{Distributed database with replication.} The PEPA model for a distributed database is shown in Figure \ref{figure:pepa_ddwr_model}.
-\end{shaded}
+\subsubsection{Distributed database with replication.}  Constructing and meaningfully testing a model of a distributed database using consistent hashing with replication requires at least three types of sport tickets, so a {\itshape diving} activity is introduced.  The partitioning strategy is as the previous model, but now $\mathit{DB_1}$ is able to service {\itshape athletics} and {\itshape cycling} requests,  $\mathit{DB_2}$ handles {\itshape cycling} and {\itshape diving}, and $\mathit{DB_3}$ handles {\itshape athletics} and {\itshape diving} as shown in Figure \ref{figure:pepa_ddwr_model}.  This model makes a key assumption that each data node handles each supported sport with equal probability, and once again each node operates at an identical rate that is insufficient to meet the skewed demand.
 
 \begin{figure}
 	\caption{Distributed database with replication PEPA model}
@@ -283,7 +287,7 @@ grid style=dashed,
 	% --begin
 	\begin{displaymath}
 	\begin{array}{rcl}
-	\mathit{a} & = & 1.0\\
+	\mathit{a} & = & 1.0-10.0\\
 	\mathit{c} & = & 1.0\\
 	\mathit{d} & = & 1.0\\
 	\mathit{db} & = & 5.0\\
@@ -303,8 +307,15 @@ grid style=dashed,
 	% --end
 \end{figure}
 
-See the experimental results in Table \ref{table:ddwr_results}.
+Experiments are carried out in the Eclipse plugin by fixing the input rate of {\itshape db} at 5.0, the rates {\itshape c} and {\itshape d} of cycling and diving requests to 1.0 and by testing each input rate {\itshape a} of athletics requests from 1.0 to 10.0 in steps of 1.0.  The numerical results in Table \ref{table:ddwr_results} show that the throughputs of cycling and diving are identical.   Figure \ref{figure:ddwr_sport} therefore shows only the throughput of {\itshape athletics} and {\itshape cycling} against the skewed input rate {\itshape a} (the plots of cycling and diving would be superimposed).  Figure \ref{figure:ddwr_database} shows the throughput of all three database nodes against the same range of inputs.
+The results show that:
+\begin{itemize}
+	\item the throughput of {\itshape athletics} is higher than for the distributed database without replication.  The extra demand has been shared between both data nodes supporting athletics requests.
+	\item the throughput of {\itshape cycling} and {\itshape diving} are no longer independent of athletics.  They no longer reside only on data nodes that are independent of athletics demand.
+	\item the database node throughput of the two nodes supporting athletics requests is equal, and both are higher than the remaining data node that supports only cycling and diving.  The throughput of this node increases as athletics throughput increases however, suggesting the node is picking up an increasing proportion of the constant demand for cycling and diving tickets.
+\end{itemize}
 
+\FloatBarrier
 \begin{table}[h!]
 	\begin{center}
 		\caption{Distributed database with replication experimental results}
