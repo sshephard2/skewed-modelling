@@ -211,8 +211,8 @@ Experiments are carried out in PEPA workbench by fixing the input rate of {\itsh
 \end{table}
 
 \begin{figure}
-	\caption{Distributed database experimental results}
-	\label{figure:dd_charts}
+	\caption{Distributed database without replication - sport throughput}
+	\label{figure:ddnr_sport}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
@@ -238,31 +238,33 @@ Experiments are carried out in PEPA workbench by fixing the input rate of {\itsh
 
 	\end{axis}
 	\end{tikzpicture}
-
+\end{figure}
+\begin{figure}
+	\caption{Distributed database without replication - database throughput}
+	\label{figure:ddnr_database}
+	\centering
 	\begin{tikzpicture}
-	\begin{axis}[
-		title={Throughput against input rate a},
-		xlabel={Rate a},
-		ylabel={Throughput},
-		xmin=0, xmax=10,
-		ymin=0, ymax=5,
-		legend pos=north west,
-		ymajorgrids=true,
-		grid style=dashed,
-		cycle multiindex* list={
-			mark list*
-				\nextlist
-			cyan,brown,green,blue,red
-		}
-	]
-	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddnr/dbsrv_1.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/ddnr/dbsrv_2.csv};
+\begin{axis}[
+title={Throughput against input rate a},
+width=0.9\textwidth,
+ybar=0pt,
+bar width=.02\textwidth,
+xlabel={Rate a},
+ylabel={Throughput},
+xtick=data,
+ymin=0, ymax=5,
+legend pos=north west,
+ymajorgrids=true,
+grid style=dashed,
+]
 
-	\legend{dbsrv1,dbsrv2}
+\addplot [pattern=north east lines, pattern color=blue] table [x index={0}, y index={1}, col sep=comma]{data/ddnr/dbsrv_1.csv};
+\addplot [fill=green] table [x index={0}, y index={1}, col sep=comma]{data/ddnr/dbsrv_2.csv};
 
-	\end{axis}
-	\end{tikzpicture}
+\legend{dbsrv1,dbsrv2}
+
+\end{axis}
+\end{tikzpicture}
 \end{figure}
 
 %
@@ -366,7 +368,7 @@ See the experimental results in Table \ref{table:ddwr_results}.
 		xlabel={Rate a},
 		ylabel={Throughput},
 		xtick=data,
-		ymin=0, ymax=6,
+		ymin=0, ymax=5,
 		legend pos=north west,
 		ymajorgrids=true,
 		grid style=dashed,
