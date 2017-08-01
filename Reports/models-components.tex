@@ -163,7 +163,7 @@ This is a highly abstract representation.  It does model features such as sessio
 % ---- Distributed database without replication
 %
 \FloatBarrier
-\subsubsection{Distributed database.} Figure \ref{figure:pepa_ddnr_model} shows a model of a distributed database, where the data has been partitioned by sport onto two different database nodes with identical performance.  The data request activities are {\itshape athletics} and {\itshape cycling}.  These may represent search, book or return operations on athletics or cycling tickets.  Users may search for either type of ticket from the website component, and the code or database engine will route the search to the correct data node.  Thus $\mathit{DB_1}$ here is able to service {\itshape athletics} requests, at a maximum rate of {\itshape db}, and $\mathit{DB_2}$ can service {\itshape cycling} requests at the same rate.  Both nodes execute in parallel without cooperating on any activities.
+\subsubsection{Distributed database.} Figure \ref{figure:pepa_ddnr_model} shows a model of a distributed database, where the data has been partitioned by sport onto two different database nodes with identical performance.  The data request activities are {\itshape athletics} and {\itshape cycling}.  These may represent search, book or return operations on athletics or cycling tickets.  Users may search for either type of ticket from the website component, and the code or database engine will route the search to the correct data node.  Thus $\mathit{DB_1}$ here is able to service {\itshape athletics} requests, at a maximum rate of {\itshape db}, and $\mathit{DB_2}$ can service {\itshape cycling} requests at the same rate (the model assumes homogeneous database nodes to reduce the variables under consideration, although as there are separate database service processes it is extensible to heterogeneous systems).  Both nodes execute in parallel without cooperating on any activities.
 
 \begin{figure}
 	\caption{Distributed database PEPA model}
@@ -200,7 +200,7 @@ The results show that:
 
 \begin{table}[h!]
 	\begin{center}
-		\caption{Distributed database experimental results}
+		\caption{Distributed database without replication experimental results}
 		\label{table:ddnr_results}
 			\pgfplotstabletypeset[
 			col sep=comma,

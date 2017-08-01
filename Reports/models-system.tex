@@ -120,7 +120,11 @@ These demonstrate that:
 \FloatBarrier
 \subsection{Shared queue and distributed database}
 
-Requests via a shared queue to worker applications going to a distributed database with two nodes, Athletics and Cycling.
+The next system model (Figure \ref{figure:queuedd_architecture}) is the first combination of the shared queue and distributed database components.  A website sends all ticket requests asynchronously to a cloud queue service, and one or more worker applications (either a multi-threaded application or a scaling set of applications) dequeues the requests and forwards them to the distributed database.  The database uses a horizontal partitioning strategy based on the sport, without any replication.
+
+The PEPA model (Figure \ref{figure:queuedd}) is a straightforward combination of the shared queue and distributed database component models.  A queue length of N=10 is used as the experiments showed that for a small state space, this allowed the athletics throughput to get very close to the maximum service rate.
+
+There is no separate representation of worker processes (the previous system model showed that the throughputs of the worker activities were exactly the same as the processes on either side of them) but as before a high maximum rate has specified $\mathit{q=100.0}$ for the rate at which requests may be dequeued.  This is the rate used for {\itshape queueA} and {\itshape queueB} requests arriving at the database processes.
 
 \begin{figure}
 	\caption{Shared queue middleware architecture}
@@ -145,7 +149,7 @@ Requests via a shared queue to worker applications going to a distributed databa
 	\mathit{Q_0} & \rmdef & (\mathit{athletics},\top).\mathit{Q_A}+(\mathit{cycling},\top).\mathit{Q_C}\\
 	\mathit{Q_A} & \rmdef & (\mathit{queueA},\top).\mathit{Q_0}\\
 	\mathit{Q_C} & \rmdef & (\mathit{queueC},\top).\mathit{Q_0}\\
-	\mathit{DB_1} & \rmdef & (\mathit{queueA},\mathit{q}).\mathit{DBsrv_1}\\
+	[2.0ex]		\mathit{DB_1} & \rmdef & (\mathit{queueA},\mathit{q}).\mathit{DBsrv_1}\\
 	\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv1},\mathit{db}).\mathit{DB_1}\\
 	\mathit{DB_2} & \rmdef & (\mathit{queueC},\mathit{q}).\mathit{DBsrv_2}\\
 	\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv2},\mathit{db}).\mathit{DB_2}\\
@@ -157,8 +161,13 @@ Requests via a shared queue to worker applications going to a distributed databa
 	% --end
 \end{figure}
 
-\FloatBarrier
-See the experimental results in Table \ref{table:queuedd_results}.
+As is now usual, the Eclipse plugin is used to find the steady-state throughputs of the activities for input rates of athletics requests increasing from 1.0 to 10.0 with cycling and other rates fixed.  The results appear numerically in Table \ref{table:queuedd_results} and as a chart comparing {\itshape athletics} and {\itshape cycling} throughput in Figure \ref{figure:queueddnr_sport}.
+They show:
+\begin{itemize}
+	\item the throughput of {\itshape athletics} is constrained by the database service rate of a single node.  Athletics and cycling activities demonstrate loss of throughput, but less than shown for the distributed database component model.  This may indicate the decoupling effect of the middleware queue.	
+	\item the throughput of {\itshape cycling} is constrained by the ratio between the input rates of athletics and cycling, as it was with the shared queue component.  The behaviour of the queue appears to be the most significant when combined into a system.
+	\item the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all of the demand onto the node handling that sport.
+\end{itemize}
 
 \begin{table}[h!]
 	\begin{center}
@@ -217,10 +226,13 @@ See the experimental results in Table \ref{table:queuedd_results}.
 \FloatBarrier
 \subsection{Shared queue and distributed database with replication}
 
-Requests via a shared queue to worker applications going to a distributed database with three nodes, Athletics, Cycling and Diving, where each partition is replicated on another node.
+The final system model  (Figure \ref{figure:queueddrep_architecture}) combines a shared queue with a distributed database using replication, with one replica of each data partition on the `next' node using consistent hashing.  As before the website sends ticket requests via a shared queue to a worker application, which dequeues them for the database.
+
+The PEPA model (Figure \ref{figure:queueddrep}) combines the shared queue and distributed database with replication components, so that there is now an additional queue state $\mathit{Q_D}$ for holding {\itshape diving} ticket requests, and there are three data node processes.  $\mathit{DB_1}$ is able to service {\itshape athletics} and {\itshape cycling} requests,  $\mathit{DB_2}$ handles {\itshape cycling} and {\itshape diving}, and $\mathit{DB_3}$ handles {\itshape athletics} and {\itshape diving}.  As with the component node, the model's assumption is that each data node handles each supported sport with equal probability.  Again the model uses a queue length of N=10 and maximum queue worker rate of $\mathit{q=100.0}$.
 
 \begin{figure}
 	\caption{Distributed database with replication architecture}
+	\label{figure:queueddrep_architecture}
 	\centering
 	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/sharedqueue_withrep}
 \end{figure}
@@ -243,7 +255,7 @@ Requests via a shared queue to worker applications going to a distributed databa
 	\mathit{Q_A} & \rmdef & (\mathit{queueA},\top).\mathit{Q_0}\\
 	\mathit{Q_C} & \rmdef & (\mathit{queueC},\top).\mathit{Q_0}\\
 	\mathit{Q_D} & \rmdef & (\mathit{queueD},\top).\mathit{Q_0}\\
-	\mathit{DB_1} & \rmdef & (\mathit{queueA},\mathit{q}).\mathit{DBsrv_1}+(\mathit{queueC},\mathit{q}).\mathit{DBsrv_1}\\
+	[2.0ex]		\mathit{DB_1} & \rmdef & (\mathit{queueA},\mathit{q}).\mathit{DBsrv_1}+(\mathit{queueC},\mathit{q}).\mathit{DBsrv_1}\\
 	\mathit{DBsrv_1} & \rmdef & (\mathit{dbsrv1},\top).\mathit{DB_1}\\
 	\mathit{DB_2} & \rmdef & (\mathit{queueC},\mathit{q}).\mathit{DBsrv_2}+(\mathit{queueD},\mathit{q}).\mathit{DBsrv_2}\\
 	\mathit{DBsrv_2} & \rmdef & (\mathit{dbsrv2},\top).\mathit{DB_2}\\
@@ -258,7 +270,15 @@ Requests via a shared queue to worker applications going to a distributed databa
 	% --end
 \end{figure}
 
-See the experimental results in Table \ref{table:queueddwr_results}.
+\FloatBarrier
+Experiments are performed in the Eclipse plugin with the usual input rates.  The resulting steady state throughputs are shown in Table \ref{table:queueddwr_results}, in Figure \ref{figure:queueddwr_sport} as a chart comparing {\itshape athletics} and {\itshape cycling} throughput (as the cycling and diving throughputs are identical), and in Figure \ref{figure:queueddwr_database} showing the throughput of the database nodes.
+They show:
+\begin{itemize}
+	\item the throughput of {\itshape athletics} is still constrained but is greater than that of a single database node.  The demand is shared between both data nodes supporting athletics requests.
+	\item the throughput of {\itshape cycling} (and diving) is constrained by the ratio between the input rates of athletics and cycling.  In the component model, {\itshape cycling} and {\itshape diving} were impacted by athletics as they both shared a node with athletics tickets.  In the system model, the queue effect appears to outweigh this.
+	\item the database node throughput of the two nodes supporting athletics requests is equal, and both are higher than the remaining data node that supports only cycling and diving.  The throughput of this node increases with athletics throughput up to a point, suggesting the node is handling an increasing proportion of the demand for cycling and diving tickets (but that this demand becomes constrained by the queue effect).
+	
+\end{itemize}
 
 \begin{table}[h!]
 	\begin{center}
