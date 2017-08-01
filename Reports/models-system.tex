@@ -124,6 +124,7 @@ Requests via a shared queue to worker applications going to a distributed databa
 
 \begin{figure}
 	\caption{Shared queue middleware architecture}
+	\label{figure:queuedd_architecture}
 	\centering
 	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/sharedqueue}
 \end{figure}
@@ -156,6 +157,7 @@ Requests via a shared queue to worker applications going to a distributed databa
 	% --end
 \end{figure}
 
+\FloatBarrier
 See the experimental results in Table \ref{table:queuedd_results}.
 
 \begin{table}[h!]
@@ -168,15 +170,46 @@ See the experimental results in Table \ref{table:queuedd_results}.
 		columns/a/.style={column name=a, column type={p{.1\textwidth}}},
 		columns/athletics/.style={column name=athletics, column type={p{.1\textwidth}}},
 		columns/cycling/.style={column name=cycling, column type={p{.1\textwidth}}},
+		columns/ratio/.style={column name=ratio, column type={p{.1\textwidth}}},
 		columns/qa/.style={column name=queueA, column type={p{.1\textwidth}}},
 		columns/qc/.style={column name=queueC, column type={p{.1\textwidth}}},
 		columns/dbsrv1/.style={column name=dbsrv1, column type={p{.1\textwidth}}},
 		columns/dbsrv2/.style={column name=dbsrv2, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline Rate & \multicolumn{6}{c}{Throughput} \\,after row=\hline},
+		every head row/.style={before row=\hline Rate & \multicolumn{7}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/qddnr/results.csv}
 	\end{center}
 \end{table}
+
+\begin{figure}
+	\caption{Shared queue and distributed database - sport throughput}
+	\label{figure:queueddnr_sport}
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	title={Throughput against input rate a},
+	xlabel={Rate a},
+	ylabel={Throughput},
+	xmin=0, xmax=10,
+	ymin=0, ymax=5,
+	legend pos=north west,
+	ymajorgrids=true,
+	grid style=dashed,
+	cycle multiindex* list={
+		mark list*
+		\nextlist
+		cyan,brown,green,blue,red
+	}
+	]
+	
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/athletics.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/cycling.csv};
+	
+	\legend{athletics,cycling}
+	
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
 
 %
 % ---- Shared queue and distributed database with replication
