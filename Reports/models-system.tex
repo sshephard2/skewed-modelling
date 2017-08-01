@@ -3,11 +3,8 @@
 %
 
 \section{PEPA System Models}\label{sec:pepa-system-models}
-\begin{shaded}
-The proposed system will use distributed architectures.  Users will access it from a web-based front end.  Tickets will be stored in a database partitioned across several data nodes.  In between the web servers and database will be a number of worker applications to service user requests, connected to the web servers by some middleware.
 
-For each architecture it will be assumed that the web application will be designed to cope with the required demand, using a cluster of web servers where the throughput is managed using some HTTP Load Balancing algorithm \cite{RN73}, and potentially Elastic Scaling of servers e.g. using the autoscaling features of Amazon Web Services \cite{RN1064} or Microsoft Azure \cite{RN1065}.
-\end{shaded}
+The components are combined into models of full distributed architectures, that may be implemented and tested as working built systems.  There are three system models - a simplified microservices architecture, and two models composed of a shared queue and distributed database, with and without replication.
 
 %
 % ---- Simple microservices
@@ -15,12 +12,17 @@ For each architecture it will be assumed that the web application will be design
 \FloatBarrier
 \subsection{Simple microservices}
 
-There are two separate databases, one for Athletics tickets, one for Cycling.
+The simple microservices model has separate end-to-end services for handling athletics and cycling ticket requests.  This is not a `natural' microservices implementation, which would be more likely to separate on operations e.g. searching, booking and returning tickets.  Choosing this design however makes the system directly comparable to the partitioning strategy used for the distributed database models.  It is not in itself functionally different to separating services by operations unless considering additional features to handle eventual data consistency (see Future Work).
 
-It's expected that this architecture will lead to isolation of the skewed demand and that the results of testing the model will not be surprising, but that this will provide a useful control for other architectures.
+The system has two separate databases, one for athletics tickets, one for cycling, and each has its own dedicated worker application (Figure \ref{figure:simplemicro_architecture}).  The PEPA model of this (Figure \ref{figure:simplemicro}) uses the same database process building blocks as the distributed database component models, but in this case they cooperate with the dedicated worker application processes $\mathit{Worker_A}$ and $\mathit{Worker_C}$.
+
+As for the component models, there are two arrival processes, dealing with cycling requests at the rate $\mathit{c=1.0}$ and athletics requests at rates 1.0 to 10.0 in steps of 1.0.  Again each database may serve requests at a maximum rate of {\itshape db}.  Note that this rate has been changed to 6.5 so that it is proportional to the performance observed when testing the built system (the model has been tuned following measurement of the system).
+
+The worker application processes have a maximum rate of $\mathit{w=100.0}$.  This value has been chosen to be much higher than the other parts of the system to minimise its impact on the system testing.  The assumption being made here is that the applications may be designed to cope with this much higher demand, perhaps using Elastic Scaling of servers, which is out of scope of this paper.
 
 \begin{figure}
 	\caption{Simple microservices architecture}
+	\label{figure:simplemicro_architecture}
 	\centering
 	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/simplemicro}
 \end{figure}
@@ -54,7 +56,13 @@ It's expected that this architecture will lead to isolation of the skewed demand
 	% --end
 \end{figure}
 
-See the experimental results in Table \ref{table:micro_results}.
+The PEPA Eclipse plugin experiments test each input rate {\itshape a} of athletics requests from 1.0 to 10.0 in steps of 1.0, with all other rates fixed.  Table \ref{table:micro_results} shows the numerical results, and Figure \ref{figure:micro_charts} shows the throughput of {\itshape athletics} and {\itshape cycling} against input rate {\itshape a}.
+These demonstrate that:
+\begin{itemize}
+	\item the throughput of {\itshape athletics} is constrained by the maximum service rate of the database handling those requests. Both athletics and cycling activities demonstrate some loss of throughput, though less than with the distributed database component (perhaps due to the additional worker application processes producing a partial decoupling effect).
+	\item the throughput of {\itshape cycling} is independent of athletics.  This supports the claim that microservices architecture isolates the skewed demand.
+	\item the database node throughput follows the throughput of each sport activity.
+\end{itemize}
 
 \begin{table}[h!]
 	\begin{center}
