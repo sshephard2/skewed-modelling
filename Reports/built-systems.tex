@@ -4,40 +4,54 @@
 
 \section{Built systems}\label{sec:built-systems}
 
-\subsection{Design}
-\begin{shaded}
-General design decisions:
+\subsection{Approach}
 
-Cassandra \cite{RN1050}\cite{RN1075} database.  There are 500 tickets of each sport stored in the databases in different configurations.
+To test the system models, real systems using those architectures are built and their throughputs measured under simulated workloads.
 
-/*
-* Ticket table schema
-* 
-* int id - unique ticket id
-* varchar sport - type of sport
-* int day - day of event
-* int seat - seat number
-* varchar owner - name of ticket owner (for booked ticket)
-* 
-* The partition key is sport
-* The clustering columns are owner, day, id
-*/
+\subsubsection{Designs.}  All three systems were developed in Java and deployed on Microsoft Azure virtual machines.  The specifics of each design are discussed by system, but the common feature is that all three systems use a Cassandra database or databases with the same ticket schema design, given in Figure \ref{figure:cassandra_ticket_schema}, with 500 tickets of each sport.
 
-Reference to github at \cite{RN1073}
+Cassandra was chosen as the distributed database models were designed for consistent hashing (most relevant for the model using replication).  Although the simple microservices model need not have used Cassandra databases, reusing the schema design and database servers was an economical choice, and it illustrates how different architectures may arrange many of the same components.
 
-\end{shaded}
+The source code for the systems and related tools is hosted on GitHub \cite{RN1073}.
 
-\subsection{Measurement}
-\begin{shaded}
-The web application and its users were simulated using Apache JMeter \cite{RN1074} to consume the RESTful APIs of each system (for the simple microservices architecture, the Java Spring APIs; for the shared queue architectures, the Microsoft Azure Storage Queue REST APIs).
+\begin{figure}
+	\caption{Cassandra database ticket schema}
+	\label{figure:cassandra_ticket_schema}
+	\centering
+	\begin{lstlisting}
+	/*
+	* Ticket table schema
+	* 
+	* int id - unique ticket id
+	* varchar sport - type of sport
+	* int day - day of event
+	* int seat - seat number
+	* varchar owner - name of booked ticket owner
+	* 
+	* The partition key is sport
+	* The clustering columns are owner, day, id
+	*/
+	
+	CREATE TABLE IF NOT EXISTS ticket (
+		id int,
+		sport varchar,
+		day int,
+		seat int,
+		owner varchar,
+		PRIMARY KEY (sport, owner, day, id)
+	) WITH comment = 'Tickets';
+	\end{lstlisting}
+\end{figure}
 
-\paragraph{Measurands.} Throughputs as described below.
+\subsubsection{Workload Simulation.}  The workload from a web application and its users was simulated using Apache JMeter \cite{RN1074}, a Java application designed for load testing.  JMeter was originally designed for testing web applications and all the systems have RESTful APIs over HTTP (for the simple microservices architecture, the Java Spring APIs; for the shared queue architectures, the Microsoft Azure Storage Queue REST APIs).  JMeter test plans are composed of thread groups, where the number of threads and test executions are specified, samplers such as HTTP Request, and timers to determine the delay between each test execution.  The required demand may be increased by increasing the number of threads used in the test.  JMeter's Poisson Random Timer is used to simulate the negative exponential distribution \cite{RN80} that PEPA steady state solutions assume.
 
-\paragraph{Measurement method.} Measurement using Meters from Coda Hale Metrics \cite{RN1079}.  Metrics are logged every 10 seconds.
+\subsubsection{Measurement.}  Measurement of throughputs in the built systems is required to produce results that can be compared with the PEPA model experimental results.
 
-\paragraph{Measurement procedure.} The largest 1-minute moving average over a run for a chosen demand is extracted by a Python script.  Each experiment was carried out 5 times and the mean was taken of the 5 sets of results.
+\paragraph{Measurands.} The measurands are the throughputs of athletics and cycling requests in the worker applications, and control requests that do not access the database in order to show any system overheads.  Where applicable, measurands include the throughputs of diving requests and database queries.
 
-\end{shaded}
+\paragraph{Measurement method.}  The worker applications are measured using Coda Hale Metrics \cite{RN1079}, a Java library providing instrumentation.  The instrument used is a {\itshape Meter}, that measures the rate at which events occur as mean and moving average rates.  Database throughputs are measured by enabling the built-in Cassandra metric ThreadPools.CompletedTasks.request.ReadStage (the total count of completed read queries).  In both cases the metrics are logged every 10 seconds.
+
+\paragraph{Measurement procedure.} The largest 1-minute moving average over a test run is extracted by a Python script.  For the worker applications, the 1-minute average is provided by the Meter instrument.  For Cassandra metric files, the average must be calculated, again using a Python script.  Each experiment is carried out five times and the mean is taken of the five sets of results.
 
 %
 % ---- Simple microservices
