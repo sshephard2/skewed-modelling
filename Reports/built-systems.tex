@@ -58,11 +58,29 @@ The source code for the systems and related tools is hosted on GitHub \cite{RN10
 %
 \FloatBarrier
 \subsection{Simple microservices}
-\begin{shaded}
+
+Figure \ref{figure:simplemicro}
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Simple microservices Azure VMs}
+		\label{table:builtmicro_vmdesign}
+		\begin{tabular}{l | l | l}
+			VM		& Specification		& Application \\
+			\hline
+			worker1	& DS1 v2 (1 core, 3.5 GB)	& SimplemicroApplication \\
+			worker2	& DS1 v2 (1 core, 3.5 GB)	& SimplemicroApplication \\
+			db1		& F1s (1 core, 2 GB)	& Cassandra \\
+			db2		& F1s (1 core, 2 GB)	& Cassandra \\
+		\end{tabular}
+	\end{center}
+\end{table}
+
 Two completely separate Cassandra databases, each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, one containing Athletics tickets, one containing Cycling tickets.
 
 Two worker applications using RESTful APIs using Java Spring \cite{RN1076}.  Each worker application runs on a separate Azure Standard DS1 v2 (1 core, 3.5 GB memory) Ubuntu Virtual Machine.  Each connects to one of the Cassandra databases.
 
+\begin{shaded}
 Each worker application has a \\control API which doesn't access the database, but for which metrics are recorded.
 Each worker application also has a \\search API which takes a sport parameter (Athletics or Cycling) and queries the database for all matching tickets.
 
@@ -131,7 +149,22 @@ Control shows that throughput approaches demand (difference likely to be due to 
 % ---- Shared queue middleware
 %
 \FloatBarrier
-\subsection{Shared queue middleware}
+\subsection{Shared queue and distributed database}
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Shared queue and distributed DB Azure VMs}
+		\label{table:builtddnr_vmdesign}
+		\begin{tabular}{l | l | l}
+			VM		& Specification			& Application \\
+			\hline
+			qworkers	& DS3 v2 Promo (4 cores, 14 GB)	& QueueWorker (16 threads) \\
+			db1		& F1s (1 core, 2 GB)		& Cassandra \\
+			db2		& F1s (1 core, 2 GB)		& Cassandra \\
+		\end{tabular}
+	\end{center}
+\end{table}
+
 \begin{shaded}
 This would normally be used for the return ticket operation.  To ensure that a usable Cassandra metric was available, a search operation was used again.
 
@@ -221,7 +254,23 @@ See the experimental results in Table \ref{table:builtddnr_results}.
 % ---- Distributed database with replication
 %
 \FloatBarrier
-\subsection{Distributed database with replication}
+\subsection{Shared queue and distributed database with replication}
+
+
+\begin{table}[h!]
+	\begin{center}
+		\caption{Shared queue and distributed DB with replication Azure VMs}
+		\label{table:builtddwr_vmdesign}
+		\begin{tabular}{l | l | l}
+			VM		& Specification			& Application \\
+			\hline
+			qworkers	& DS3 v2 Promo (4 cores, 14 GB)	& QueueWorker (16 threads) \\
+			db1		& F1s (1 core, 2 GB)		& Cassandra \\
+			db2		& F1s (1 core, 2 GB)		& Cassandra \\
+			db3		& F1s (1 core, 2 GB)		& Cassandra \\
+		\end{tabular}
+	\end{center}
+\end{table}
 
 \begin{shaded}
 Distributed Cassandra databases using three nodes each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, using a Replicated keyspace with SimpleStrategy, replication\_factor=2.  Cassandra's partitioning places Athletics, Cycling and Diving tickets on different nodes with each node also containing replicas of one other ticket type.  Note that it was necessary to use ByteOrderedPartitioner to force this.
