@@ -369,13 +369,7 @@ They show:
 \FloatBarrier
 \subsection{Comparison}
 
-\begin{shaded}
-The system results are compared in Table \ref{table:comparison_results}.
-
-This shows that the simple microservices system does a good job of isolating the skewed demand from the rest of the system, but it is an inefficient use of the database resources.  The actual throughput of the athletics demand is limited to its database's throughput, while the spare capacity of the cycling database goes unused.  Using a distributed database with replication by contrast uses the capacity of two database nodes to serve the skewed demand, so that the actual throughput is much closer to the desired value.
-
-(NOTE: the replication model uses 3 nodes, the others use 2 - need to compare like with like.  Try all with 3 or replication with 2?)
-\end{shaded}
+As the experiments on the three system models all used the same range of input rates {\itshape a} and {\itshape c}, and the throughput of {\itshape athletics} and {\itshape cycling} requests was recorded for each system, then their experimental results may be compared with each other. (Caveat: only the distributed database with replication model has the additional {\itshape diving} activity, but its throughput was identical to diving).  The numerical results of each system model test are compared in Table \ref{table:comparison_results}.  Figure \ref{figure:comparison_chart} shows how the athletics and cycling throughputs behave for each system in graphical form.  If the models prove to be good representations of built systems, then such comparison shows the strengths and weaknesses of particular distributed system architectures and provides information for decision making in their selection during design.
 
 \begin{table}[h!]
 	\begin{center}
@@ -391,15 +385,19 @@ This shows that the simple microservices system does a good job of isolating the
 		columns/cqddnr/.style={column name=cycling, column type={p{.15\textwidth}}},
 		columns/aqddwr/.style={column name=athletics, column type={p{.15\textwidth}}},
 		columns/cqddwr/.style={column name=cycling, column type={p{.15\textwidth}}},
-		every head row/.style={before row=\hline Rate & \multicolumn{2}{l}{Microservices} & \multicolumn{2}{l}{Queue + Distributed DB} & \multicolumn{2}{l}{Queue + DB with Replication} \\,after row=\hline},
+		every head row/.style={before row=\hline Rate & \multicolumn{2}{l}{Simple Microservices} & \multicolumn{2}{l}{Queue + Distributed DB} & \multicolumn{2}{l}{Queue + DB with Replication} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/compare.csv}
 	\end{center}
 \end{table}
 
+\paragraph{Athletics Throughput.}  The comparison shows that the actual throughput of the skewed demand for athletics tickets is lowest for the simple microservices system.  Introducing queue middleware to the system adds decoupling, resulting in a throughput much closer to the maximum service rate of a database node.  Using a distributed database with replication has a load sharing effect so that this system comes closest of all to a throughput that meets the demand.
+
+\paragraph{Cycling Throughput.}  In contrast the cycling throughput is overall higher for the simple microservices system.  At lower levels of athletics demand, the queue-based systems win out, but as the skewed demand increases then it begins to have an impact on the cycling throughput in these systems.  As the microservices architecture isolates cycling from athletics, it remains at a constant rate.
+
 \begin{figure}
-	\caption{Comparison of system results}
-	\label{figure:comparison_charts}
+	\caption{Comparison of systems - athletics and cycling throughput}
+	\label{figure:comparison_chart}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
