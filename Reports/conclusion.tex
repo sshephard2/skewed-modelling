@@ -2,44 +2,42 @@
 % ---- Conclusions and Future Work
 %
 
-\section{Conclusions}\label{sec:conclusions}
-
-\begin{shaded}
+\section{Conclusions and Future Work}\label{sec:conclusions}
+PEPA can be used to build models of complex systems using distributed, cloud-based technologies.  Experiments can be run in the PEPA Eclipse plugin to produce steady state throughput results, and make predictions of how the real, built systems will behave under conditions of skewed demand.
 	
-The models are useful for qualitative prediction.  They successfully predicted the non-trivial result that when a shared queue is used in combination with a distributed database, whether or not replication is used, then once the partitions storing the high demand tickets were no longer able to satisfy it, the throughput of the other resources was choked in proportion to the relative demand between them and the skewed resources.  The models also predicted that when using replication, there would also be throughput at the replica node.
+The models are useful for qualitative prediction.  They successfully predicted:
+\begin{itemize}
+	\item that the microservices architecture would better isolate skewed demand from the other components.
+	\item (less trivially) when a shared queue is used in combination with a distributed database, once the throughput of resources with skewed demand is choked, the throughput of the other resources was choked in proportion to the relative demand between them and the skewed resource.  This despite the fact that the model's queue size is much smaller than an actual Cloud service queue.
+	\item where throughput would be routed through a distributed database when using a particular partitioning strategy.
+	\item when using a distributed database with replication, there would also be throughput at the replica node, and that therefore the overall throughput of the skewed demand resource would be higher than for a distributed database without replication.
+\end{itemize}
 
-However, the models were less successful at quantitative predictions.  When using replication, the throughput was not spread evenly (or randomly) between database nodes, and this also meant that the system was not able to satisfy as much demand as predicted.  This means that it was not possible to use the models to compare which system would make best use of the resources available, as the models suggested - i.e. the models as they stand are not suitable for right-sizing.
+However, the models were less successful at quantitative predictions.  Simple microservices was still best at isolating demand but built system results showed that there was some impact on the other resources.  When using replication, the throughput was not spread evenly (or randomly) between database nodes, and this also meant that the system was not able to satisfy as much demand as predicted.  The models were too abstract to describe and predict the behaviour inside the database engine, or the overheads incurred by worker application design choices.  This meant that the maximum apparent database service rates for actual systems were very different for microservices and the shared queue distributed database models, despite the fact that both used the same queries against Cassandra on the same virtual machines.  This means that while the models suggested that they could be used to compare different architectures directly, and to make predictions about which would make best use of the resources available, the real systems did not bear this out.  The models as they stand are not therefore suitable for right-sizing applications.
 
-Conclusions about the modelled/built systems - how well they isolate demand vs how well they utilise resources, whether or not a shared queue worked, whether or not the database partitioning strategy worked
-
-\end{shaded}
-
-\section{Future Work}\label{sec:future-work}
-
-\begin{shaded}
+It is argued that the models have demonstrated potential for further work in this application area.
 	
-With a set of simple models, there is much potential for future work to build on them.
+\subsection{Improved Models}
 
-The real Cassandra database behaviour is more complex than described by these simple models.  An area of future work might be to adapt these models to make them closer to the true behaviour.  However models tied closely to a particular database implementation are likely to be less universally applicable.
+The real Cassandra database behaviour was shown to be more complex than described by these simple models.  One area of future work might be to build on the abstract database model to exhibit the true behaviour more closely.  Care must be taken however not to customise the model so much that it is no longer useful for other database implementations.
 
-Other areas - different partitioning strategies. For example, where the partitioning strategy does not attempt to isolate demand, but shares it between database nodes, 
+\subsection{System Experiments}
 
-Different queue strategies.  A priority queue for the skewed demand? Choking skewed demand in the queue before it overwhelms the whole database?  Trigger based on when the normal demand resources begin to get affected by the skewed demand.
+The existing models may be used for further experimentation to determine how the currently modelled technologies may be reconfigured to produce better system architectures.
 
-An interesting area of future work might be in using the modelling techniques in adaptive algorithms.
+\subsubsection{Partitioning Strategies.}  Partitioning strategies normally aim to use all a distributed database's nodes equally.  In such a strategy, what is the impact of skewed demand?
 
-Models might be used to change the queueing policy on-demand.
+\subsubsection{Queue Strategies.}  The shared queue led to skewed demand having a significant impact on the other resources, and a worthwhile subject of further study would be how other queueing strategies might isolate that demand while retaining the advantages of synchronous middleware.  There are several different queue models in \cite{RN75} that would provide a good starting point, e.g. triggered and priority queues.
 
-A model might be used as a policy for elastic scaling? and compared with the performance of other right-sizing strategies; control theory, machine learning and other model based techniques including statistical.
+\subsection{Adaptive Runtime Models}
+An interesting area of future work might be in executing the models at runtime to use them for adaptive algorithms, e.g. to change the queueing policy on-demand.  If the models were also improved to the point that they made better quantitative predictions, then they might also be used as an elastic scaling policy and compared with the performance of other right-sizing strategies; control theory, machine learning and other model based techniques including statistical.
 
-Data partitioning - where the high demand is unknown in advance, we need an adaptive strategy.  Workload-aware clustering algorithms do exist for the placement of new data, e.g. \cite{RN63}, but our use case has a fixed set of tickets.  Re-placement of existing data onto different partitions would be likely to require many reads, writes and deletes.
-
-A more `natural' microservices architecture that partitions the system by operation (Book, Search, Return) with a separate database for each.  The databases maintain eventual consistency via an event streaming application e.g. using Kafka.  A new model for this, it may be generalised to a model of publish/subscribe message oriented middleware.
+\subsection{New Models}
+It may also be possible to use PEPA to produce models for other distributed technologies.  For example, a more `natural' microservices architecture would partition the system by operation (Book, Search, Return) with a separate database for each, as shown in Figure \ref{figure:microservices}.  In this architecture the databases maintain eventual consistency via an event streaming application e.g. using Kafka.  The model for this component may well be generalised to a model of publish/subscribe message oriented middleware.
 \begin{enumerate}
 \item Book is an event producer and consumer (produces when a ticket is booked, consumes returned tickets).
 \item Search is an event consumer (consumes the state of tickets that are booked and returned).
 \item Return is an event producer (produces returned tickets).
 \end{enumerate}
 
-\end{shaded}
 
