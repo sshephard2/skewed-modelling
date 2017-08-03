@@ -152,7 +152,7 @@ As populating the queue with JMeter and processing it with the queue worker appl
 
 The Cassandra database was distributed using a keyspace (`Distributed') with SimpleStrategy, replication\_factor=1 onto two nodes each on one virtual machine.  Cassandra's partitioning places Athletics tickets on one node, and Cycling tickets on the other.  This was validated using nodetool getendpoints, which shows which node hosts records from a given keyspace matching a given partition key e.g. nodetool getendpoints Distributed ticket Athletics.
 
-Note that without the overheads of starting a new Cassandra database session for each request, it was necessary to slow Cassandra down by turning on tracing for 100\% of queries using nodetool settraceprobability 1.0.  Load testing the database alone with cassandra-stress using 16 threads suggested a maximum database throughput of 475 operations per second.
+Note that without the overheads of starting a new Cassandra database session for each request, it was necessary to slow Cassandra down by turning on tracing for 100\% of queries using nodetool settraceprobability 1.0.  Load testing the database alone with cassandra-stress using 16 threads and a query for all athletics tickets suggested a maximum database throughput of 475 operations per second.
 
 \begin{table}[h!]
 	\begin{center}
@@ -173,11 +173,11 @@ Note that without the overheads of starting a new Cassandra database session for
 \subsubsection{Results.} 
 Table \ref{table:builtddnr_results} shows the numerical results and Figure \ref{figure:builtddnr_charts} shows the plots of athletics, cycling and control throughputs for the same range of athletics demands stated as the number of JMeter threads or users.
 
-The total throughput of {\itshape athletics} and {\itshape cycling} quickly falls behind the control throughput, and examination of the athletics throughput in particular shows that it is constrained by the database performance of a single node.  Note that the constrained throughout is significantly less than the maximum rate shown by cassandra-stress.
+The total throughput of {\itshape athletics} and {\itshape cycling} quickly falls behind the control throughput, and examination of the athletics throughput in particular shows that it is constrained by the database performance of a single node.  Note that the constrained throughout is significantly less than the maximum rate shown by cassandra-stress.  Interestingly the maximum total throughput is still less than that value but much closer to it, so the limit shown by cassandra-stress may be based on the whole cluster even though the tickets only appear on one node.
 
 The {\itshape cycling} throughput is constrained in proportion to the athletics {\itshape demand}, not the actual athletics throughput, so that as the athletics throughput is limited but the demand continues to decrease, then the cycling throughput decreases in the ratio of their respective demands (though the ratio is not exact).  The behaviour of the built system matches the prediction of the model.  The model had a very small queue size, and an actual Azure Storage Queue is practically unlimited, so this result was not certain.
 
-Finally the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all of the demand onto the node handling that sport, as expected.
+Finally the database node throughput follows the throughput of each sport activity.  The partitioning strategy placed the athletics tickets onto {\itshape db2}, as discovered using nodetool getendpoints, and the throughput on this node increases with the skewed athletics demand.
 
 \begin{table}[h!]
 	\begin{center}
@@ -237,6 +237,25 @@ Finally the database node throughput follows the throughput of each sport activi
 \FloatBarrier
 \subsection{Shared queue and distributed database with replication}
 
+\subsubsection{Design.}  The shared queue and distributed database with replication architecture from Figure \ref{figure:queueddrep_architecture} was deployed on four Azure Ubuntu virtual machines as shown in Table \ref{table:builtddwr_vmdesign}, again using a single Azure Storage Queue instance.
+
+The {\itshape QueueWorker} application was reused (as well as handling Athletics, Cycling or Control ticket requests, the application handles Diving requests) and run with 16 threads as before.
+
+The Cassandra database was distributed using a keyspace (`Replicated') with SimpleStrategy, replication\_factor=2 onto three nodes each on one virtual machine.  Cassandra's partitioning places Athletics, Cycling and Diving tickets on different nodes with each node also containing replicas of one other ticket type (it was necessary to use ByteOrderedPartitioner to force this).  This is verified using nodetool getendpoints e.g. nodetool getendpoints Distributed ticket Athletics.
+
+\begin{center}
+\begin{tabular}{l | l | l}
+	Node	& Primary	& Replica \\
+	\hline
+	db1		& Athletics	& Cycling \\
+	db2		& Cycling	& Diving \\
+	db3		& Diving	& Athletics \\
+\end{tabular}
+\end{center}
+
+Again, it was necessary to slow Cassandra down by turning on tracing for 100\% of queries.
+
+Load testing the database with cassandra-stress using 16 threads suggested a maximum database throughput of 600 operations per second.  This suggests that replicating tickets on two database nodes increases the possible throughput, but it hasn't doubled the previous performance of 475 ops per second.  The model keeps the {\itshape db} rate of 5.0 based on that 475 ops per second single-node measurement.
 
 \begin{table}[h!]
 	\begin{center}
@@ -253,29 +272,16 @@ Finally the database node throughput follows the throughput of each sport activi
 	\end{center}
 \end{table}
 
-\begin{shaded}
-Distributed Cassandra databases using three nodes each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, using a Replicated keyspace with SimpleStrategy, replication\_factor=2.  Cassandra's partitioning places Athletics, Cycling and Diving tickets on different nodes with each node also containing replicas of one other ticket type.  Note that it was necessary to use ByteOrderedPartitioner to force this.
+\subsubsection{Workload Simulation.}  The application was tested using JMeter with three thread groups running in parallel, Cycling and Diving with a constant 15 threads and Athletics ramping up from 15-150 in steps of 15.  The parameters were set to the same values as the previous JMeter test plan.
 
-This is validated using nodetool getendpoints e.g.
+\subsubsection{Results.} 
+Table \ref{table:builtddwr_results} shows the numerical results. Figure \ref{figure:builtddwr_sport} shows the plots of athletics, cycling and control throughputs for the same range of athletics demands.  As for the model, diving throughput is not shown on the chart as it closely matches cycling throughput.  Figure \ref{figure:builtddwr_database} shows the database throughputs for all three nodes.
 
-nodetool getendpoints Distributed ticket Athletics
+The control throughput begins to taper off as it gets closer to 1000 requests per second.  Azure queues have a limit of up to 2000 messages per second, so simultaneously queueing and dequeuing requests at the same rate suggests a limit of 1000 messages per second.  The total throughput of {\itshape athletics}, {\itshape cycling} and {\itshape diving} still falls behind control throughput, and again the maximum total is very close to the cassandra-stress limit of 600 requests per second.  Both the total and athletics throughputs are significantly higher than for the system without replication, as predicted by the model.
 
-Athletics/Cycling
-Cycling/Diving
-Diving/Athletics
+Again the model correctly predicted that the {\itshape cycling} and {\itshape diving} throughputs would be constrained in a ratio to the athletics throughput that matches (or is close to) the ratio between their demands.
 
-Cassandra metrics configured and processed as above.
-
-The same shared Azure Storage Queue and QueueWorker application running with 16 threads used again.
-
-Cassandra with tracing for 100\% of queries as before.
-
-Use JMeter with Poisson random timer (negative exponential distribution) with a lambda value of 100 milliseconds, Cycling and Diving at a constant 15 threads/users (approximately 95 requests per second) and Athletics ramping up from 15-150 in steps of 15, so the desired demand is 95-950 requests per second.  Each thread group has a loop count of 1500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.
-
-The control version of the above JMeter test plan uses the same variables, but sending Control tickets rather than real tickets to the queue.
-
-See the experimental results in Table \ref{table:builtddwr_results}.
-\end{shaded}
+However, the database node throughputs are very different to those from the model.  While the {\itshape db1} and {\itshape db3} nodes that host athletics tickets do show higher throughputs than the node which does not, the throughputs were not shared equally between those two nodes.  Neither was the allocation random.  The average of all five sets of tests showed {\itshape db3} taking many more requests.  This, and the cassandra-stress result showing that the athletics query performance did not double when adding a replica to another node, indicates that Cassandra's performance is more complex than the abstract database model.
 
 \begin{table}[h!]
 	\begin{center}
@@ -302,7 +308,7 @@ See the experimental results in Table \ref{table:builtddwr_results}.
 
 \begin{figure}
 	\caption{Shared queue and distributed database with replication - sport throughput}
-	\label{figure:builtddnr_sport}
+	\label{figure:builtddwr_sport}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
@@ -333,7 +339,7 @@ See the experimental results in Table \ref{table:builtddwr_results}.
 
 \begin{figure}
 	\caption{Shared queue and distributed database with replication - database throughput}
-	\label{figure:queueddwr_database}
+	\label{figure:builtddwr_database}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
