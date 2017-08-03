@@ -164,9 +164,9 @@ There is no separate representation of worker processes (the previous system mod
 As is now usual, the Eclipse plugin is used to find the steady-state throughputs of the activities for input rates of athletics requests increasing from 1.0 to 10.0 with cycling and other rates fixed.  The results appear numerically in Table \ref{table:queuedd_results} and as a chart comparing {\itshape athletics} and {\itshape cycling} throughput in Figure \ref{figure:queueddnr_sport}.
 They show:
 \begin{itemize}
-	\item the throughput of {\itshape athletics} is constrained by the database service rate of a single node.  Athletics and cycling activities demonstrate loss of throughput, but less than shown for the distributed database component model.  This may indicate the decoupling effect of the middleware queue.	
+	\item the throughput of {\itshape athletics} is constrained by the database service rate of a single node.  Athletics and cycling activities demonstrate loss of throughput, but less than shown for the distributed database component model.  This may indicate the effect of the middleware queue observed at the component level.	
 	\item the throughput of {\itshape cycling} is constrained by the ratio between the input rates of athletics and cycling, as it was with the shared queue component.  The behaviour of the queue appears to be the most significant when combined into a system.
-	\item the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all of the demand onto the node handling that sport.
+	\item the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all the demand onto the node handling that sport.
 \end{itemize}
 
 \begin{table}[h!]
@@ -369,7 +369,7 @@ They show:
 \FloatBarrier
 \subsection{Comparison}
 
-As the experiments on the three system models all used the same range of input rates {\itshape a} and {\itshape c}, and the throughput of {\itshape athletics} and {\itshape cycling} requests was recorded for each system, then their experimental results may be compared with each other. (Caveat: only the distributed database with replication model has the additional {\itshape diving} activity, but its throughput was identical to diving).  The {\itshape db} rate of the simple microservices model as been set back to the same as the other models i.e. 5.0 and the numerical results of each system model test are compared in Table \ref{table:comparison_results}.  Figure \ref{figure:comparison_chart} shows how the athletics and cycling throughputs behave for each system in graphical form.  If the models prove to be good representations of built systems, then such comparison shows the strengths and weaknesses of particular distributed system architectures and provides information for decision making in their selection during design.
+As the experiments on the three system models all used the same range of input rates {\itshape a} and {\itshape c}, and the throughput of {\itshape athletics} and {\itshape cycling} requests was recorded for each system, then their experimental results may be compared with each other. (Caveat: only the distributed database with replication model has the additional {\itshape diving} activity, but its throughput was identical to diving).  The {\itshape db} rate of the simple microservices model as been set back to 5.0, the same as the other models, and the numerical results of each system model test are compared in Table \ref{table:comparison_results}.  If the models prove to be good representations of built systems, then such comparison shows the strengths and weaknesses of particular distributed system architectures and provides information for decision-making in their selection during design.
 
 \begin{table}[h!]
 	\begin{center}
@@ -391,67 +391,6 @@ As the experiments on the three system models all used the same range of input r
 	\end{center}
 \end{table}
 
-\paragraph{Athletics Throughput.}  The comparison shows that the actual throughput of the skewed demand for athletics tickets is lowest for the simple microservices system.  Introducing queue middleware to the system adds decoupling, resulting in a throughput much closer to the maximum service rate of a database node.  Using a distributed database with replication has a load sharing effect so that this system comes closest of all to a throughput that meets the demand.
+\paragraph{Athletics Throughput.}  The comparison shows that the actual throughput of the skewed demand for athletics tickets is lowest for the simple microservices system.  Introducing queue middleware to the system gives a throughput much closer to the maximum service rate of a database node.  Using a distributed database with replication has a load sharing effect so that this system comes closest of all to a throughput that meets the demand.
 
-\paragraph{Cycling Throughput.}  In contrast the cycling throughput is overall higher for the simple microservices system.  At lower levels of athletics demand, the queue-based systems win out, but as the skewed demand increases then it begins to have an impact on the cycling throughput in these systems.  As the microservices architecture isolates cycling from athletics, it remains at a constant rate.
-
-\begin{figure}
-	\caption{Comparison of systems - athletics and cycling throughput}
-	\label{figure:comparison_chart}
-	\centering
-	\begin{tikzpicture}
-	\begin{axis}[
-	title={Throughput of athletics against input rate a},
-	width=0.9\textwidth,
-	xlabel={Rate a},
-	ylabel={Throughput},
-	xmin=0, xmax=10,
-	ymin=0, ymax=10,
-	legend pos=north west,
-	legend cell align={left},
-	ymajorgrids=true,
-	grid style=dashed,
-	cycle multiindex* list={
-		mark list*
-		\nextlist
-		cyan,brown,green,blue,red
-	}
-	]
-	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/athletics.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/athletics.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/athletics.csv};
-	
-	\legend{Simple Microservices,Queue + Distributed DB,Queue + Distributed DB with Replication}
-	
-	\end{axis}
-	\end{tikzpicture}
-	
-	\begin{tikzpicture}
-	\begin{axis}[
-	title={Throughput of cycling against input rate a},
-	width=0.9\textwidth,
-	xlabel={Rate a},
-	ylabel={Throughput},
-	xmin=0, xmax=10,
-	ymin=0, ymax=1.2,
-	legend pos=south west,
-	legend cell align={left},
-	ymajorgrids=true,
-	grid style=dashed,
-	cycle multiindex* list={
-		mark list*
-		\nextlist
-		cyan,brown,green,blue,red
-	}
-	]
-	
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/micro/cycling.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddnr/cycling.csv};
-	\addplot table [x index={0}, y index={1}, col sep=comma]{data/qddwr/cycling.csv};
-	
-	\legend{Simple Microservices,Queue + Distributed DB,Queue + Distributed DB with Replication}
-	
-	\end{axis}
-	\end{tikzpicture}
-\end{figure}
+\paragraph{Cycling Throughput.}  In contrast, the cycling throughput is overall higher for the simple microservices system.  At lower levels of athletics demand, the queue-based systems win out, but as the skewed demand increases then it begins to have an impact on the cycling throughput in these systems.  As the microservices architecture isolates cycling from athletics, it remains at a constant rate.

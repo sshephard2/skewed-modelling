@@ -24,7 +24,7 @@ Work has already been done on modelling queueing systems in PEPA \cite{RN75}.  A
 \end{displaymath}
 \end{center}
 
-Using aggregation, this may be more simply represented in an easily extensible form as $\mathit{Queue[N]}$.  The limitation of this representation however is that it makes no distinction between the states of individual queue position instances, only the numbers of instances in each state.  Therefore there is no ordering guarantee e.g. the queue is not guaranteed to be First In First Out (FIFO).  Actual cloud service queues do not necessarily implement FIFO, for example Azure Storage Queues \cite{RN1072} do not guarantee it.
+Using aggregation, this may be more simply represented in an easily extensible form as $\mathit{Queue[N]}$.  The limitation of this representation however is that it makes no distinction between the states of individual queue position instances, only the numbers of instances in each state.  This means there is no ordering guarantee e.g. the First In First Out (FIFO).  Actual cloud service queues do not necessarily implement FIFO, for example Azure Storage Queues \cite{RN1072} do not guarantee it.
 
 For the skewed demand use case, a queue must be able to support arrival actions at different rates, and must potentially be able to support service actions in different ways too.  Again \cite{RN75} suggests an approach for this model, with a queue synchronised with a linear combination of components with different characteristics.  Thus the PEPA model for a general shared queue is shown in Figure \ref{figure:pepa_queue_model}.
 
@@ -61,7 +61,7 @@ The results demonstrate that:
 \begin{itemize}
 	\item the throughput of {\itshape athletics} is constrained by the maximum service rate of the process handling those requests.
 	\item the throughput of {\itshape cycling} is constrained by the ratio between the input rates of athletics and cycling.  When the input rate of athletics requests is 10 times that of cycling requests, then the queue holds these requests in a 10:1 ratio.  As the actual {\itshape athletics} throughput may not exceed the service rate $\mathit{s=5}$, then the cycling throughput is throttled to 0.5.
-	\item for larger queue sizes, the arrival and service processes are less coupled, and the throughputs approach their maximum limits.  A real queue service has an effectively unlimited length, but in PEPA models the state space quickly becomes too large for the Eclipse plugin to handle.  It is a useful result, therefore, to find that for a maximum skewed demand of 10 times the normal demand, a queue length of 10 gives a practical model with sufficient decoupling.
+	\item for larger queue sizes, the throughputs approach their maximum limits.  A real queue service has an effectively unlimited length, but in PEPA models the state space quickly becomes too large for the Eclipse plugin to handle.  It is a useful result, therefore, to find that for a maximum skewed demand of 10 times the normal demand, a queue length of 10 gives a practical and well performing model.
 \end{itemize}
 
 \begin{figure}
@@ -157,7 +157,7 @@ A very simple representation of a single database process is a component that re
 \begin{center}
 $\mathit{DB} \rmdef (\mathit{request}, r).(\mathit{dbsrv}, db).\mathit{DB}$
 \end{center}
-This is a highly abstract representation.  It does model features such as session management, parallelism, caching, locking or any notion that data manipulation statements vary in complexity and expense.  Nevertheless it is a useful building block for distributed databases, as shown below.
+This is a highly abstract representation.  It does not model features such as session management, parallelism, caching, locking or any notion that data manipulation statements vary in complexity and expense.  Nevertheless it is a useful building block for distributed databases, as shown below.
 
 %
 % ---- Distributed database without replication
@@ -195,7 +195,7 @@ The results show that:
 \begin{itemize}
 	\item the throughput of {\itshape athletics} is constrained by the maximum service rate of the database node handling those requests, and both athletics and cycling activities demonstrate loss of throughput.
 	\item the throughput of {\itshape cycling} is independent of athletics.
-	\item the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all of the demand onto the node handling that sport.
+	\item the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all the demand onto the node handling that sport.
 \end{itemize}
 
 \begin{table}[h!]

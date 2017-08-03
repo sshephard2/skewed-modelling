@@ -8,7 +8,7 @@
 
 To test the system models, real systems using those architectures are built and their throughputs measured under simulated workloads.
 
-\subsubsection{Designs.}  All three systems were developed in Java and deployed on Microsoft Azure virtual machines.  The specifics of each design are discussed by system, but the common feature is that all three systems use a Cassandra database or databases with the same ticket schema design, given in Figure \ref{figure:cassandra_ticket_schema}, with 500 tickets of each sport.
+\subsubsection{Designs.}  All three systems were developed in Java and deployed on Microsoft Azure virtual machines.  The system designs discuss their specifics, but the common feature is that all three systems use a Cassandra database or databases with the same ticket schema design, given in Figure \ref{figure:cassandra_ticket_schema}, with 500 tickets of each sport.
 
 Cassandra was chosen as the distributed database models were designed for consistent hashing (most relevant for the model using replication).  Although the simple microservices model need not have used Cassandra databases, reusing the schema design and database servers was an economical choice, and it illustrates how different architectures may arrange many of the same components.
 
@@ -43,7 +43,7 @@ The source code for the systems and related tools is hosted on GitHub \cite{RN10
 	\end{lstlisting}
 \end{figure}
 
-\subsubsection{Workload Simulation.}  The workload from a web application and its users was simulated using Apache JMeter \cite{RN1074}, a Java application designed for load testing.  JMeter was originally designed for testing web applications and all the systems have RESTful APIs over HTTP (for the simple microservices architecture, the Java Spring APIs; for the shared queue architectures, the Microsoft Azure Storage Queue REST APIs).  JMeter test plans are composed of thread groups, where the number of threads and test executions are specified, samplers such as HTTP Request, and timers to determine the delay between each test execution.  The required demand may be increased by increasing the number of threads used in the test.  JMeter's Poisson Random Timer is used to simulate the negative exponential distribution \cite{RN80} that PEPA steady state solutions assume.
+\subsubsection{Workload Simulation.}  The workload from a web application and its users was simulated using Apache JMeter \cite{RN1074}, a Java application for load testing.  JMeter was originally designed for testing web applications and all the systems have RESTful APIs over HTTP (for the simple microservices architecture, the Java Spring APIs; for the shared queue architectures, the Microsoft Azure Storage Queue REST APIs).  JMeter test plans are composed of thread groups, where the number of threads and test executions are specified, samplers such as HTTP Request, and timers to determine the delay between each test execution.  Increasing the number of threads used in the test increases the required demand.  JMeter's Poisson Random Timer is used to simulate the negative exponential distribution \cite{RN80} that PEPA steady state solutions assume.
 
 \subsubsection{Measurement.}  Measurement of throughputs in the built systems is required to produce results that can be compared with the PEPA model experimental results.
 
