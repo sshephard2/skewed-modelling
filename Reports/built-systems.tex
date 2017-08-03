@@ -59,7 +59,13 @@ The source code for the systems and related tools is hosted on GitHub \cite{RN10
 \FloatBarrier
 \subsection{Simple microservices}
 
-Figure \ref{figure:simplemicro}
+\subsubsection{Design.}  The simple microservices architecture from Figure \ref{figure:simplemicro_architecture} was deployed on four Azure Ubuntu virtual machines as shown in Table \ref{table:builtmicro_vmdesign}.  There are two completely separate Cassandra databases, one containing Athletics tickets, one for Cycling tickets.  There are two instances of the {\itshape SimplemicroApplication} worker application, each running on a separate virtual machine and each connecting to one of the databases.
+
+SimplemicroApplication was built using Java Spring \cite{RN1076}, a collection of frameworks including model-view-controller (used to implement RESTful APIs for the application) and data access (which supports connection to many databases including Cassandra).  The application has two RESTful APIs:
+
+{\textbackslash search}, which takes a sport parameter (Athletics or Cycling), queries the database for all matching tickets, and records metrics.
+
+{\textbackslash control}, which doesn't access the database, but still records metrics.
 
 \begin{table}[h!]
 	\begin{center}
@@ -76,24 +82,12 @@ Figure \ref{figure:simplemicro}
 	\end{center}
 \end{table}
 
-Two completely separate Cassandra databases, each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, one containing Athletics tickets, one containing Cycling tickets.
+\subsubsection{Workload Simulation.}  The application was tested using JMeter with two thread groups running in parallel, Cycling with a constant 10 threads (users) and Athletics ramping up from 10-100 in steps of 10.  Each thread group had a Poisson random timer with a lambda value of 500 milliseconds and a loop count of 500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.  The test plan was used against the {\textbackslash control} APIs for tuning and calibration, showing that the constant demand was approximately 19 requests per second and the skewed demand ranged from 19-190 requests per second (again, approximately, given that a the distribution is random). The test plan was then applied to the {\textbackslash search} API with the same parameters.
 
-Two worker applications using RESTful APIs using Java Spring \cite{RN1076}.  Each worker application runs on a separate Azure Standard DS1 v2 (1 core, 3.5 GB memory) Ubuntu Virtual Machine.  Each connects to one of the Cassandra databases.
+\subsubsection{Results.}  The results are given numerically in Table \ref{table:builtmicro_results} and shown graphically in Figure \ref{figure:builtmicro_charts} (where the `control' plot is the control throughput from the athletics virtual machine).  The athletics worker throughput using {\textbackslash search} was measured to be limited to 130 queries per second, compared to the control throughput on the same virtual machine i.e. that is the limit imposed by the database.  Using the cassandra-stress tool on the database server shows that it is capable of much higher query rate, which suggests that using Java Spring Data adds overheads to the database requests (perhaps, given the use of sessionless RESTful APIs, the main overhead is setting up a connection session to Cassandra each time).  The PEPA database model has already been acknowledged to be an abstraction which does not include such factors, and the scaled rate was fed back into the model's database service rate.
 
-\begin{shaded}
-Each worker application has a \\control API which doesn't access the database, but for which metrics are recorded.
-Each worker application also has a \\search API which takes a sport parameter (Athletics or Cycling) and queries the database for all matching tickets.
+The cycling throughput is more isolated from athletics than the queue-based systems, but there is a slow downward trend as athletics demand increases.  The only point at which the two microservices connect is at JMeter, so this may be the effect of increased demand on JMeter itself, although the control throughput results from the cycling virtual machine do not clearly demonstrate the same trend.  Another potential cause is co-residency of the virtual machines.
 
-Use JMeter with Poisson random timer (negative exponential distribution) with a lambda value of 500 milliseconds, Cycling at a constant 10 threads/users (approximately 20 requests per second) and Athletics ramping up from 10-100 in steps of 10, so the desired demand is 20-200 requests per second.  Each thread group has a loop count of 500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.
-
-The control version of the above JMeter test plan uses the same variables, but sends both Athletics and Cycling requests to the \\control API.
-
-Limit of throughput using \\search was measured at 130 queries per second.  This is lower than the throughput suggested by using the cassandra-stress tool, and suggests that using Java Spring Data adds overheads to the database requests (most likely, as the RESTful requests to the worker applications are sessionless, this is starting a new database session for each request).
-
-See the experimental results in Table \ref{table:builtmicro_results}.
-
-Control shows that throughput approaches demand (difference likely to be due to random distribution, network latency, etc).  However the Athletics demand is throttled by the database throughput.  The Cycling throughput is unaffected by the Athletics demand. 
-\end{shaded}
 \begin{table}[h!]
 	\begin{center}
 		\caption{Simple microservices experimental results}
@@ -101,15 +95,13 @@ Control shows that throughput approaches demand (difference likely to be due to 
 		\pgfplotstabletypeset[
 		col sep=comma,
 		string type,
-		columns/ausers/.style={column name=users, column type={p{.1\textwidth}}},
-		columns/arate/.style={column name=rate, column type={p{.1\textwidth}}},
-		columns/athletics/.style={column name=search, column type={p{.1\textwidth}}},
-		columns/acontrol/.style={column name=control, column type={p{.1\textwidth}}},
-		columns/cusers/.style={column name=users, column type={p{.1\textwidth}}},
-		columns/crate/.style={column name=rate, column type={p{.1\textwidth}}},
-		columns/cycling/.style={column name=search, column type={p{.1\textwidth}}},
-		columns/ccontrol/.style={column name=control, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline \multicolumn{4}{c}{Athletics} & \multicolumn{4}{c}{Cycling} \\,after row=\hline},
+		columns/ausers/.style={column name=users, column type={p{.15\textwidth}}},
+		columns/acontrol/.style={column name=control, column type={p{.15\textwidth}}},
+		columns/athletics/.style={column name=search, column type={p{.15\textwidth}}},
+		columns/cusers/.style={column name=users, column type={p{.15\textwidth}}},
+		columns/ccontrol/.style={column name=control, column type={p{.15\textwidth}}},
+		columns/cycling/.style={column name=search, column type={p{.15\textwidth}}},
+		every head row/.style={before row=\hline \multicolumn{3}{c}{Athletics worker} & \multicolumn{3}{c}{Cycling worker} \\,after row=\hline},
 		every last row/.style={after row=\hline},
 		]{data/builtmicro/results.csv}
 	\end{center}
@@ -122,10 +114,10 @@ Control shows that throughput approaches demand (difference likely to be due to 
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Throughput against athletics demand},
-	xlabel={Athletics demand},
+	xlabel={Athletics demand (users)},
 	ylabel={Throughput},
-	xmin=0, xmax=200,
-	ymin=0, ymax=150,
+	xmin=0, xmax=100,
+	ymin=0, ymax=200,
 	legend pos=north west,
 	ymajorgrids=true,
 	grid style=dashed,
@@ -135,11 +127,12 @@ Control shows that throughput approaches demand (difference likely to be due to 
 		cyan,brown,green,blue,red
 	}
 	]
+
+	\addplot table [x index={0}, y index={2}, col sep=comma]{data/builtmicro/results.csv};
+	\addplot table [x index={0}, y index={5}, col sep=comma]{data/builtmicro/results.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/builtmicro/results.csv};
 	
-	\addplot table [x index={1}, y index={2}, col sep=comma]{data/builtmicro/results.csv};
-	\addplot table [x index={1}, y index={6}, col sep=comma]{data/builtmicro/results.csv};
-	
-	\legend{athletics,cycling}
+	\legend{athletics,cycling,control}
 	
 	\end{axis}
 	\end{tikzpicture}
@@ -150,6 +143,16 @@ Control shows that throughput approaches demand (difference likely to be due to 
 %
 \FloatBarrier
 \subsection{Shared queue and distributed database}
+
+\subsubsection{Design.}  The shared queue and distributed database architecture from Figure \ref{figure:queuedd_architecture} was deployed on three Azure Ubuntu virtual machines as shown in Table \ref{table:builtddnr_vmdesign}, and using a single Azure Storage Queue instance.  Azure queues provide their own RESTful API access and JMeter was used to populate the queue with Athletics, Cycling or Control ticket requests.
+
+The {\itshape QueueWorker} application was built as a multithreaded application running on a single, multi-core virtual machine.  It dequeues every request (Athletics, Cycling or Control tickets) from the shared Azure Storage Queue.  This asynchronous middleware would be best suited to the `return ticket' operation from the use case, but to ensure that a usable Cassandra metric was available for measuring database throughput, an Athletics or Cycling request was interpreted as a `search ticket` operation.  A database select of all tickets for the matching sport is carried out first and the metric is recorded if the query returns results.  As before the Control request does not access the database but records metrics.  When connecting to the Cassandra database, the QueueWorker application uses a round-robin algorithm to select the coordinator node, to ensure that any additional overheads incurred are shared equally between both nodes.
+
+As populating the queue with JMeter and processing it with the queue worker application are decoupled, it was possible to run QueueWorker on a prepopulated queue to determine its maximum throughput i.e. regardless of the incoming demand.  Using this technique suggested that maximum performance came with QueueWorker running with 16 threads.
+
+The Cassandra database was distributed using a keyspace (`Distributed') with SimpleStrategy, replication\_factor=1 onto two nodes each on one virtual machine.  Cassandra's partitioning places Athletics tickets on one node, and Cycling tickets on the other.  This was validated using nodetool getendpoints, which shows which node hosts records from a given keyspace matching a given partition key e.g. nodetool getendpoints Distributed ticket Athletics.
+
+Note that without the overheads of starting a new Cassandra database session for each request, it was necessary to slow Cassandra down by turning on tracing for 100\% of queries using nodetool settraceprobability 1.0.  Load testing the database alone with cassandra-stress using 16 threads suggested a maximum database throughput of 475 operations per second.
 
 \begin{table}[h!]
 	\begin{center}
@@ -165,62 +168,40 @@ Control shows that throughput approaches demand (difference likely to be due to 
 	\end{center}
 \end{table}
 
-\begin{shaded}
-This would normally be used for the return ticket operation.  To ensure that a usable Cassandra metric was available, a search operation was used again.
+\subsubsection{Workload Simulation.}  The application was tested using JMeter with two thread groups running in parallel, Cycling with a constant 15 threads and Athletics ramping up from 15-150 in steps of 15.  Each thread group had a Poisson random timer with a lambda value of 100 milliseconds and a loop count of 1500 requests, ensuring enough samples for a number of rolling 1-minute averages.  Again there was a control version of test plan with the same variables, but sending Control ticket requests to the queue rather than Athletics and Cycling tickets.  This produces constant demand of approximately 95 requests per second and skewed demand from 95-950 requests per second.  Scaling these results with the cassandra-stress measurement about to the model input range of 1-10 suggested keeping the {\itshape db} rate at 5.0.
 
-Distributed Cassandra databases using two nodes each on an Azure Standard F1s (1 core, 2 GB memory) Ubuntu Virtual Machine, using a Distributed keyspace with SimpleStrategy, replication\_factor=1.  Cassandra's partitioning places Athletics tickets on one node, and Cycling tickets on the other.  This is validated using nodetool getendpoints e.g.
+\subsubsection{Results.} 
+Table \ref{table:builtddnr_results} shows the numerical results and Figure \ref{figure:builtddnr_charts} shows the plots of athletics, cycling and control throughputs for the same range of athletics demands stated as the number of JMeter threads or users.
 
-nodetool getendpoints Distributed ticket Athletics
+The total throughput of {\itshape athletics} and {\itshape cycling} quickly falls behind the control throughput, and examination of the athletics throughput in particular shows that it is constrained by the database performance of a single node.  Note that the constrained throughout is significantly less than the maximum rate shown by cassandra-stress.
 
-Cassandra configured to record metrics of a count of all completed read queries every 10s i.e.
+The {\itshape cycling} throughput is constrained in proportion to the athletics {\itshape demand}, not the actual athletics throughput, so that as the athletics throughput is limited but the demand continues to decrease, then the cycling throughput decreases in the ratio of their respective demands (though the ratio is not exact).  The behaviour of the built system matches the prediction of the model.  The model had a very small queue size, and an actual Azure Storage Queue is practically unlimited, so this result was not certain.
 
-org.apache.cassandra.metrics.ThreadPools.CompletedTasks.request.ReadStage
-
-A Python script calculates the rolling 1-minute average throughput from these counts.
-
-A single shared Azure Storage Queue is used.
-
-A single multithreaded QueueWorker application dequeues every request from the shared Azure Storage Queue.  It runs on an Azure Standard DS3 v2 Promo (4 cores, 14 GB memory) Ubuntu Virtual Machine.  As populating the queue with JMeter and processing it with the worker application are decoupled, it was possible to run QueueWorker on a prepopulated queue to determine its maximum throughput i.e. regardless of the incoming demand. Using this technique suggested that maximum performance came with QueueWorker running with 16 threads.
-
-Note that without the overheads of starting a new Cassandra database session for each request, it is necessary to slow Cassandra down by turning on tracing for 100\% of queries - bin/nodetool settraceprobability 1.0
-
-QueueWorker processes both Control tickets and real (Athletics, Cycling) tickets.  Metrics are recorded for all requests, but for real ticket requests a database select of all tickets for the matching sport is carried out first and the metric is only recorded if the query returns results.
-
-Use JMeter with Poisson random timer (negative exponential distribution) with a lambda value of 100 milliseconds, Cycling at a constant 15 threads/users (approximately 95 requests per second) and Athletics ramping up from 15-150 in steps of 15, so the desired demand is 95-950 requests per second.  Each thread group has a loop count of 1500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.
-
-The control version of the above JMeter test plan uses the same variables, but sending Control tickets rather than Athletics and Cycling tickets to the queue.
-
-Does the predicted result, that the queue will be the overriding constraint, still hold true with a real, effectively unlimited queue?
-
-See the experimental results in Table \ref{table:builtddnr_results}.
-
-\end{shaded}
+Finally the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all of the demand onto the node handling that sport, as expected.
 
 \begin{table}[h!]
 	\begin{center}
-		\caption{Shared queue with distributed DB experimental results}
+		\caption{Shared queue and distributed DB experimental results}
 		\label{table:builtddnr_results}
 		\pgfplotstabletypeset[
 		col sep=comma,
 		string type,
-		columns/conusers/.style={column name=users, column type={p{.1\textwidth}}},
-		columns/conrate/.style={column name=rate, column type={p{.1\textwidth}}},
-		columns/ausers/.style={column name=users, column type={p{.1\textwidth}}},
-		columns/arate/.style={column name=rate, column type={p{.1\textwidth}}},
-		columns/cusers/.style={column name=users, column type={p{.1\textwidth}}},
-		columns/crate/.style={column name=rate, column type={p{.1\textwidth}}},
+		columns/ausers/.style={column name=(users), column type={p{.1\textwidth}}},
+		columns/arate/.style={column name=athletics, column type={p{.1\textwidth}}},
+		columns/crate/.style={column name=cycling, column type={p{.1\textwidth}}},
+		columns/total/.style={column name=total, column type={p{.1\textwidth}}},
+		columns/conrate/.style={column name=control, column type={p{.1\textwidth}}},
+		columns/ratio/.style={column name=ratio, column type={p{.1\textwidth}}},
 		columns/db1/.style={column name=db1, column type={p{.1\textwidth}}},
 		columns/db2/.style={column name=db2, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline \multicolumn{2}{c}{Control} &
-		\multicolumn{2}{c}{Athletics} & \multicolumn{2}{c}{Cycling} &
-		\multicolumn{2}{c}{Database} \\,after row=\hline},
+		every head row/.style={before row=\hline Rate & \multicolumn{7}{c}{Throughput} \\,after row=\hline},
 		every last row/.style={after row=\hline},
-		]{data/builtddnr/results.csv}
+		]{data/builtddnr/results_table.csv}
 	\end{center}
 \end{table}
 
 \begin{figure}
-	\caption{Shared queue with distributed DB experimental results}
+	\caption{Shared queue and distributed DB experimental results}
 	\label{figure:builtddnr_charts}
 	\centering
 	\begin{tikzpicture}
@@ -240,9 +221,9 @@ See the experimental results in Table \ref{table:builtddnr_results}.
 	}
 	]
 
-	\addplot table [x index={2}, y index={3}, col sep=comma]{data/builtddnr/results.csv};
-	\addplot table [x index={2}, y index={5}, col sep=comma]{data/builtddnr/results.csv};
-	\addplot table [x index={2}, y index={1}, col sep=comma]{data/builtddnr/results.csv};
+	\addplot table [x index={0}, y index={1}, col sep=comma]{data/builtddnr/results_table.csv};
+	\addplot table [x index={0}, y index={2}, col sep=comma]{data/builtddnr/results_table.csv};
+	\addplot table [x index={0}, y index={4}, col sep=comma]{data/builtddnr/results_table.csv};
 	
 	\legend{athletics,cycling,control}
 	
