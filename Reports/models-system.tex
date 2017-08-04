@@ -164,7 +164,7 @@ There is no separate representation of worker processes (the previous system mod
 As is now usual, the Eclipse plugin is used to find the steady-state throughputs of the activities for input rates of athletics requests increasing from 1.0 to 10.0 with cycling and other rates fixed.  The results appear numerically in Table \ref{table:queuedd_results} and as a chart comparing {\itshape athletics} and {\itshape cycling} throughput in Figure \ref{figure:queueddnr_sport}.
 They show:
 \begin{itemize}
-	\item the throughput of {\itshape athletics} is constrained by the database service rate of a single node.  Athletics and cycling activities demonstrate loss of throughput, but less than shown for the distributed database component model.  This may indicate the effect of the middleware queue observed at the component level.	
+	\item the throughput of {\itshape athletics} is constrained by the database service rate of a single node.  Athletics and cycling activities demonstrate loss of throughput, but less than shown for the distributed database component alone.  This may indicate the effect of the middleware queue.	
 	\item the throughput of {\itshape cycling} is constrained by the ratio between the input rates of athletics and cycling, as it was with the shared queue component.  The behaviour of the queue appears to be the most significant when combined into a system.
 	\item the database node throughput follows the throughput of each sport activity, i.e. the partitioning strategy routes all the demand onto the node handling that sport.
 \end{itemize}
@@ -226,7 +226,7 @@ They show:
 \FloatBarrier
 \subsection{Shared queue and distributed database with replication}
 
-The final system model  (Figure \ref{figure:queueddrep_architecture}) combines a shared queue with a distributed database using replication, with one replica of each data partition on the `next' node using consistent hashing.  As before the website sends ticket requests via a shared queue to a worker application, which dequeues them for the database.
+The final system model (Figure \ref{figure:queueddrep_architecture}) combines a shared queue with a distributed database using replication, with one replica of each data partition on the `next' node using consistent hashing.  As before the website sends ticket requests via a shared queue to a worker application, which dequeues them for the database.
 
 The PEPA model (Figure \ref{figure:queueddrep}) combines the shared queue and distributed database with replication components, so that there is now an additional queue state $\mathit{Q_D}$ for holding {\itshape diving} ticket requests, and there are three data node processes.  $\mathit{DB_1}$ is able to service {\itshape athletics} and {\itshape cycling} requests,  $\mathit{DB_2}$ handles {\itshape cycling} and {\itshape diving}, and $\mathit{DB_3}$ handles {\itshape athletics} and {\itshape diving}.  As with the component node, the model's assumption is that each data node handles each supported sport with equal probability.  Again the model uses a queue length of N=10 and maximum queue worker rate of $\mathit{q=100.0}$.
 
