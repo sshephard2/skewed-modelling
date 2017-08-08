@@ -32,10 +32,10 @@ Many processes may send messages to a queue, and each message is received by one
 Microservices architecture is an approach to structuring applications as suites of small services, defined by business capability verticals rather than technological layers \cite{RN1069} \cite{RN1070}.  Each of the use case requirements - search for, book or return tickets - might typically be microservices with their own worker applications and data nodes.  Ticket data would be denormalised across the data nodes and made eventually consistent via a backplane messaging service \cite{RN1071} as shown in Figure \ref{figure:microservices}.  This would certainly isolate the demand for search, book and return from each other - returning tickets would not be blocked by a system where bookings were overloaded.  In the ticketing use case however, there is skewed demand for athletics tickets.  In a real-world system the booking microservice might be further broken down to a lower level of granularity to deal with this, i.e. a separate microservice for booking each ticket type.
 
 \begin{figure}
-\caption{Microservices}
-\label{figure:microservices}
-\centering
-\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/microservices}
+	\label{figure:microservices}
+	\centering
+	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/microservices}
+	\caption{Microservices}
 \end{figure}
 
 %
@@ -50,12 +50,10 @@ In the use case, the quantity of data does not approach the levels of `Big Data'
 One issue to be aware of is {\itshape replication}.   Most distributed databases offer replication of data from one partition to another for availability.  In the use case, if demand overloads a data node, the database may share the throughput using a copy of the data on another data node.  If this is also the primary data node of an otherwise low demand data type, then it may be overwhelmed in turn i.e. the skewed demand has followed the data.
 
 \begin{figure}
-	\caption{Consistent hashing, without and with replication}
 	\label{figure:consistent_hashing}
 	\centering
 	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/dbdist}
+	\caption{Consistent hashing, without and with replication}
 \end{figure}
 \FloatBarrier
 The Cassandra database has an interesting method of partitioning data, using {\itshape consistent hashing} (also used by Riak, Redis and BigData among others \cite{RN66}).  The largest output of a hash function wraps round to the smallest value so that the range of hash values forms a conceptual `ring'.  Each data node is assigned a position on this ring, then the hash value of the partition key of a data item is used to determine the node used to store it.  When using replication, with a replication factor of {\itshape N}, a copy of the data is placed on the next {\itshape N-1} nodes walking clockwise round the ring \cite{RN1050}.  This is illustrated in Figure \ref{figure:consistent_hashing}.
-
-

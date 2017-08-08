@@ -15,7 +15,6 @@ Cassandra was chosen as the distributed database models were designed for consis
 The source code for the systems and related tools is hosted on GitHub \cite{RN1073}.
 
 \begin{figure}
-	\caption{Cassandra database ticket schema}
 	\label{figure:cassandra_ticket_schema}
 	\centering
 	\begin{lstlisting}[basicstyle=\ttfamily]
@@ -41,6 +40,7 @@ The source code for the systems and related tools is hosted on GitHub \cite{RN10
 		PRIMARY KEY (sport, owner, day, id)
 	) WITH comment = 'Tickets';
 	\end{lstlisting}
+	\caption{Cassandra database ticket schema}
 \end{figure}
 
 \subsubsection{Workload Simulation.}  The workload from a web application and its users was simulated using Apache JMeter \cite{RN1074}, a Java application for load testing.  JMeter was originally designed for testing web applications and all the systems have RESTful APIs over HTTP (for the simple microservices architecture, the Java Spring APIs; for the shared queue architectures, the Microsoft Azure Storage Queue REST APIs).  JMeter test plans are composed of thread groups, where the number of threads and test executions are specified, samplers such as HTTP Request, and timers to determine the delay between each test execution.  Increasing the number of threads used in the test increases the required demand.  JMeter's Poisson Random Timer is used to simulate the negative exponential distribution \cite{RN80} that PEPA steady state solutions assume.
@@ -108,7 +108,6 @@ The cycling throughput is more isolated from athletics than the queue-based syst
 \end{table}
 
 \begin{figure}
-	\caption{Simple microservices experimental results}
 	\label{figure:builtmicro_charts}
 	\centering
 	\begin{tikzpicture}
@@ -136,6 +135,7 @@ The cycling throughput is more isolated from athletics than the queue-based syst
 	
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Simple microservices experimental results}
 \end{figure}
 
 %
@@ -201,7 +201,6 @@ Finally the database node throughput follows the throughput of each sport activi
 \end{table}
 
 \begin{figure}
-	\caption{Shared queue and distributed DB experimental results}
 	\label{figure:builtddnr_charts}
 	\centering
 	\begin{tikzpicture}
@@ -229,6 +228,7 @@ Finally the database node throughput follows the throughput of each sport activi
 	
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Shared queue and distributed DB experimental results}
 \end{figure}
 
 %
@@ -307,7 +307,6 @@ However, the database node throughputs are very different to those from the mode
 \end{table}
 
 \begin{figure}
-	\caption{Shared queue and distributed database with replication - sport throughput}
 	\label{figure:builtddwr_sport}
 	\centering
 	\begin{tikzpicture}
@@ -335,10 +334,10 @@ However, the database node throughputs are very different to those from the mode
 	
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Shared queue and distributed database with replication - sport throughput}
 \end{figure}
 
 \begin{figure}
-	\caption{Shared queue and distributed database with replication - database throughput}
 	\label{figure:builtddwr_database}
 	\centering
 	\begin{tikzpicture}
@@ -364,4 +363,5 @@ However, the database node throughputs are very different to those from the mode
 	
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Shared queue and distributed database with replication - database throughput}
 \end{figure}

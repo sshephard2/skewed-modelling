@@ -60,10 +60,10 @@ The objectives are to:
 Consider a general OLTP application using a distributed architecture, as shown in Figure \ref{figure:oltpapplication}.  Users access the application with a web-based front end.  Resources are stored in one or more databases.  In between the web servers and database are worker applications that service user requests, connected to the web servers by some middleware.  There are strategies for coping with skewed demand at each layer of this architecture.
 
 \begin{figure}
-	\caption{OLTP application distributed architecture}
 	\label{figure:oltpapplication}
 	\centering
 	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/application}
+	\caption{OLTP application distributed architecture}
 \end{figure}
 
 \paragraph{Adapting.} A system using {\itshape elastic scaling} may adapt to increased demand. Rapid elasticity is an essential characteristic of Cloud Computing by the NIST definition \cite{RN56}.  Computing resources, for example web servers or worker applications, can be elastically and often automatically scaled to meet current demand.  This gives the appearance of resources that are limited only by the system owner's budget.
