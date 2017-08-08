@@ -33,11 +33,23 @@ On-line Transaction Processing (OLTP) applications must frequently deal with the
 
 There are many high-profile examples of whole IT systems brought down by customer demand for part of their services.  Customers were prevented from using any part of the London 2012 Olympic ticketing website on launch day to avoid demand overloading the system \cite{RN1067}.  Demand for the finale of `True Detective' \cite{RN1066} brought down HBO Go.  Apple's iTunes Store suffered outage on the launch day of the iPhone 7 (new iPhone registration is carried out via an iTunes function) \cite{RN1068}.
 
-This paper claims that it is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others.  Skewed demand may be isolated so that it only affects parts of a system, or shared equally between different components. (The system may also adapt to demand by elastic scaling of resources, but this will not be considered as part of this paper).
+This paper claims that it is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others.  Skewed demand may be isolated so that it only affects parts of a system, or shared equally between different components. (The system may also adapt to demand by elastic scaling of resources, but this will not be considered as part of this paper).  When combining a middleware solution with a distributed database, however, where is the system bottleneck? If there are levels of demand that cannot be met on a limited budget, and that therefore some components will no longer meet the required throughput, what is the impact on the remainder of the system?
 
-It is proposed that a selection of technologies may be modelled as simple components, that may be composed into more complex system models that make end-to-end predictions.  When combining a middleware solution with a distributed database, where is the system bottleneck?  If there are levels of demand that cannot be met on a limited budget, and that therefore some components will no longer meet the required throughput, what is the impact on the remainder of the system?
+The paper is organised as follows.  Section \ref{sec:background} presents a use case based on ticket booking for a multi-sport event.  Section \ref{sec:technologies} selects a set of distributed technologies, and section \ref{sec:modelling} discusses modelling in PEPA.  Simple component models are proposed and tested in section \ref{sec:pepa-component-models} and composed into more complex system models that make end-to-end predictions.
+The models will then be tested against actual systems in section \ref{sec:built-systems}, built using Java and the Java Spring framework \cite{RN1076}, Cassandra \cite{RN1050}\cite{RN1075} databases, and where appropriate Microsoft Azure Storage Queues \cite{RN1072}.  These systems will be instrumented with Coda Hale Metrics \cite{RN1079} and measured under different scenarios of skewed demand, using Apache JMeter test plans \cite{RN1074}.  Finally section \ref{sec:conclusions} evaluates the approach and makes suggestions for future work.
 
-The models will then be tested against actual systems, built using Java and the Java Spring framework \cite{RN1076}, Cassandra \cite{RN1050}\cite{RN1075} databases, and where appropriate Microsoft Azure Storage Queues \cite{RN1072}.  These systems will be instrumented with Coda Hale Metrics \cite{RN1079} and measured under different scenarios of skewed demand, using Apache JMeter test plans \cite{RN1074}.
+\subsection{Aims and Objectives}
+
+The aim is to demonstrate that PEPA (Performance Evaluation Process Algebra) \cite{RN1051} may be used to construct models that are good predictors of the behaviour of real systems under skewed demand scenarios, and provide insights into the effectiveness of Cloud technologies for handling skewed demand.
+
+The objectives are to:
+\begin{itemize}
+	\item show that distributed databases and middleware queues may be modelled in PEPA.
+	\item show that these PEPA component models may be used to test skewed demand.
+	\item show that the component models may be composed into system models and their behaviour under test is different to the components alone.
+	\item build test system architectures for the PEPA models and show that the test system behaviour matches that predicted by the models.
+	\item identify areas of further work.
+\end{itemize}
 
 %
 % ---- Background
