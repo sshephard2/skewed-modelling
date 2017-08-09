@@ -21,7 +21,7 @@
 % ---- Abstract and keywords
 %
 \begin{abstract}
-On-line Transaction Processing (OLTP) applications must frequently deal with the issue of skewed demand for some resources.  This demand may overwhelm the whole system, affecting the owner's reputation and revenue.  This paper presents system architectures for a ticketing use case using a selection of distributed computing technologies of the Cloud.  It proposes models of these architectures and uses them to predict throughput in skewed demand scenarios.  The experimental results of the models are then tested against simple built systems.
+On-line Transaction Processing (OLTP) applications must frequently deal with the issue of skewed demand for some resources.  This demand may overwhelm the whole system, affecting the owner's reputation and revenue.  This paper presents system architectures for a ticketing use case using a selection of distributed computing technologies of the Cloud.  It proposes models of these architectures and uses them to predict throughput in skewed demand scenarios.  The experimental results of the models are then tested against simple built systems.  It finds that the models correctly predict that a shared queue constrains throughput in proportion to relative demand, but overestimate the gains from a distributed database with replication.
 	\keywords{Cloud, middleware, microservices, distributed databases, modelling, performance}
 \end{abstract}
 
@@ -46,9 +46,8 @@ The objectives are to:
 \begin{itemize}
 	\item show that distributed databases and middleware queues may be modelled in PEPA.
 	\item show that these PEPA component models may be used to test skewed demand.
-	\item show that the component models may be composed into system models and their behaviour under test is different to the components alone.
-	\item build test system architectures for the PEPA models and show that the test system behaviour matches that predicted by the models.
-	\item identify areas of further work.
+	\item show that the component models may be composed into system models with interesting behaviour under test.
+	\item build actual system architectures for the PEPA models and show that the built systems behaviours match those predicted by the models.
 \end{itemize}
 
 %
