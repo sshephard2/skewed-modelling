@@ -3,9 +3,10 @@
 %
 
 \section{Conclusions and Future Work}\label{sec:conclusions}
-PEPA can be used to build models of complex systems using distributed, cloud-based technologies.  Experiments can be run in the PEPA Eclipse plugin to produce steady state throughput results, and make predictions of how the real, built systems will behave under conditions of skewed demand.
+
+This paper met its aims and objectives to demonstrate that PEPA may be used to build models of distributed databases and middleware queues.  Experiments can be run on the models in the PEPA Eclipse plugin to produce steady state throughput results, and make predictions of how the real, built systems will behave under conditions of skewed demand.  These component models may be composed into system models which showed some interesting results, discussed below.  There were mixed results from testing the predictions of the system models against the actual behaviour of built systems.
 	
-The models are useful for qualitative prediction.  They successfully predicted:
+The models were most successful for qualitative prediction.  They correctly predicted:
 \begin{itemize}
 	\item that the microservices architecture would better isolate skewed demand from the other components.
 	\item (less trivially) when a shared queue is used in combination with a distributed database, once the throughput of resources with skewed demand is choked, the throughput of the other resources was choked in proportion to the relative demand between them and the skewed resource.  This even though the model's queue size is much smaller than an actual Cloud service queue.
@@ -13,9 +14,9 @@ The models are useful for qualitative prediction.  They successfully predicted:
 	\item when using a distributed database with replication, there would also be throughput at the replica node, and that therefore the overall throughput of the skewed demand resource would be higher than for a distributed database without replication.
 \end{itemize}
 
-However, the models were less successful at quantitative predictions.  Simple microservices was still best at isolating demand but built system results showed that there was some impact on the other resources.  When using replication, the throughput was not spread evenly (or randomly) between database nodes, and this also meant that the system was unable to satisfy as much demand as predicted.  The models were too abstract to describe and predict the behaviour inside the database engine, or the overheads incurred by worker application design choices.  This meant that the maximum apparent database service rates for actual systems were very different for microservices and the shared queue distributed database models, despite both using the same queries against Cassandra on the same virtual machines.  This means that while the models suggested that they could be used to compare different architectures directly, and to make predictions about which would make the best use of the resources available, the real systems did not bear this out.  The models as they stand are not therefore suitable for right-sizing applications.
+However, the models were less accurate at quantitative predictions.  Simple microservices was still best at isolating demand but built system results showed that there was some impact on the other resources.  When using replication, the throughput was not spread evenly (or randomly) between database nodes, and this also meant that the system was unable to satisfy as much demand as predicted.  The models were too abstract to describe and predict the behaviour inside the database engine, or the overheads incurred by worker application design choices.  This meant that the maximum apparent database service rates for actual systems were very different for microservices and the shared queue distributed database models, despite both using the same queries against Cassandra on the same virtual machines.  This means that while the models suggested that they could be used to compare different architectures directly, and to make predictions about which would make the best use of the resources available, the real systems did not bear this out.  The models as they stand are not therefore suitable for right-sizing applications.
 
-It is argued that the models have demonstrated potential for further work in this application area.
+It is concluded that the models have demonstrated potential for further work in this application area.
 	
 \subsection{Improved Models}
 
