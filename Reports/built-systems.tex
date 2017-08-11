@@ -61,7 +61,7 @@ The source code for the systems and related tools is hosted on GitHub \cite{RN10
 
 \subsubsection{Design.}  The simple microservices architecture from Figure \ref{figure:simplemicro_architecture} was deployed on four Azure Ubuntu virtual machines as shown in Table \ref{table:builtmicro_vmdesign}.  There are two completely separate Cassandra databases, one containing Athletics tickets, one for Cycling tickets.  There are two instances of the {\itshape SimplemicroApplication} worker application, each running on a separate virtual machine and each connecting to one of the databases.
 
-SimplemicroApplication was built using Java Spring \cite{RN1076}, a collection of frameworks including model-view-controller (used to implement RESTful APIs for the application) and data access (which supports connection to many databases including Cassandra).  The application has two RESTful APIs:
+SimplemicroApplication was built using Java Spring \cite{RN1076}, a framework including architectural design pattern modules for Model-View-Controller (used to implement RESTful APIs for the application) and Repository data access (which supports connection to many databases including Cassandra).  The application has two RESTful APIs:
 
 {\textbackslash search}, which takes a sport parameter (Athletics or Cycling), queries the database for all matching tickets, and records metrics.
 

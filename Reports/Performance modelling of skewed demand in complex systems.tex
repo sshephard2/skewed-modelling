@@ -35,20 +35,22 @@ There are many high-profile examples of whole IT systems brought down by custome
 
 This paper claims that it is possible to design and build more resilient systems through effective use of Cloud technologies where higher than normal demand for one function or type of resource would not block access to the others.  Skewed demand may be isolated so that it only affects parts of a system, or shared equally between different components. (The system may also adapt to demand by elastic scaling of resources, but this will not be considered as part of this paper).  When combining a middleware solution with a distributed database, however, where is the system bottleneck? If there are levels of demand that cannot be met on a limited budget, and that therefore some components will no longer meet the required throughput, what is the impact on the remainder of the system?
 
-The paper is organised as follows.  Section \ref{sec:background} presents a use case based on ticket booking for a multi-sport event.  Section \ref{sec:technologies} selects a set of distributed technologies, and section \ref{sec:modelling} discusses modelling in PEPA.  Simple component models are proposed and tested in section \ref{sec:pepa-component-models} and composed into more complex system models that make end-to-end predictions.
-The models will then be tested against actual systems in section \ref{sec:built-systems}, built using Java and the Java Spring framework \cite{RN1076}, Cassandra \cite{RN1050}\cite{RN1075} databases, and where appropriate Microsoft Azure Storage Queues \cite{RN1072}.  These systems will be instrumented with Coda Hale Metrics \cite{RN1079} and measured under different scenarios of skewed demand, using Apache JMeter test plans \cite{RN1074}.  Finally section \ref{sec:conclusions} evaluates the approach and makes suggestions for future work.
-
 \subsection{Aims and Objectives}
 
-The aim is to demonstrate that PEPA (Performance Evaluation Process Algebra) \cite{RN1051} may be used to construct models that are good predictors of the behaviour of real systems under skewed demand scenarios, and provide insights into the effectiveness of Cloud technologies for handling skewed demand.
-
-The objectives are to:
+The aim is to demonstrate that PEPA (Performance Evaluation Process Algebra) \cite{RN1051} may be used to construct models that are good predictors of the behaviour of real systems under skewed demand scenarios, and provide insights into the effectiveness of Cloud technologies for handling skewed demand.  The objectives are to:
 \begin{itemize}
 	\item show that distributed databases and middleware queues may be modelled in PEPA.
 	\item show that these PEPA component models may be used to test skewed demand.
 	\item show that the component models may be composed into system models with interesting behaviour under test.
 	\item build actual system architectures for the PEPA models and show that the built systems behaviours match those predicted by the models.
 \end{itemize}
+
+\subsection{Methodology}
+
+Performance models will be developed using a bottom-up approach from components to system architectures.  These will be iteratively tuned following development and measurement of built systems.
+
+The paper is organised as follows.  Section \ref{sec:background} presents a use case based on ticket booking for a multi-sport event.  Section \ref{sec:technologies} selects a set of distributed technologies, and section \ref{sec:modelling} discusses modelling in PEPA.  Simple component models are proposed and tested in section \ref{sec:pepa-component-models} and composed into more complex system models that make end-to-end predictions.
+The models will then be tested against actual systems in section \ref{sec:built-systems}, built using Java and the Java Spring framework \cite{RN1076}, Cassandra \cite{RN1050}\cite{RN1075} databases, and where appropriate Microsoft Azure Storage Queues \cite{RN1072}.  These systems will be instrumented with Coda Hale Metrics \cite{RN1079} and measured under different scenarios of skewed demand, using Apache JMeter test plans \cite{RN1074}.  Finally section \ref{sec:conclusions} evaluates the approach and makes suggestions for future work.
 
 %
 % ---- Background
@@ -87,16 +89,87 @@ Such a ticketing application may be generalised to any system for allocating and
 This paper considers the problem of higher than average demand for a particular type of ticket, and to what extent the system will allow users to search for other ticket types if some component is overloaded by the skewed demand for the most popular tickets.  It does not consider issues of fair allocation of scarce resources.
 
 %
-% ---- Technologies sub-document
+% ---- Technologies
 %
 
-\include{technologies}
+\section{Technologies}\label{sec:technologies}
 
 %
-% ---- Modelling sub-document
+% ---- Choice of technologies in scope
+%
+\subsection{Scope}
+\subsubsection{In Scope.}  The selected technologies in scope of this paper are shared middleware queues, distributed databases and microservices, which are discussed in more detail below.  The database partitioning strategy and entirely separate databases for the microservices architecture offer alternative means of isolating the skewed demand.  Using a single middleware queue shares and distributes the demand, this time in contrast to the microservices middleware approach.  The models will compare these approaches and investigate the behaviour of systems where the components have conflicting approaches to handling demand.
+\subsubsection{Out of Scope.}  The paper will not consider elastic scaling or HTTP load balancing.  There is already a great deal of work in evaluating right-sizing strategies (minimising underutilisation and overutilisation of compute resources) for the former, e.g. \cite{RN49}, \cite{RN62}, \cite{RN48}.  HTTP load balancing is a relatively mature technology, and work has been done on simulation to evaluate different algorithms by response time and web server utilisation \cite{RN55}.
+
+%
+% ---- Queue Middleware
 %
 
-\include{modelling}
+\subsection{Queue Middleware}\label{sec:middleware}
+
+Good choice of middleware in a system will help ensure that its components are connected, but loosely coupled.  If, for example, a web server is blocked waiting for a response from a worker application carrying out a more expensive operation, then the throughput of the web server will be limited to that of the worker application.  The use case `return' operation however does not require a direct response from the system.  As long as the customer can rely on eventual guaranteed delivery of the return request, (and that the cost of their ticket will be refunded) then they do not need to wait for a direct response to their return.
+
+Point-to-Point Queues, e.g. Azure Storage Queues \cite{RN1072}, are a form of Message-Oriented Middleware - an asynchronous, brokered message service providing an intermediate layer between senders and receivers, decoupling their communication.  Message delivery may take minutes rather than milliseconds, but the service providers do provide configurable delivery guarantees \cite{RN65}.  With synchronous middleware such as Remote Procedure Call (RPC), the calling process is blocked until the called service completes and returns control to the caller.  Distributed systems using asynchronous middleware do not block when calling a remote service.  Control is immediately passed back to the caller, and a response may be returned eventually, with the caller polling the remote service for the response, or the remote process calling a method in the caller to send the response.
+
+Many processes may send messages to a queue, and each message is received by one consumer - though it may be one of several consumers competing for messages from this queue.  This competing consumer pattern offers a means of balancing load from the Web Servers between the Worker Applications in the ticketing use case.
+
+%
+% ---- Microservices
+%
+\FloatBarrier
+\subsection{Microservices}\label{sec:microservices}
+
+Microservices architecture is an approach to structuring applications as suites of small services, defined by business capability verticals rather than technological layers \cite{RN1069} \cite{RN1070}.  Each of the use case requirements - search for, book or return tickets - might typically be microservices with their own worker applications and data nodes.  Ticket data would be denormalised across the data nodes and made eventually consistent via a backplane messaging service \cite{RN1071} as shown in Figure \ref{figure:microservices}.  This would certainly isolate the demand for search, book and return from each other - returning tickets would not be blocked by a system where bookings were overloaded.  In the ticketing use case however, there is skewed demand for athletics tickets.  In a real-world system the booking microservice might be further broken down to a lower level of granularity to deal with this, i.e. a separate microservice for booking each ticket type.
+
+\begin{figure}
+	\label{figure:microservices}
+	\centering
+	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/microservices}
+	\caption{Microservices}
+\end{figure}
+
+%
+% ---- Distributed databases
+%
+\FloatBarrier
+\subsection{Distributed databases}\label{sec:distributed-databases}
+Modern SQL and NoSQL databases are designed to scale both data and the load of operations accessing that data over many servers that do not share disk or RAM, so-called `shared nothing' architecture \cite{RN67}.  We may partition data {\itshape vertically}, dividing tables into groups of columns that may be placed on different data nodes; or {\itshape horizontally}, where the split is by row \cite{RN68}. 
+
+In the use case, the quantity of data does not approach the levels of `Big Data' applications.  Partitioning is proposed instead as a means of scaling the demand for that data.  The ticketing system will not require a large number of columns and the three operations outlined do not have significantly different column requirements, therefore horizontal partitioning is most relevant.  The partition key of a Ticket table may be the Ticket Type, the Date, or the seat Row.  Demand for tickets is likely to vary by each of these attributes.  An alternative partitioning strategy would be to on denormalised tables supporting the query, book and return operations.  The load on each data node would follow the demand for the data types and operations placed there.
+
+One issue to be aware of is {\itshape replication}.   Most distributed databases offer replication of data from one partition to another for availability.  In the use case, if demand overloads a data node, the database may share the throughput using a copy of the data on another data node.  If this is also the primary data node of an otherwise low demand data type, then it may be overwhelmed in turn i.e. the skewed demand has followed the data.
+
+\begin{figure}
+	\label{figure:consistent_hashing}
+	\centering
+	\includegraphics[trim = 5 5 5 5, clip, width=\textwidth]{img/dbdist}
+	\caption{Consistent hashing, without and with replication}
+\end{figure}
+\FloatBarrier
+The Cassandra database has an interesting method of partitioning data, using {\itshape consistent hashing} (also used by Riak, Redis and BigData among others \cite{RN66}).  The largest output of a hash function wraps round to the smallest value so that the range of hash values forms a conceptual `ring'.  Each data node is assigned a position on this ring, then the hash value of the partition key of a data item is used to determine the node used to store it.  When using replication, with a replication factor of {\itshape N}, a copy of the data is placed on the next {\itshape N-1} nodes walking clockwise round the ring \cite{RN1050}.  This is illustrated in Figure \ref{figure:consistent_hashing}.
+
+\section{Modelling}\label{sec:modelling}
+
+The modelling technique must enable predictions about throughput for varying levels of skewed demand.  It must also be possible to compose system models from simpler components.  Two current approaches for modelling cloud computing infrastructures are simulators or mathematical language-based models (e.g. {\itshape Process Algebra}).
+
+\paragraph{Simulation Frameworks.} Several cloud simulation tools have been developed in recent years \cite{RN1081}, enabling the construction of models of Infrastructure as a Service environments.  They are often concerned with modelling the efficient running of that infrastructure, for example power usage, but also include utilisation models and may be useful for predicting the effect of shared demand or resource scheduling algorithms.  CloudSim \cite{RN69} is one such framework, requiring Java development for building the models.  This is an overhead for creation but offers flexibility in use.
+
+\paragraph{Process Algebra.} Process Algebras (such as PEPA or TIPP \cite{RN64}) model throughput in interdependent processes, with a mixture of independent and shared actions operating at different rates.  There is a PEPA Eclipse plugin \cite{RN1080} that allows PEPA specifications to be parsed and run like programs, aiding experimentation on a range of action rates by automating repetitive calculations.
+
+\subsection{PEPA (Performance Evaluation Process Algebra)}
+
+The models will be produced using PEPA.  This paper is concerned with distribution of throughput in complex systems, rather than right-sizing those systems.  The PEPA Workbench will allow the automation of testing with a range of skewed demand values.
+
+A PEPA model describes a system of interacting {\itshape components} which carry out {\itshape activities} at specified or passive {\itshape rates}.  A component is usually denoted by a name with an initial upper case letter, e.g. {\itshape Website}, and an activity type and rate are expressed as a bracketed pair e.g. $\mathit(request, r)$ where the activity type is normally a full lower case name and the rate is a single letter or the top symbol $\top$, denoting an unspecified (passive) rate.  There is a set of combinators that describe how the components and activities interact.  This paper uses the following subset, for the full syntax see {\cite{RN1051}}:
+
+\subsubsection{Prefix:} $(\mathit{\alpha},\mathit{r}).\mathit{P}$ - a component carries out activity $\mathit{\alpha}$ at rate $\mathit{r}$ and then behaves as component $\mathit{P}$.
+\subsubsection{Constant:} $\mathit{A} \rmdef \mathit{P}$ - assign the behaviour of component $\mathit{P}$ to the constant $\mathit{A}$.  Used with prefix, this can be used to define a recurring process e.g. $\mathit{P} \rmdef (\mathit{\alpha},\mathit{r}).\mathit{P}$.
+\subsubsection{Choice:} $\mathit{P} + \mathit{Q}$ - a component may behave {\itshape either} as component $\mathit{P}$ or $\mathit{Q}$, non-deterministically.  This represents a race condition between components.
+\subsubsection{Cooperation:} $\mathit{P} \sync{L} \mathit{Q}$ - for shared activities in the set $\mathit{L}$, components $\mathit{P}$ and $\mathit{Q}$ may only proceed with the simultaneous execution of those activities at the rate of the slowest component, otherwise they behave independently.
+\subsubsection{Parallel:} $\mathit{P} \parallel \mathit{Q}$ - shorthand for components that synchronize with no shared activities i.e. equivalent to $\mathit{P} \sync{\emptyset} \mathit{Q}$.
+\subsubsection{Aggregation:} $\mathit{P}[N]$ - represents $\mathit{N}$ instances of component $\mathit{P}$, but does not distinguish which instance of $\mathit{P}$ changes.  So for example where some component has states $\mathit{P1}$ and $\mathit{P2}$, and $\mathit{(P1|P2)}$ does not equal $\mathit{(P2|P1)}$, this model has 4 states.  If it doesn't matter which component has changed, then the model has only 3 states and can be written as $\mathit{P}[2]$.
+
+\paragraph{Solutions.} PEPA models are used to represent a system using a stochastic process, where the activity durations are random variables.  Where these are negative exponentially distributed, then this representation is a continuous time Markov process with a steady state solution over a period of time \cite{RN1051}.  This may be calculated using the PEPA Eclipse plugin.
 
 %
 % ---- Model components sub-document
