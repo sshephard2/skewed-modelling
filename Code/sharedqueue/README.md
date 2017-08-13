@@ -7,3 +7,14 @@ Configure the Cassandra DB connection details and Azure Storage API details in `
 Queue worker has one mandatory parameter, the number of threads to use.
 
 For testing use JMeter to place ticket messages onto the shared queue, using the Azure RESTful API.
+
+There are two distributed database configurations, both using a Cassandra cluster.  To update a cluster name on Cassandra:
+
+    cqlsh> UPDATE system.local SET cluster_name = 'Test Cluster' where key='local';
+    # flush the sstables to persist the update.
+    bash $ ./nodetool flush system
+
+In case of schema sync issues between different nodes in a cluster:
+
+    nodetool resetlocalschema
+    nodetool describecluster

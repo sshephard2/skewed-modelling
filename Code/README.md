@@ -1,14 +1,7 @@
 # Code
 
-General notes
+There are two system worker applications.
 
-Updating cluster name on Cassandra
+`simplemicro` provides search and control RESTful APIs for the Simple Microservices built system.
 
-	cqlsh> UPDATE system.local SET cluster_name = 'Test Cluster' where key='local';
-	# flush the sstables to persist the update.
-	bash $ ./nodetool flush system
-
-Node also in case of schema sync issues between different nodes in a cluster:
-
-	nodetool resetlocalschema
-	nodetool describecluster
+`sharedqueue` is a queue worker application for the two shared queue and distributed database systems.
