@@ -5,7 +5,7 @@ Platform decisions:
 * Build the applications on Microsoft Azure
 * Use an Azure Storage Queue for the shared queue
 * Use Cassandra for the distributed database
-* Develop in AngularJS and Java Spring
+* Develop in Java and Java Spring
 * Use [JMeter](http://jmeter.apache.org/ "JMeter") for load testing
 
 ## Plan outline
@@ -45,34 +45,3 @@ Requests via a shared queue to worker applications going to a distributed DB wit
 Requests via a shared queue to worker applications going to a distributed database with three nodes, Athletics, Cycling and Diving, where each partition is replicated on another node.
 
 ![distributed DB with replication](sharedqueue_withrep.png "distributed DB with replication")
-
-## Suggestions for future work using the models:
-
-### Priority queues
-
-As 'shared queue middleware' but more than queue, e.g. by priority.
-
-### Database distributions
-
-Modelling different database distribution and replication strategies.
-
-### Operational microservices
-
-A more 'natural' microservices architecture.  Seperate DBs by operation (Book, Search, Return) plus DB eventual consistency via event streaming e.g. using Kafka.
-
-`Book` is an event producer and consumer (produces when a ticket is booked, consumes returned tickets).
-
-`Search` is an event consumer (consumes the state of tickets that are booked and returned).
-
-`Return` is an event producer (produces returned tickets).
-
-![operational microservices](operationmicro.png "operational microservices")
-
-### Smaller microservices
-
-For example, breaking down the `Book` operation further by sport.
-
-* Book Athletics
-* Book Cycling
-* Search
-* Return

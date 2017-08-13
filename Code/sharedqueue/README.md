@@ -1,36 +1,9 @@
-# Shared queue with distributed database
+# Shared queue systems
 
-https://sshephard.queue.core.windows.net/sharedqueue
+Multi-threaded queue worker application.  Consumes ticket messages from an Azure Storage Queue.  If the tickets have sport=Control, then the application just records metrics.  Otherwise perform a search against the Cassandra database first.
 
-Use JMeter to place messages directly onto the shared queue, via the Azure RESTful API
+Configure the Cassandra DB connection details and Azure Storage API details in `main\resources\config.properties` before building.
 
-Simulating the Return operation
+Queue worker has one mandatory parameter, the number of threads to use.
 
-Ticket number is random, owner is empty string (pre-populate with a random owner id?)
-
-Otherwise JMeter test plan will be similar to the simplemicro one (distribution and ramping up the demand)
-
-One worker application (running on large VM), multi-threaded to dequeue and populate DB?
-(and a control version?)
-
-Run the CQL script below on the DB.
-
-`SOURCE 'distributed.cql';`
-
-Run the `dbinit` tool on the DB as follows:
-
-	dbinit host1 Distributed Athletics 1000 100 5
-	dbinit host1 Distributed Cycling 2000 50 10
-
-Find out where the data has been put:
-
-	nodetool getendpoints distributed ticket Athletics
-	nodetool getendpoints distributed ticket Cycling
-
-Load test with cassandra-stress
-
-`bin/cassandra-stress user profile=cqlstress-distributed.yaml "ops(athletics=1)" -rate threads=1`
-
-Tested:
-* Distributed - 475 ops/s
-* Replicated - 600 ops/s
+For testing use JMeter to place ticket messages onto the shared queue, using the Azure RESTful API.
