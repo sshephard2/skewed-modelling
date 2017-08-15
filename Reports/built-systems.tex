@@ -15,12 +15,9 @@ Cassandra was chosen as the distributed database models were designed for consis
 The source code for the systems and related tools is hosted on GitHub \cite{RN1073}.
 
 \begin{figure}
-	\label{figure:cassandra_ticket_schema}
 	\centering
 	\begin{lstlisting}[basicstyle=\ttfamily]
 	/*
-	 * Ticket table schema
-	 * 
 	 * int id - unique ticket id
 	 * varchar sport - type of sport
 	 * int day - day of event
@@ -41,6 +38,7 @@ The source code for the systems and related tools is hosted on GitHub \cite{RN10
 	 ) WITH comment = 'Tickets';
 	\end{lstlisting}
 	\caption{Cassandra database ticket schema}
+	\label{figure:cassandra_ticket_schema}
 \end{figure}
 
 \subsubsection{Workload Simulation.}  The workload from a web application and its users was simulated using Apache JMeter \cite{RN1074}, a Java application for load testing.  JMeter was originally designed for testing web applications and all the systems have RESTful APIs over HTTP (for the simple microservices architecture, the Java Spring APIs; for the shared queue architectures, the Microsoft Azure Storage Queue REST APIs).  JMeter test plans are composed of thread groups, where the number of threads and test executions are specified, samplers such as HTTP Request, and timers to determine the delay between each test execution.  Increasing the number of threads used in the test increases the required demand.  JMeter's Poisson Random Timer is used to simulate the negative exponential distribution \cite{RN80} that PEPA steady state solutions assume.
@@ -68,18 +66,17 @@ SimplemicroApplication was built using Java Spring \cite{RN1076}, a framework in
 {\textbackslash control}, which doesn't access the database, but still records metrics.
 
 \begin{table}[h!]
-	\begin{center}
-		\caption{Simple microservices Azure VMs}
-		\label{table:builtmicro_vmdesign}
-		\begin{tabular}{l | l | l}
-			VM		& Specification		& Application \\
-			\hline
-			worker1	& DS1 v2 (1 core, 3.5 GB)	& SimplemicroApplication \\
-			worker2	& DS1 v2 (1 core, 3.5 GB)	& SimplemicroApplication \\
-			db1		& F1s (1 core, 2 GB)	& Cassandra \\
-			db2		& F1s (1 core, 2 GB)	& Cassandra \\
-		\end{tabular}
-	\end{center}
+	\centering
+	\caption{Simple microservices Azure VMs}
+	\label{table:builtmicro_vmdesign}
+	\begin{tabular}{l | l | l}
+		VM		& Specification		& Application \\
+		\hline
+		worker1	& DS1 v2 (1 core, 3.5 GB)	& SimplemicroApplication \\
+		worker2	& DS1 v2 (1 core, 3.5 GB)	& SimplemicroApplication \\
+		db1		& F1s (1 core, 2 GB)	& Cassandra \\
+		db2		& F1s (1 core, 2 GB)	& Cassandra \\
+	\end{tabular}
 \end{table}
 
 \subsubsection{Workload Simulation.}  The application was tested using JMeter with two thread groups running in parallel, Cycling with a constant 10 threads (users) and Athletics ramping up from 10-100 in steps of 10.  Each thread group had a Poisson random timer with a lambda value of 500 milliseconds and a loop count of 500 requests, ensuring several minutes worth of samples and therefore a number of rolling 1-minute averages.  The test plan was used against the {\textbackslash control} APIs for tuning and calibration, showing that the constant demand was approximately 19 requests per second and the skewed demand ranged from 19-190 requests per second (again, approximately, given that a the distribution is random). The test plan was then applied to the {\textbackslash search} API with the same parameters.
@@ -89,30 +86,29 @@ SimplemicroApplication was built using Java Spring \cite{RN1076}, a framework in
 The cycling throughput is more isolated from athletics than the queue-based systems, but there is a slow downward trend as athletics demand increases, not clearly matched by the control throughput.  This may indicate some level of communication between the otherwise separate Cassandra databases on the same subnet, or co-residency effects on the virtual machines.
 
 \begin{table}[h!]
-	\begin{center}
-		\caption{Simple microservices experimental results}
-		\label{table:builtmicro_results}
-		\pgfplotstabletypeset[
-		col sep=comma,
-		string type,
-		columns/ausers/.style={column name=users, column type={p{.15\textwidth}}},
-		columns/acontrol/.style={column name=control, column type={p{.15\textwidth}}},
-		columns/athletics/.style={column name=search, column type={p{.15\textwidth}}},
-		columns/cusers/.style={column name=users, column type={p{.15\textwidth}}},
-		columns/ccontrol/.style={column name=control, column type={p{.15\textwidth}}},
-		columns/cycling/.style={column name=search, column type={p{.15\textwidth}}},
-		every head row/.style={before row=\hline \multicolumn{3}{c}{Athletics worker} & \multicolumn{3}{c}{Cycling worker} \\,after row=\hline},
-		every last row/.style={after row=\hline},
-		]{data/builtmicro/results.csv}
-	\end{center}
+	\centering
+	\caption{Simple microservices experimental results}
+	\label{table:builtmicro_results}
+	\pgfplotstabletypeset[
+	col sep=comma,
+	string type,
+	columns/ausers/.style={column name=users, column type={p{.15\textwidth}}},
+	columns/acontrol/.style={column name=control, column type={p{.15\textwidth}}},
+	columns/athletics/.style={column name=search, column type={p{.15\textwidth}}},
+	columns/cusers/.style={column name=users, column type={p{.15\textwidth}}},
+	columns/ccontrol/.style={column name=control, column type={p{.15\textwidth}}},
+	columns/cycling/.style={column name=search, column type={p{.15\textwidth}}},
+	every head row/.style={before row=\hline \multicolumn{3}{c}{Athletics worker} & \multicolumn{3}{c}{Cycling worker} \\,after row=\hline},
+	every last row/.style={after row=\hline},
+	]{data/builtmicro/results.csv}
 \end{table}
 
 \begin{figure}
-	\label{figure:builtmicro_charts}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Throughput against athletics demand},
+	width=0.7\textwidth,
 	xlabel={Athletics demand (users)},
 	ylabel={Throughput},
 	xmin=0, xmax=100,
@@ -136,6 +132,7 @@ The cycling throughput is more isolated from athletics than the queue-based syst
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Simple microservices experimental results}
+	\label{figure:builtmicro_charts}
 \end{figure}
 
 %
@@ -155,17 +152,16 @@ The Cassandra database was distributed using a keyspace (`Distributed') with Sim
 Note that without the overheads of starting a new Cassandra database session for each request, it was necessary to slow Cassandra down by turning on tracing for 100\% of queries using nodetool settraceprobability 1.0.  Load testing the database alone with cassandra-stress using 16 threads and a query for all athletics tickets suggested a maximum database throughput of 475 operations per second.
 
 \begin{table}[h!]
-	\begin{center}
-		\caption{Shared queue and distributed DB Azure VMs}
-		\label{table:builtddnr_vmdesign}
-		\begin{tabular}{l | l | l}
-			VM		& Specification			& Application \\
-			\hline
-			qworkers	& DS3 v2 Promo (4 cores, 14 GB)	& QueueWorker (16 threads) \\
-			db1		& F1s (1 core, 2 GB)		& Cassandra \\
-			db2		& F1s (1 core, 2 GB)		& Cassandra \\
-		\end{tabular}
-	\end{center}
+	\centering
+	\caption{Shared queue and distributed DB Azure VMs}
+	\label{table:builtddnr_vmdesign}
+	\begin{tabular}{l | l | l}
+		VM		& Specification			& Application \\
+		\hline
+		qworkers	& DS3 v2 Promo (4 cores, 14 GB)	& QueueWorker (16 threads) \\
+		db1		& F1s (1 core, 2 GB)		& Cassandra \\
+		db2		& F1s (1 core, 2 GB)		& Cassandra \\
+	\end{tabular}
 \end{table}
 
 \subsubsection{Workload Simulation.}  The application was tested using JMeter with two thread groups running in parallel, Cycling with a constant 15 threads and Athletics ramping up from 15-150 in steps of 15.  Each thread group had a Poisson random timer with a lambda value of 100 milliseconds and a loop count of 1500 requests, ensuring enough samples for a number of rolling 1-minute averages.  Again there was a control version of test plan with the same variables, but sending Control ticket requests to the queue rather than Athletics and Cycling tickets.  This produces constant demand of approximately 95 requests per second and skewed demand from 95-950 requests per second.  Scaling these results with the cassandra-stress measurement about to the model input range of 1-10 suggested keeping the {\itshape db} rate at 5.0.
@@ -180,32 +176,31 @@ The {\itshape cycling} throughput is constrained in proportion to the athletics 
 Finally the database node throughput follows the throughput of each sport activity.  The partitioning strategy placed the athletics tickets onto {\itshape db2}, as discovered using nodetool getendpoints, and the throughput on this node increases with the skewed athletics demand.
 
 \begin{table}[h!]
-	\begin{center}
-		\caption{Shared queue and distributed DB experimental results}
-		\label{table:builtddnr_results}
-		\pgfplotstabletypeset[
-		col sep=comma,
-		string type,
-		columns/ausers/.style={column name=(users), column type={p{.1\textwidth}}},
-		columns/arate/.style={column name=athletics, column type={p{.1\textwidth}}},
-		columns/crate/.style={column name=cycling, column type={p{.1\textwidth}}},
-		columns/total/.style={column name=total, column type={p{.1\textwidth}}},
-		columns/conrate/.style={column name=control, column type={p{.1\textwidth}}},
-		columns/ratio/.style={column name=ratio, column type={p{.1\textwidth}}},
-		columns/db1/.style={column name=db1, column type={p{.1\textwidth}}},
-		columns/db2/.style={column name=db2, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline Rate & \multicolumn{7}{c}{Throughput} \\,after row=\hline},
-		every last row/.style={after row=\hline},
-		]{data/builtddnr/results_table.csv}
-	\end{center}
+	\centering
+	\caption{Shared queue and distributed DB experimental results}
+	\label{table:builtddnr_results}
+	\pgfplotstabletypeset[
+	col sep=comma,
+	string type,
+	columns/ausers/.style={column name=(users), column type={p{.1\textwidth}}},
+	columns/arate/.style={column name=athletics, column type={p{.1\textwidth}}},
+	columns/crate/.style={column name=cycling, column type={p{.1\textwidth}}},
+	columns/total/.style={column name=total, column type={p{.1\textwidth}}},
+	columns/conrate/.style={column name=control, column type={p{.1\textwidth}}},
+	columns/ratio/.style={column name=ratio, column type={p{.1\textwidth}}},
+	columns/db1/.style={column name=db1, column type={p{.1\textwidth}}},
+	columns/db2/.style={column name=db2, column type={p{.1\textwidth}}},
+	every head row/.style={before row=\hline Rate & \multicolumn{7}{c}{Throughput} \\,after row=\hline},
+	every last row/.style={after row=\hline},
+	]{data/builtddnr/results_table.csv}
 \end{table}
 
 \begin{figure}
-	\label{figure:builtddnr_charts}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Throughput against athletics demand},
+	width=0.7\textwidth,
 	xlabel={Athletics demand (users)},
 	ylabel={Throughput},
 	xmin=0, xmax=150,
@@ -229,6 +224,7 @@ Finally the database node throughput follows the throughput of each sport activi
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Shared queue and distributed DB experimental results}
+	\label{figure:builtddnr_charts}
 \end{figure}
 
 %
@@ -258,18 +254,17 @@ Again, it was necessary to slow Cassandra down by turning on tracing for 100\% o
 Load testing the database with cassandra-stress using 16 threads suggested a maximum database throughput of 600 operations per second.  This suggests that replicating tickets on two database nodes increases the possible throughput, but it hasn't doubled the previous performance of 475 ops per second.  The model keeps the {\itshape db} rate of 5.0 based on that 475 ops per second single-node measurement.
 
 \begin{table}[h!]
-	\begin{center}
-		\caption{Shared queue and distributed DB with replication Azure VMs}
-		\label{table:builtddwr_vmdesign}
-		\begin{tabular}{l | l | l}
-			VM		& Specification			& Application \\
-			\hline
-			qworkers	& DS3 v2 Promo (4 cores, 14 GB)	& QueueWorker (16 threads) \\
-			db1		& F1s (1 core, 2 GB)		& Cassandra \\
-			db2		& F1s (1 core, 2 GB)		& Cassandra \\
-			db3		& F1s (1 core, 2 GB)		& Cassandra \\
-		\end{tabular}
-	\end{center}
+	\centering
+	\caption{Shared queue and distributed DB with replication Azure VMs}
+	\label{table:builtddwr_vmdesign}
+	\begin{tabular}{l | l | l}
+		VM		& Specification			& Application \\
+		\hline
+		qworkers	& DS3 v2 Promo (4 cores, 14 GB)	& QueueWorker (16 threads) \\
+		db1		& F1s (1 core, 2 GB)		& Cassandra \\
+		db2		& F1s (1 core, 2 GB)		& Cassandra \\
+		db3		& F1s (1 core, 2 GB)		& Cassandra \\
+	\end{tabular}
 \end{table}
 
 \subsubsection{Workload Simulation.}  The application was tested using JMeter with three thread groups running in parallel, Cycling and Diving with a constant 15 threads and Athletics ramping up from 15-150 in steps of 15.  The parameters were set to the same values as the previous JMeter test plan.
@@ -284,34 +279,33 @@ Again the model correctly predicted that the {\itshape cycling} and {\itshape di
 However, the database node throughputs are very different to those from the model.  While the {\itshape db1} and {\itshape db3} nodes that host athletics tickets do show higher throughputs than the node which does not, the throughputs were not shared equally between those two nodes.  Neither was the allocation random.  The average of all five sets of tests showed {\itshape db3} taking many more requests.  This, and the cassandra-stress result showing that the athletics query performance did not double when adding a replica to another node, indicates that Cassandra's performance is more complex than the abstract database model.
 
 \begin{table}[h!]
-	\begin{center}
-		\caption{Shared queue and distributed database with replication experimental results}
-		\label{table:builtddwr_results}
-		\pgfplotstabletypeset[
-		col sep=comma,
-		string type,
-		columns/ausers/.style={column name=(users), column type={p{.1\textwidth}}},
-		columns/arate/.style={column name=athletics, column type={p{.1\textwidth}}},
-		columns/crate/.style={column name=cycling, column type={p{.1\textwidth}}},
-		columns/drate/.style={column name=diving, column type={p{.1\textwidth}}},
-		columns/total/.style={column name=total, column type={p{.1\textwidth}}},
-		columns/conrate/.style={column name=control, column type={p{.1\textwidth}}},
-		columns/ratio/.style={column name=ratio, column type={p{.1\textwidth}}},
-		columns/db1/.style={column name=db1, column type={p{.1\textwidth}}},
-		columns/db2/.style={column name=db2, column type={p{.1\textwidth}}},
-		columns/db3/.style={column name=db3, column type={p{.1\textwidth}}},
-		every head row/.style={before row=\hline Rate & \multicolumn{9}{c}{Throughput} \\,after row=\hline},
-		every last row/.style={after row=\hline},
-		]{data/builtddwr/results_table.csv}
-	\end{center}
+	\centering
+	\caption{Shared queue and distributed database with replication experimental results}
+	\label{table:builtddwr_results}
+	\pgfplotstabletypeset[
+	col sep=comma,
+	string type,
+	columns/ausers/.style={column name=(users), column type={p{.1\textwidth}}},
+	columns/arate/.style={column name=athletics, column type={p{.1\textwidth}}},
+	columns/crate/.style={column name=cycling, column type={p{.1\textwidth}}},
+	columns/drate/.style={column name=diving, column type={p{.1\textwidth}}},
+	columns/total/.style={column name=total, column type={p{.1\textwidth}}},
+	columns/conrate/.style={column name=control, column type={p{.1\textwidth}}},
+	columns/ratio/.style={column name=ratio, column type={p{.1\textwidth}}},
+	columns/db1/.style={column name=db1, column type={p{.1\textwidth}}},
+	columns/db2/.style={column name=db2, column type={p{.1\textwidth}}},
+	columns/db3/.style={column name=db3, column type={p{.1\textwidth}}},
+	every head row/.style={before row=\hline Rate & \multicolumn{9}{c}{Throughput} \\,after row=\hline},
+	every last row/.style={after row=\hline},
+	]{data/builtddwr/results_table.csv}
 \end{table}
 
 \begin{figure}
-	\label{figure:builtddwr_sport}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Throughput against athletics demand},
+	width=0.7\textwidth,
 	xlabel={Athletics demand (users)},
 	ylabel={Throughput},
 	xmin=0, xmax=150,
@@ -335,17 +329,17 @@ However, the database node throughputs are very different to those from the mode
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Shared queue and distributed database with replication - sport throughput}
+	\label{figure:builtddwr_sport}
 \end{figure}
 
 \begin{figure}
-	\label{figure:builtddwr_database}
 	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
 	title={Database throughput against athletics users},
-	width=0.9\textwidth,
+	width=0.7\textwidth,
 	ybar=0pt,
-	bar width=.02\textwidth,
+	bar width=.015\textwidth,
 	xlabel={Athletics users},
 	ylabel={Throughput},
 	xtick=data,
@@ -364,4 +358,5 @@ However, the database node throughputs are very different to those from the mode
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Shared queue and distributed database with replication - database throughput}
+	\label{figure:builtddwr_database}
 \end{figure}
